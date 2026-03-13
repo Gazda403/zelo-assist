@@ -1,0 +1,3 @@
+export interface EmailBot { id: string; userId: string; name: string; description?: string; prompt?: string; enabled: boolean; isPremium: boolean; createdAt: Date; updatedAt: Date; trigger: any; conditions: any[]; actions: any[]; safety: any; stats: any; }
+export interface EmailEvent { type: string; emailId: string; sender: { name: string; email: string }; subject: string; body: string; date: string; read: boolean; }
+export interface BotExecutionLog { id: string; botId: string; emailId: string; triggeredAt: Date; status: string; actionsExecuted: string[]; errorMessage?: string; metadata?: any; }
