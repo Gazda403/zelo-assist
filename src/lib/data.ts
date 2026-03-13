@@ -1,8 +1,1 @@
-/**
- * Mock data and static content for the application
- */
-
-export const INSTRUCTIONS = {
-    setup: "Follow these steps to get started with Zelo Assist...",
-    google_oauth: "You need to enable Gmail API in Google Cloud Console...",
-};
+export const MOCK_EMAILS = [{ id: "1", sender: { name: "Google Cloud", email: "cloud@google.com" }, subject: "Urgent Payment", snippet: "Suspended...", date: new Date().toISOString(), read: false, urgencyScore: 10 }];
