@@ -1,0 +1,166 @@
+@import "tailwindcss";
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Design System: Custom "Sleek" Theme (Warm Stone + Orange + Purple) */
+  --background: #FAFAF9;
+  /* Warm Stone (User Request) */
+  --foreground: #1C1917;
+  /* Warm Black (Stone-900) */
+
+  --card: #FFFFFF;
+  --card-foreground: #1C1917;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #1C1917;
+
+  --primary: #FF7F11;
+  /* Vibrant Orange (User Request) */
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #E7E5E4;
+  /* Stone-200 */
+  --secondary-foreground: #1C1917;
+
+  --muted: #F5F5F4;
+  /* Stone-100 */
+  --muted-foreground: #78716C;
+  /* Stone-500 */
+
+  --accent: #A182EE;
+  /* Soft Purple (User Request) */
+  --accent-foreground: #FFFFFF;
+
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #E7E5E4;
+  /* Stone-200 */
+  --input: #E7E5E4;
+  --ring: #FF7F11;
+
+  --radius: 0.75rem;
+  /* 12px - Sleeker/rounder */
+
+  /* Spacing Tokens */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* Shadows (Sleek/Diffused) */
+  --shadow-sm: 0 2px 4px rgba(28, 25, 23, 0.04);
+  --shadow-md: 0 6px 12px -2px rgba(28, 25, 23, 0.08);
+  --shadow-lg: 0 12px 24px -4px rgba(28, 25, 23, 0.12);
+  --shadow-xl: 0 24px 48px -12px rgba(161, 130, 238, 0.15);
+  /* Purple tint glow */
+}
+
+.dark {
+  /* Dark Mode Adaptation (Warm Dark) */
+  --background: #0C0A09;
+  /* Stone-950 */
+  --foreground: #FAFAF9;
+
+  --card: #1C1917;
+  /* Stone-900 */
+  --card-foreground: #FAFAF9;
+
+  --popover: #1C1917;
+  --popover-foreground: #FAFAF9;
+
+  --primary: #FF7F11;
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #292524;
+  /* Stone-800 */
+  --secondary-foreground: #FAFAF9;
+
+  --muted: #292524;
+  --muted-foreground: #A8A29E;
+
+  --accent: #A182EE;
+  --accent-foreground: #FFFFFF;
+
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #292524;
+  --input: #292524;
+  --ring: #FF7F11;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-jakarta);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: calc(var(--radius) - 1px);
+  --radius-lg: var(--radius);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom Text Selection */
+::selection {
+  background-color: var(--primary);
+  color: #FFFFFF;
+}
+
+/* Maintain default selection in Hero section */
+#hero ::selection {
+  background-color: #3b82f6;
+  /* Default Blue-ish for consistency */
+  color: #FFFFFF;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-brand {
+  background: linear-gradient(-45deg, #FF7F11, #A182EE, #FF9F45, #B8A0F2);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
