@@ -1,13 +1,33 @@
+
 "use client";
+
 import React from 'react';
+import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 
-const StickyCTA = ({ onGetStarted }: any) => {
+interface StickyCTAProps {
+    onGetStarted: () => void;
+}
+
+const StickyCTA: React.FC<StickyCTAProps> = ({ onGetStarted }) => {
     return (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-gray-900 text-white px-6 py-3 rounded-full flex items-center gap-3">
-            <span className="font-medium">Start writing better emails</span>
-            <button onClick={onGetStarted} className="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><ArrowUpRight size={16}/></button>
-        </div>
+        <motion.div
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 2, type: 'spring' }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-auto"
+        >
+            <button
+                onClick={onGetStarted}
+                className="flex items-center gap-3 bg-gray-900 text-white px-6 py-3 rounded-full shadow-2xl hover:bg-gray-800 transition-all cursor-pointer"
+            >
+                <span className="font-medium text-sm whitespace-nowrap">Start writing better emails</span>
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                    <ArrowUpRight size={16} />
+                </div>
+            </button>
+        </motion.div>
     );
 };
+
 export default StickyCTA;
