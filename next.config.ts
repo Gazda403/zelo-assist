@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
   // Packages that use native Node.js modules must run server-side only.
   // This prevents Vercel from trying to bundle them for the Edge runtime.
   serverExternalPackages: ["googleapis", "google-auth-library"],
+  transpilePackages: ["@splinetool/react-spline", "@splinetool/runtime"],
 };
 
 export default nextConfig;
