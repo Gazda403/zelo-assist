@@ -1,7 +1,9 @@
 'use client';
+
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LucideSend, LucideSparkles, LucidePaperclip, LucideImage, LucideSmile, LucideMoreVertical, LucideTrash2, LucideType } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { generateDraftAction, sendEmailAction } from '@/app/actions/gmail';
 
 export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
@@ -12,13 +14,30 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
     const [isGenerating, setIsGenerating] = useState(false);
     const [isSending, setIsSending] = useState(false);
 
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    }, [content]);
+
     const handleAiGenerate = async () => {
         if (!aiInput.trim()) return;
         setIsGenerating(true);
         try {
-            const result = await generateDraftAction(`new-${Date.now()}`, to, to, subject || "(No Subject)", aiInput);
+            const result = await generateDraftAction(
+                `new-${Date.now()}`,
+                to,
+                to,
+                subject || "(No Subject)",
+                aiInput
+            );
             setContent(result.draft);
             setAiInput('');
+        } catch (error) {
+            console.error("AI Generation failed:", error);
         } finally {
             setIsGenerating(false);
         }
@@ -29,27 +48,87 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
         setIsSending(true);
         try {
             await sendEmailAction(to, subject, content);
-            alert("Email sent!");
-            setTo(''); setSubject(''); setContent('');
+            alert("Email sent successfully!");
+            setTo('');
+            setSubject('');
+            setContent('');
+        } catch (error) {
+            console.error("Failed to send email:", error);
+            alert("Failed to send email. Check console for details.");
         } finally {
             setIsSending(false);
         }
     };
 
     return (
-        <div className="flex-1 flex flex-col bg-white rounded-2xl border shadow-xl">
-            <div className="p-6 border-b space-y-4">
-                <input value={to} onChange={(e) => setTo(e.target.value)} className="w-full text-sm focus:outline-none" placeholder="To: recipient@example.com" />
-                <input value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full text-sm font-bold focus:outline-none" placeholder="Subject: The topic" />
-            </div>
-            <textarea value={content} onChange={(e) => setContent(e.target.value)} className="flex-1 p-6 text-base focus:outline-none resize-none min-h-[300px]" placeholder="Write your email..." />
-            <div className="p-5 border-t bg-gray-50 flex flex-col gap-4">
-                <div className="relative">
-                    <input value={aiInput} onChange={(e) => setAiInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAiGenerate()} className="w-full bg-white border rounded-full pl-12 pr-14 py-3 text-sm focus:outline-none" placeholder="AI Prompt: Write an invitation..." />
-                    <button onClick={handleAiGenerate} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-accent text-white rounded-full"><LucideSparkles className="w-4 h-4" /></button>
+        <div className="flex-1 flex flex-col bg-white overflow-hidden rounded-2xl border border-gray-100/80 shadow-xl shadow-black/[0.03] transition-all duration-500 hover:shadow-2xl hover:shadow-black/[0.05]">
+            <div className="p-6 border-b border-gray-50/80 space-y-4">
+                <div className="flex items-center gap-4 group">
+                    <span className="text-sm font-medium text-gray-400 w-12 transition-colors group-focus-within:text-violet-500">To</span>
+                    <input
+                        type="email"
+                        value={to}
+                        onChange={(e) => setTo(e.target.value)}
+                        className="flex-1 text-sm bg-transparent focus:outline-none placeholder:text-gray-300 transition-all"
+                        placeholder="recipient@example.com"
+                    />
                 </div>
-                <div className="flex justify-between items-center">
-                    <button onClick={handleSend} disabled={isSending || !to || !content} className="bg-primary text-white px-8 py-2.5 rounded-xl font-bold flex items-center gap-2">Send <LucideSend className="w-4 h-4" /></button>
+                <div className="flex items-center gap-4 group">
+                    <span className="text-sm font-medium text-gray-400 w-12 transition-colors group-focus-within:text-violet-500">Subject</span>
+                    <input
+                        type="text"
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        className="flex-1 text-sm bg-transparent focus:outline-none placeholder:text-gray-300 font-medium transition-all"
+                        placeholder="The topic of your email"
+                    />
+                </div>
+            </div>
+
+            <div className="p-6 flex flex-col relative group flex-1">
+                <textarea
+                    ref={textareaRef}
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    className="w-full text-base bg-transparent focus:outline-none resize-none placeholder:text-gray-300 min-h-[200px] overflow-hidden leading-relaxed"
+                    placeholder="Write your email here or use the AI assistant below..."
+                />
+            </div>
+
+            <div className="p-5 flex flex-col gap-4 bg-gradient-to-b from-transparent to-gray-50/50 mt-auto border-t border-gray-50/80">
+                <div className="relative group">
+                    <div className="absolute inset-0 bg-violet-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                        <LucideSparkles className={cn("w-5 h-5 transition-all duration-300", isGenerating ? "text-violet-500 animate-spin-slow scale-110" : "text-violet-400 group-focus-within:text-violet-500")} />
+                    </div>
+                    <input
+                        type="text"
+                        value={aiInput}
+                        onChange={(e) => setAiInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleAiGenerate()}
+                        className="w-full bg-white/80 backdrop-blur-xl border border-gray-200/60 rounded-full pl-12 pr-14 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-300 transition-all duration-300 shadow-sm hover:shadow-md hover:border-gray-300 placeholder:text-gray-400"
+                        placeholder="Write an email invitation to a dinner..."
+                    />
+                    <button
+                        onClick={handleAiGenerate}
+                        disabled={isGenerating || !aiInput.trim()}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-full transition-all duration-300 disabled:opacity-50"
+                    >
+                        {isGenerating ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <LucideSend className="w-4 h-4" />}
+                    </button>
+                </div>
+
+                <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={handleSend}
+                            disabled={isSending || !to || !content}
+                            className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white px-7 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 shadow-lg"
+                        >
+                            {isSending ? "Sending..." : "Send"}
+                            <LucideSend className="w-4 h-4 ml-2 inline-block" />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

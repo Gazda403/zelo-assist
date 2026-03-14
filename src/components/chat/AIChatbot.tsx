@@ -66,6 +66,7 @@ export function AIChatbot() {
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0, opacity: 0 }}
                         onClick={() => setIsChatOpen(true)}
+                        aria-label="Open chat assistant"
                         className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-tr from-accent to-purple-500 text-white shadow-2xl shadow-accent/30 flex items-center justify-center hover:scale-110 transition-transform z-50"
                     >
                         <MessageCircle className="w-6 h-6" />
@@ -93,6 +94,7 @@ export function AIChatbot() {
                             </div>
                             <button
                                 onClick={() => setIsChatOpen(false)}
+                                aria-label="Close chat assistant"
                                 className="p-1.5 hover:bg-secondary rounded-full transition-colors"
                             >
                                 <X className="w-4 h-4" />
