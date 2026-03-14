@@ -1,43 +1,88 @@
-import { createAdminClient } from '../supabase/admin';
 
-export async function getUserTokens(userId: string) {
-    const supabase = createAdminClient();
-    const { data, error } = await supabase
-        .from('user_tokens')
-        .select('*')
-        .eq('user_id', userId)
-        .maybeSingle();
+import { createAdminClient } from '@/lib/supabase/admin';
 
-    if (error) {
-        console.error('Error fetching user tokens:', error);
-    }
-    return data;
+export interface UserTokens {
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: number; // Seconds since epoch
 }
 
-export async function getUserRefreshToken(userId: string) {
-    const tokens = await getUserTokens(userId);
-    return tokens?.refresh_token || null;
-}
-
-export async function saveUserTokens(userId: string, tokens: { access_token: string; refresh_token?: string; expires_at: number }) {
+/**
+ * Save user tokens to Supabase
+ * Uses email as the primary key to match the 'bots' table usage
+ */
+export async function saveUserTokens(
+    userId: string, // This is token.sub (Google ID)
+    email: string,
+    tokens: Partial<UserTokens>
+): Promise<boolean> {
     const supabase = createAdminClient();
 
-    const data: any = {
-        user_id: userId,
-        access_token: tokens.access_token,
-        expires_at: new Date(tokens.expires_at).toISOString(),
+    const updates: any = {
+        id: email, // Use EMAIL as the ID to match bots.userId
+        google_id: userId, // Keep the numerical ID just in case
+        email: email,
+        updated_at: new Date().toISOString(),
     };
 
-    if (tokens.refresh_token) {
-        data.refresh_token = tokens.refresh_token;
-    }
+    if (tokens.refreshToken) updates.refresh_token = tokens.refreshToken;
+
+    // We don't strictly need to save access_token if we have refresh_token, 
+    // but it might be useful for caching.
+    // However, for security, let's just stick to what we need.
+    // Actually, we usually only need refresh_token for background jobs.
 
     const { error } = await supabase
-        .from('user_tokens')
-        .upsert(data, { onConflict: 'user_id' });
+        .from('users')
+        .upsert(updates, { onConflict: 'id' });
 
     if (error) {
         console.error('Error saving user tokens:', error);
-        throw error;
+        return false;
     }
+
+    return true;
+}
+
+/**
+ * Get user's refresh token by email
+ */
+export async function getUserRefreshToken(email: string): Promise<string | null> {
+    const supabase = createAdminClient();
+
+    const { data, error } = await supabase
+        .from('users')
+        .select('refresh_token')
+        .eq('email', email) // Query by email property which matches bots.user_id
+        .single();
+
+    if (error || !data) {
+        return null;
+    }
+
+    return data.refresh_token;
+}
+
+/**
+ * Get all users who have enabled bots
+ * Used by the CRON job to determine who to sync
+ */
+export async function getUsersWithEnabledBots(): Promise<string[]> {
+    const supabase = createAdminClient();
+
+    // 1. Get all distinct user_ids from 'bots' table where enabled = true
+    const { data, error } = await supabase
+        .from('bots')
+        .select('user_id')
+        .eq('enabled', true);
+
+    if (error) {
+        console.error('Error fetching users with bots:', error);
+        return [];
+    }
+
+    // 2. Deduplicate user IDs
+    const userIds = Array.from(new Set((data || []).map(row => row.user_id)));
+
+    return userIds;
 }
