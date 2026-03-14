@@ -20,7 +20,7 @@ export async function analyzeEmailUrgency(
     sender: string
 ): Promise<UrgencyAnalysis> {
     try {
-        const model = google("gemini-2.5-flash");
+        const model = google("gemini-2.0-flash");
 
         const prompt = `You are an AI email assistant. Analyze the following email and rate its urgency on a scale of 1-10.
 
@@ -78,7 +78,7 @@ export async function generateDraftReply(
     context?: string
 ): Promise<DraftResponse> {
     try {
-        const model = google("gemini-2.5-flash");
+        const model = google("gemini-1.5-flash");
 
         const prompt = `You are an AI email assistant. Generate a professional draft reply to the following email.
 
@@ -134,7 +134,7 @@ export async function generateFollowUpContent(
     baseTemplate: string = "Hi, just checking if you saw my last email. Let me know if you have any questions."
 ): Promise<string> {
     try {
-        const model = google("gemini-2.5-flash");
+        const model = google("gemini-1.5-flash");
 
         // Truncate body to avoid hitting limits or distracting the model
         const snippet = originalBody.slice(0, 1000);

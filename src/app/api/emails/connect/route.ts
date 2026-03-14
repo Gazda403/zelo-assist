@@ -32,6 +32,8 @@ export async function POST(req: Request) {
     const planType = profile?.plan_type ?? "free";
     const subscriptionStatus = profile?.subscription_status ?? "inactive";
 
+    // Free users without active subscription still get 1 slot (their own account)
+    // Only allow connecting extras if subscription is active
     if (planType !== "free" && subscriptionStatus !== "active") {
         return NextResponse.json(
             { error: "No active subscription. Please subscribe to connect additional email accounts." },
@@ -47,6 +49,7 @@ export async function POST(req: Request) {
         .select("*", { count: "exact", head: true })
         .eq("owner_id", userId);
 
+    // +1 because primary account always occupies 1 slot
     const usedSlots = 1 + (existingCount ?? 0);
 
     if (usedSlots >= maxSlots) {

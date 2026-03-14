@@ -29,8 +29,6 @@ export async function saveEmailRating(
             urgency_score: rating.urgencyScore,
             reasoning: rating.reasoning,
             confidence: rating.confidence,
-            // created_at is default now(), but for updates we might want updated_at? 
-            // Table doesn't have updated_at, upsert handles row replacement.
         });
 
         if (error) {

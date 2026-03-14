@@ -27,11 +27,6 @@ export async function saveUserTokens(
 
     if (tokens.refreshToken) updates.refresh_token = tokens.refreshToken;
 
-    // We don't strictly need to save access_token if we have refresh_token, 
-    // but it might be useful for caching.
-    // However, for security, let's just stick to what we need.
-    // Actually, we usually only need refresh_token for background jobs.
-
     const { error } = await supabase
         .from('users')
         .upsert(updates, { onConflict: 'id' });
