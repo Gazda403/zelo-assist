@@ -51,6 +51,12 @@ export async function evaluateTrigger(
 
         case 'time_based':
             return evaluateTimeBased(trigger.config as TimeBasedConfig, event);
+            if (event.type === 'thread_check' && (event as any).inactiveDuration) {
+                const config = trigger.config as any; // Type lazily
+                // Logic would be here if we unify proactive/reactive
+                return true;
+            }
+            return false;
 
         case 'external_webhook':
             // Webhooks are triggered externally, not via email events
@@ -78,6 +84,10 @@ export async function evaluateTrigger(
 
         case 'thread_topic_changed':
             // Requires AI analysis of thread history. 
+            // We assume the event has thread history context or we fetch it?
+            // For MVP, we'll assume the event contains `previousContext` or `messages`.
+            // Realistically, this needs to be fetched.
+            // But `triggers.ts` is synchronous-ish (async marked).
             if (event.threadId) {
                 return await evaluateThreadTopicChanged(trigger.config as any, event);
             }
@@ -218,6 +228,9 @@ function evaluateEmailWithAttachment(
         return false;
     }
 
+    // Note: fileTypes filtering would require actual attachment metadata
+    // which may not be available in the event. Implement when needed.
+
     return true;
 }
 
@@ -265,6 +278,9 @@ function evaluateTimeBased(
         }
     }
 
+    // Note: schedule (cron) would require external scheduling system
+    // Implement when adding cron support
+
     return true;
 }
 
@@ -275,11 +291,13 @@ function evaluatePreviousActionCompleted(
     config: PreviousActionCompletedConfig,
     event: EmailEvent
 ): boolean {
+    // We assume event.metadata contains info about the completed action
     const metadata = (event as any).metadata || {};
 
     // Check if the completed action matches config
     if (metadata.actionType !== config.actionType) return false;
 
+    // Ideally check botId too, but that might be implicit
     return true;
 }
 

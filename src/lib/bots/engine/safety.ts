@@ -26,6 +26,7 @@ export async function checkSafety(
 ): Promise<SafetyResult> {
     const { safety } = bot;
 
+    // Check 1: Auto-send requires terms acceptance
     const hasAutoSend = bot.actions.some(action =>
         action.type === 'auto_send_email' || action.type === 'reply_with_template'
     );
@@ -37,6 +38,7 @@ export async function checkSafety(
         };
     }
 
+    // Check 2: Daily send limit
     if (hasAutoSend && safety.autoSendEnabled) {
         const todaySends = await countSendsToday(bot.id);
 
@@ -48,6 +50,7 @@ export async function checkSafety(
         }
     }
 
+    // Check 3: Cooldown (per sender)
     if (safety.cooldownMinutes > 0 && hasAutoSend) {
         const lastSent = await getLastSentTo(bot.id, event.sender.email);
 
@@ -64,6 +67,7 @@ export async function checkSafety(
         }
     }
 
+    // Check 4: Loop prevention
     if (safety.loopPrevention) {
         const hasLoop = await detectLoop(bot.id, event);
 
@@ -75,6 +79,7 @@ export async function checkSafety(
         }
     }
 
+    // Check 5: Granular E-Commerce Rules
     if (hasAutoSend && safety.autoSendEnabled && safety.autoSendRules && safety.autoSendRules.length > 0 && intent) {
         const intentToRule: Record<string, string> = {
             'Order_Status': 'product_qa',
@@ -83,6 +88,7 @@ export async function checkSafety(
             'Shipping_Question': 'faq',
             'Complaint': 'customer_support',
             'FAQ': 'faq',
+            // Startup Bot Intents
             'Hiring': 'hiring_talent',
             'User_Support': 'user_support',
             'Investor_Outreach': 'investor_outreach',
@@ -98,24 +104,34 @@ export async function checkSafety(
         }
     }
 
+    // All checks passed
     return { allowed: true };
 }
 
+// ============================================================================
+// Individual Safety Checks
+// ============================================================================
+
 /**
  * Detect potential email loops
+ * Loop = same sender + same/similar subject within 30min window
  */
 async function detectLoop(
     botId: string,
     event: EmailEvent
 ): Promise<boolean> {
     const recentLogs = await getExecutionLogs(botId, 50);
+
+    // Look for recent executions (last 30 minutes) with same sender
     const thirtyMinutesAgo = Date.now() - (30 * 60 * 1000);
 
     const recentSimilar = recentLogs.filter(log => {
+        // Check time window
         if (log.triggeredAt.getTime() < thirtyMinutesAgo) {
             return false;
         }
 
+        // Check if it was a successful send
         const wasSent = log.status === 'success' &&
             log.actionsExecuted.some(action =>
                 action === 'auto_send_email' || action === 'reply_with_template'
@@ -125,14 +141,17 @@ async function detectLoop(
             return false;
         }
 
+        // Check sender match
         const senderEmail = log.metadata?.senderEmail;
         if (senderEmail !== event.sender.email) {
             return false;
         }
 
+        // Check subject similarity (same or very similar)
         const logSubject = (log.metadata?.subject || '').toLowerCase();
         const eventSubject = event.subject.toLowerCase();
 
+        // Remove "Re: " prefix for comparison
         const normalizedLogSubject = logSubject.replace(/^re:\s*/i, '');
         const normalizedEventSubject = eventSubject.replace(/^re:\s*/i, '');
 
@@ -147,7 +166,7 @@ async function detectLoop(
  */
 export function checkAutoSendTermsAccepted(bot: EmailBot): boolean {
     if (!bot.safety.autoSendEnabled) {
-        return true;
+        return true; // Not using auto-send
     }
 
     return !!bot.acceptedTermsAt;
@@ -155,10 +174,12 @@ export function checkAutoSendTermsAccepted(bot: EmailBot): boolean {
 
 /**
  * Validate bot configuration for safety issues
+ * Returns array of warnings/errors
  */
 export function validateBotSafety(bot: EmailBot): string[] {
     const warnings: string[] = [];
 
+    // Check for auto-send actions without terms
     const hasAutoSend = bot.actions.some(action =>
         action.type === 'auto_send_email' || action.type === 'reply_with_template'
     );
@@ -167,6 +188,7 @@ export function validateBotSafety(bot: EmailBot): string[] {
         warnings.push('Auto-send actions require terms acceptance');
     }
 
+    // Check for unreasonable rate limits
     if (bot.safety.maxSendsPerDay > 1000) {
         warnings.push('Daily send limit is very high (>1000) - consider reducing');
     }
@@ -175,6 +197,7 @@ export function validateBotSafety(bot: EmailBot): string[] {
         warnings.push('Cooldown is very short (<5min) - risk of spam');
     }
 
+    // Check for no conditions on broad triggers
     if (
         bot.trigger.type === 'new_email_received' &&
         bot.conditions.length === 0 &&
