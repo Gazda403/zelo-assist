@@ -28,6 +28,7 @@ export interface AnalysisResult {
 
 /**
  * Perform AI-less heuristic analysis (First pass)
+ * In a real production system, this would call a specialized LLM classifier.
  */
 export function analyzeEmailTelemetry(event: EmailEvent): AnalysisResult {
     const text = (event.subject + ' ' + (event.body || event.snippet || '')).toLowerCase();
@@ -38,6 +39,7 @@ export function analyzeEmailTelemetry(event: EmailEvent): AnalysisResult {
     let isSpam = false;
 
     // 1. Intent Detection (Heuristic)
+    // E-Commerce specific intents
     if (text.includes('order') && (text.includes('status') || text.includes('where') || text.includes('track'))) {
         intent = 'Order_Status';
     } else if (text.includes('return') || text.includes('refund') || text.includes('exchange')) {
@@ -49,6 +51,7 @@ export function analyzeEmailTelemetry(event: EmailEvent): AnalysisResult {
     } else if (text.includes('complaint') || text.includes('angry') || text.includes('disappointed') || text.includes('terrible')) {
         intent = 'Complaint';
     }
+    // Founders/Startup specific intents
     else if (text.includes('support') || text.includes('help') || text.includes('issue') || text.includes('broken')) {
         intent = 'User_Support';
     } else if (text.includes('invest') || text.includes('funding') || text.includes('seed') || text.includes('pitch')) {
@@ -75,12 +78,14 @@ export function analyzeEmailTelemetry(event: EmailEvent): AnalysisResult {
         if (text.includes(kw)) riskScore += 30;
     });
 
+    // Sender risk
     const freeDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
     const domain = sender.split('@')[1];
     if (domain && freeDomains.includes(domain)) {
         riskScore += 10;
     }
 
+    // Sentiment (if provided by earlier stage)
     if (event.urgencyScore) {
         riskScore += event.urgencyScore * 5;
     }

@@ -83,6 +83,7 @@ async function executeAction(
             return await executeNotifyUser(action.config as NotifyUserConfig, event, bot);
 
         case 'webhook_call':
+            // Not implemented yet - placeholder
             return { type: 'webhook_call', success: false, error: 'Not implemented' };
 
         default:
@@ -101,6 +102,7 @@ async function executeAction(
 
 /**
  * Action: create_draft
+ * Generate AI draft via existing draft generator
  */
 async function executeCreateDraft(
     config: CreateDraftConfig,
@@ -109,6 +111,7 @@ async function executeCreateDraft(
     intent?: string
 ): Promise<ActionResult> {
     try {
+        // Import server action dynamically to avoid circular dependencies
         const { generateDraftAction } = await import('@/app/actions/gmail');
 
         const result = await generateDraftAction(
@@ -141,6 +144,7 @@ async function executeCreateDraft(
 
 /**
  * Action: auto_send_email
+ * Generate draft AND send it automatically
  */
 async function executeAutoSendEmail(
     config: AutoSendEmailConfig,
@@ -156,6 +160,7 @@ async function executeAutoSendEmail(
         let subject = config.subject || `Re: ${event.subject}`;
 
         if (config.acknowledgmentTemplate) {
+            // Use predefined template with variable substitution
             const values = config.acknowledgmentTemplate.variables.reduce((acc, v) => ({
                 ...acc,
                 [v.key]: v.defaultValue
@@ -181,6 +186,7 @@ async function executeAutoSendEmail(
                 }
             );
         } else {
+            // Generate draft via AI
             const draftResult = await generateDraftAction(
                 event.emailId,
                 event.sender.name,
@@ -194,6 +200,7 @@ async function executeAutoSendEmail(
             body = draftResult.draft;
         }
 
+        // Send email
         await sendEmailAction(
             event.sender.email,
             subject,
@@ -221,19 +228,23 @@ async function executeAutoSendEmail(
 
 /**
  * Action: reply_with_template
+ * Send predefined template (no AI)
  */
 async function executeReplyWithTemplate(
     config: ReplyWithTemplateConfig,
     event: EmailEvent
 ): Promise<ActionResult> {
     try {
+        // Import templates
         const { EMAIL_TEMPLATES } = await import('../templates/email-templates');
+
         const template = EMAIL_TEMPLATES[config.templateId];
 
         if (!template) {
             throw new Error(`Template not found: ${config.templateId}`);
         }
 
+        // Replace variables
         let body = template.body;
         if (config.variables) {
             Object.entries(config.variables).forEach(([key, value]) => {
@@ -241,13 +252,15 @@ async function executeReplyWithTemplate(
             });
         }
 
+        // Replace standard variables
         body = body
-            .replace(/{{sender}}/g, event.sender.name)
-            .replace(/{{sender_name}}/g, event.sender.name)
+            .replace(/{{sender}}/g, event.sender.name) // Legacy support
+            .replace(/{{sender_name}}/g, event.sender.name) // New standard
             .replace(/{{senderEmail}}/g, event.sender.email)
-            .replace(/{{subject}}/g, event.subject)
-            .replace(/{{subject_reference}}/g, event.subject);
+            .replace(/{{subject}}/g, event.subject) // Legacy support
+            .replace(/{{subject_reference}}/g, event.subject); // New standard
 
+        // Send email
         const { sendEmailAction } = await import('@/app/actions/gmail');
         await sendEmailAction(
             event.sender.email,
@@ -275,6 +288,7 @@ async function executeReplyWithTemplate(
 
 /**
  * Action: forward_email
+ * Forward the email to a specified address
  */
 async function executeForwardEmail(
     config: ForwardEmailConfig,
@@ -310,6 +324,8 @@ async function executeForwardEmail(
 
 /**
  * Action: apply_label
+ * Add Gmail label to email
+ * Note: Requires Gmail API integration
  */
 async function executeApplyLabel(
     config: ApplyLabelConfig,
@@ -338,6 +354,8 @@ async function executeApplyLabel(
 
 /**
  * Action: mark_as_read
+ * Mark email as read
+ * Note: Requires Gmail API integration
  */
 async function executeMarkAsRead(
     event: EmailEvent
@@ -364,6 +382,7 @@ async function executeMarkAsRead(
 
 /**
  * Action: notify_user
+ * Create in-app notification
  */
 async function executeNotifyUser(
     config: NotifyUserConfig,
@@ -371,13 +390,19 @@ async function executeNotifyUser(
     bot: EmailBot
 ): Promise<ActionResult> {
     try {
+        // Replace template variables in message
         let message = config.message
             .replace(/{{sender}}/g, event.sender.name)
             .replace(/{{senderEmail}}/g, event.sender.email)
             .replace(/{{subject}}/g, event.subject)
             .replace(/{{botName}}/g, bot.name);
 
+        // Placeholder - would create in-app notification
         console.log(`[Bot] Notification: ${message} (Priority: ${config.priority || 'medium'})`);
+
+        // TODO: Implement notification system
+        // const { createNotification } = await import('@/lib/notifications');
+        // await createNotification(bot.userId, message, config.priority);
 
         return {
             type: 'notify_user',

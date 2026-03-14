@@ -219,11 +219,14 @@ function evaluateHasAttachment(
 /**
  * Condition: thread_count_gte
  * Check if email thread has minimum number of messages
+ * Note: Requires thread metadata which may not be available initially
  */
 function evaluateThreadCountGte(
     config: ThreadCountGteConfig,
     event: EmailEvent
 ): boolean {
+    // Placeholder: thread count would need to be fetched from Gmail API
+    // For now, always return true (to be implemented later)
     console.warn('thread_count_gte condition not fully implemented yet');
     return true;
 }
@@ -247,7 +250,7 @@ function evaluateExcludeAutomated(
     ];
 
     if (automatedPatterns.some(p => senderEmail.includes(p))) {
-        return false; // It IS automated/generic
+        return false; // It IS automated/generic (Condition fails to pass because we EXCLUDE automated)
     }
 
     // 2. Check Sender Name
@@ -255,7 +258,7 @@ function evaluateExcludeAutomated(
         return false;
     }
 
-    // 3. Check Headers
+    // 3. Check Headers (if available in payload)
     if (event.payload && event.payload.payload && event.payload.payload.headers) {
         const headers = event.payload.payload.headers as any[];
 
