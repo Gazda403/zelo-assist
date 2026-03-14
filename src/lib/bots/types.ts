@@ -54,18 +54,18 @@ export type TriggerType =
     | 'new_email_received'
     | 'email_from_sender'
     | 'email_contains_keyword'
-    | 'email_contains_multiple_keywords' // NEW
-    | 'email_contains_sentiment'       // NEW
+    | 'email_contains_multiple_keywords' 
+    | 'email_contains_sentiment'       
     | 'email_with_attachment'
-    | 'email_thread_inactive_for'      // NEW
-    | 'thread_topic_changed'           // NEW
-    | 'order_status_changed'           // NEW
-    | 'refund_requested'               // NEW
-    | 'previous_action_completed'      // NEW
+    | 'email_thread_inactive_for'      
+    | 'thread_topic_changed'           
+    | 'order_status_changed'           
+    | 'refund_requested'               
+    | 'previous_action_completed'      
     | 'external_webhook'
     | 'time_based'
     | 'urgency_threshold'
-    | 'outgoing_email_sent'; // NEW: For Follow-Up Bot (Mode A)
+    | 'outgoing_email_sent'; 
 
 export interface BotTrigger {
     type: TriggerType;
@@ -76,23 +76,23 @@ export type TriggerConfig =
     | NewEmailReceivedConfig
     | EmailFromSenderConfig
     | EmailContainsKeywordConfig
-    | EmailContainsMultipleKeywordsConfig // NEW
-    | EmailContainsSentimentConfig        // NEW
+    | EmailContainsMultipleKeywordsConfig 
+    | EmailContainsSentimentConfig        
     | EmailWithAttachmentConfig
-    | EmailThreadInactiveForConfig        // NEW
-    | ThreadTopicChangedConfig            // NEW
-    | OrderStatusChangedConfig            // NEW
-    | RefundRequestedConfig               // NEW
-    | PreviousActionCompletedConfig       // NEW
+    | EmailThreadInactiveForConfig        
+    | ThreadTopicChangedConfig            
+    | OrderStatusChangedConfig            
+    | RefundRequestedConfig               
+    | PreviousActionCompletedConfig       
     | ExternalWebhookConfig
     | TimeBasedConfig
-    | OutgoingEmailSentConfig // NEW
+    | OutgoingEmailSentConfig 
     | UrgencyThresholdConfig;
 
 export interface OutgoingEmailSentConfig {
     excludeDomains?: string[];
     excludeKeywords?: string[];
-    delayDegrees?: number; // Just placeholder, actual delay is in FollowUpConfig
+    delayDegrees?: number; 
 }
 
 export interface NewEmailReceivedConfig {
@@ -111,7 +111,7 @@ export interface EmailContainsKeywordConfig {
 
 export interface EmailContainsMultipleKeywordsConfig {
     keywords: string[];
-    matchAll: boolean; // true = AND, false = OR (though standard keyword is OR usually)
+    matchAll: boolean; 
     searchIn: 'subject' | 'body' | 'both';
 }
 
@@ -145,7 +145,7 @@ export interface RefundRequestedConfig {
 }
 
 export interface PreviousActionCompletedConfig {
-    botId: string; // Could be self or other bot
+    botId: string; 
     actionType: string;
 }
 
@@ -179,7 +179,7 @@ export type ConditionType =
     | 'received_within'
     | 'has_attachment'
     | 'thread_count_gte'
-    | 'exclude_automated'; // NEW
+    | 'exclude_automated'; 
 
 export interface BotCondition {
     type: ConditionType;
@@ -196,10 +196,10 @@ export type ConditionConfig =
     | ReceivedWithinConfig
     | HasAttachmentConfig
     | ThreadCountGteConfig
-    | ExcludeAutomatedConfig; // NEW
+    | ExcludeAutomatedConfig; 
 
 export interface SenderIsInternalConfig {
-    domain: string; // e.g., 'yourcompany.com'
+    domain: string; 
 }
 
 export interface SenderEmailMatchesConfig {
@@ -209,7 +209,7 @@ export interface SenderEmailMatchesConfig {
 
 export interface SubjectContainsConfig {
     keywords: string[];
-    matchAll?: boolean; // AND vs OR
+    matchAll?: boolean; 
 }
 
 export interface BodyContainsConfig {
@@ -280,7 +280,7 @@ export interface AutoSendEmailConfig {
     tone?: 'professional' | 'casual' | 'formal';
     subject?: string;
     template?: string;
-    acknowledgmentTemplate?: AcknowledgmentTemplate; // NEW: For auto-acknowledgment bots
+    acknowledgmentTemplate?: AcknowledgmentTemplate; 
 }
 
 export interface ReplyWithTemplateConfig {
@@ -323,7 +323,7 @@ export interface SafetyConfig {
     cooldownMinutes: number;
     loopPrevention: boolean;
     requireApproval?: boolean;
-    autoSendRules?: string[]; // NEW: Granular controls for E-Commerce (e.g., 'Customer_Support', 'Refunds')
+    autoSendRules?: string[]; 
 }
 
 export interface BotStats {
@@ -333,7 +333,7 @@ export interface BotStats {
     failureCount: number;
     emailsSent: number;
     draftsCreated: number;
-    lastUsedTemplate?: string; // NEW: Track last used template name
+    lastUsedTemplate?: string; 
 }
 
 // ============================================================================
@@ -353,12 +353,12 @@ export interface MonitoredThread {
     status: FollowUpStatus;
     attempts: number;
     last_error?: string;
-    metadata?: Record<string, any>; // NEW: Store original message info, etc.
+    metadata?: Record<string, any>; 
 }
 
 export interface BotFollowUpConfig {
     enabled: boolean;
-    mode: 'auto' | 'targeted'; // NEW
+    mode: 'auto' | 'targeted'; 
     settings: {
         delayValue: number;
         delayUnit: 'hours' | 'days';
@@ -367,16 +367,16 @@ export interface BotFollowUpConfig {
         excludeDomains?: string[];
         excludeKeywords?: string[];
         // Whitelist for Targeted Mode
-        includeRecipients?: string[]; // NEW: Specific emails/domains to watch
+        includeRecipients?: string[]; 
 
         // Auto-Acknowledgment Enhancements
-        smartDelay?: boolean; // Calculate based on response_time + 1 unit
+        smartDelay?: boolean; 
 
         // Follow-Up Content & Rules
-        followUpTemplate?: AcknowledgmentTemplate; // NEW: The specific message to send
-        maxFollowUps?: number; // NEW: Max number of nudges
+        followUpTemplate?: AcknowledgmentTemplate; 
+        maxFollowUps?: number; 
 
-        ignoreIfReplied?: boolean; // NEW: Cancel if recipient replies
+        ignoreIfReplied?: boolean; 
 
         sendApology?: boolean;
         apologyTemplate?: AcknowledgmentTemplate;
@@ -428,10 +428,10 @@ export interface AcknowledgmentTemplate {
  * Variable placeholder definition for templates
  */
 export interface TemplateVariable {
-    key: string;  // e.g., "response_time"
-    label: string;  // e.g., "Expected Response Time"
-    defaultValue: string;  // e.g., "3-5 business days"
-    description?: string;  // Help text for users
+    key: string;  
+    label: string;  
+    defaultValue: string;  
+    description?: string;  
 }
 
 // ============================================================================
