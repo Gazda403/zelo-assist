@@ -1,4 +1,5 @@
 "use client";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Sparkles, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,61 +15,163 @@ export function AIChatbot() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isChatOpen, setIsChatOpen] = useState(false);
+
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    const scrollToBottom = () => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); };
-    useEffect(() => { scrollToBottom(); }, [messages, isLoading]);
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages, isLoading]);
 
     const handleSend = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
-        const userMessage: Message = { id: crypto.randomUUID(), role: "user", content: input };
+
+        const userMessage: Message = {
+            id: crypto.randomUUID(),
+            role: "user",
+            content: input,
+        };
+
         setMessages((prev) => [...prev, userMessage]);
         setIsLoading(true);
         setError(null);
         const currentInput = input;
         setInput("");
+
         try {
             const aiMessage = await getAiResponse(currentInput);
             setMessages((prev) => [...prev, aiMessage]);
         } catch (err) {
+            console.error("Failed to get response:", err);
             setError("Failed to get response. Please try again.");
         } finally {
             setIsLoading(false);
         }
     };
 
+    const handleRetry = async () => {
+        setError(null);
+    };
+
     return (
         <>
             <AnimatePresence>
                 {!isChatOpen && (
-                    <motion.button onClick={() => setIsChatOpen(true)} className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-tr from-accent to-purple-500 text-white shadow-2xl z-50 flex items-center justify-center hover:scale-110">
+                    <motion.button
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        onClick={() => setIsChatOpen(true)}
+                        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-tr from-accent to-purple-500 text-white shadow-2xl shadow-accent/30 flex items-center justify-center hover:scale-110 transition-transform z-50"
+                    >
                         <MessageCircle className="w-6 h-6" />
                     </motion.button>
                 )}
             </AnimatePresence>
+
             <AnimatePresence>
                 {isChatOpen && (
-                    <motion.div className="fixed bottom-6 right-6 w-96 h-[500px] bg-card border rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden">
-                        <div className="p-4 border-b bg-gradient-to-r from-accent/10 to-purple-500/10 flex items-center justify-between">
-                            <h3 className="font-semibold text-sm">AI Assistant</h3>
-                            <button onClick={() => setIsChatOpen(false)}><X className="w-4 h-4" /></button>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                        className="fixed bottom-6 right-6 w-96 h-[500px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50"
+                    >
+                        <div className="p-4 border-b border-border bg-gradient-to-r from-accent/10 to-purple-500/10 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-accent to-purple-500 flex items-center justify-center">
+                                    <Sparkles className="w-4 h-4 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-sm">AI Assistant</h3>
+                                    <p className="text-xs text-muted-foreground">Always here to help</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setIsChatOpen(false)}
+                                className="p-1.5 hover:bg-secondary rounded-full transition-colors"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
                         </div>
+
                         <div className="flex-1 overflow-y-auto p-4 space-y-4">
                             {messages.map((msg) => (
-                                <div key={msg.id} className={cn("flex", msg.role === "user" ? "justify-end" : "justify-start")}>
-                                    <div className={cn("max-w-[80%] rounded-2xl px-4 py-2.5 text-sm", msg.role === "user" ? "bg-accent text-accent-foreground" : "bg-secondary text-foreground")}>
-                                        {msg.content}
+                                <motion.div
+                                    key={msg.id}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className={cn(
+                                        "flex",
+                                        msg.role === "user" ? "justify-end" : "justify-start"
+                                    )}
+                                >
+                                    <div
+                                        className={cn(
+                                            "max-w-[80%] rounded-2xl px-4 py-2.5 text-sm",
+                                            msg.role === "user"
+                                                ? "bg-accent text-accent-foreground"
+                                                : "bg-secondary text-foreground"
+                                        )}
+                                    >
+                                        <div className="prose break-words">
+                                            {msg.content}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                            {isLoading && (
+                                <div className="flex justify-start">
+                                    <div className="bg-secondary rounded-2xl px-4 py-2.5 text-sm text-muted-foreground">
+                                        <div className="flex gap-1">
+                                            <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: "0ms" }} />
+                                            <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: "150ms" }} />
+                                            <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: "300ms" }} />
+                                        </div>
                                     </div>
                                 </div>
-                            ))}
-                            {isLoading && <div className="text-xs text-muted-foreground">AI is thinking...</div>}
+                            )}
+                            {error && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="p-3 text-xs bg-red-50 border border-red-200 rounded-lg"
+                                >
+                                    <p className="text-red-700 font-medium mb-2">Error: {error}</p>
+                                    <button
+                                        onClick={handleRetry}
+                                        className="flex items-center gap-1 text-red-600 hover:text-red-800 font-medium"
+                                    >
+                                        <RotateCcw className="w-3 h-3" />
+                                        Retry
+                                    </button>
+                                </motion.div>
+                            )}
                             <div ref={messagesEndRef} />
                         </div>
-                        <form onSubmit={handleSend} className="p-4 border-t flex gap-2">
-                            <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask me anything..." className="flex-1 bg-secondary rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent" />
-                            <button type="submit" disabled={!input.trim() || isLoading} className="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center"><Send className="w-4 h-4" /></button>
-                        </form>
+
+                        <div className="p-4 border-t border-border bg-background/50 backdrop-blur-sm">
+                            <form onSubmit={handleSend} className="flex gap-2">
+                                <input
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    placeholder="Ask me anything..."
+                                    disabled={isLoading}
+                                    className="flex-1 bg-secondary border border-transparent focus:border-accent/50 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={!input.trim() || isLoading}
+                                    className="w-10 h-10 rounded-full bg-accent text-accent-foreground flex items-center justify-center hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <Send className="w-4 h-4" />
+                                </button>
+                            </form>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
