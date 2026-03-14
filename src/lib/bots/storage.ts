@@ -396,8 +396,7 @@ function mapBotToRow(bot: EmailBot): any {
         user_id: bot.userId,
         name: bot.name,
         description: bot.description,
-        prompt: bot.prompt || '', 
-
+        prompt: bot.prompt || '',
         enabled: bot.enabled,
         is_premium: bot.isPremium,
         created_at: bot.createdAt,
@@ -439,7 +438,7 @@ export async function getMonitoredThreads(botId: string): Promise<MonitoredThrea
         thread_id: row.thread_id,
         subject: row.subject,
         recipient: row.recipient,
-        added_at: row.added_at, 
+        added_at: row.added_at, // Alread ISO string from DB? Or Date? DB returns string usually.
         scheduled_for: row.scheduled_for,
         status: row.status as any,
         attempts: row.attempts || 0,

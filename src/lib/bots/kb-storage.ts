@@ -167,7 +167,7 @@ export async function deleteKBEntry(entryId: string): Promise<void> {
 export async function incrementKBUsage(entryId: string): Promise<void> {
     const supabase = createAdminClient();
 
-    const { error } = await supabase.rpc('increment_kb_usage', { entry_id: entry_id });
+    const { error } = await supabase.rpc('increment_kb_usage', { entry_id: entryId });
 
     if (error) {
         // Fallback to manual increment if RPC doesn't exist
