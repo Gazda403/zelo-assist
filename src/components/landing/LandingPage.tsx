@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Navbar from './Navbar';
 import Hero from './Hero';
@@ -14,8 +15,9 @@ import { PlanPickerModal } from './PlanPickerModal';
 
 export function LandingPage() {
     const [isPlanPickerOpen, setIsPlanPickerOpen] = useState(false);
+
     return (
-        <div className="min-h-screen bg-stone-50 font-sans">
+        <div className="min-h-screen animate-gradient-brand font-sans selection:bg-white/20 selection:text-white">
             <PlanPickerModal isOpen={isPlanPickerOpen} onClose={() => setIsPlanPickerOpen(false)} />
             <Navbar onGetStarted={() => setIsPlanPickerOpen(true)} />
             <main>
