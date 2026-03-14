@@ -20,6 +20,8 @@ export async function POST(req: Request) {
             `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`
         ).toString("base64");
 
+        // Use sandbox URL for development, live URL for production
+        // It's best practice to use an environment variable (e.g., PAYPAL_API_URL)
         const baseUrl = process.env.PAYPAL_API_URL || "https://api-m.sandbox.paypal.com";
 
         const tokenResponse = await fetch(`${baseUrl}/v1/oauth2/token`, {
@@ -46,9 +48,12 @@ export async function POST(req: Request) {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${access_token}`,
                 Accept: "application/json",
+                // Prefer: "return=representation"
             },
             body: JSON.stringify({
                 plan_id: plan_id,
+                // Attach the user's ID/email to track exactly WHO this subscription belongs to
+                // Custom ID is securely passed to webhooks
                 custom_id: session.user.email,
                 application_context: {
                     shipping_preference: "NO_SHIPPING",
@@ -65,6 +70,7 @@ export async function POST(req: Request) {
 
         const subscription = await createSubscriptionResponse.json();
 
+        // Return the subscription ID to the frontend to complete the flow
         return NextResponse.json({ id: subscription.id });
 
     } catch (error) {
