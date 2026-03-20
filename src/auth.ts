@@ -1,13 +1,8 @@
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
-import fs from "fs"
-import path from "path"
-
-const LOG_FILE = path.join(process.cwd(), "auth-debug.log");
 function debugLog(message: string, data: any) {
     const timestamp = new Date().toISOString();
-    const logEntry = `[${timestamp}] ${message}: ${JSON.stringify(data)}\n`;
-    fs.appendFileSync(LOG_FILE, logEntry);
+    console.log(`[AUTH DEBUG][${timestamp}] ${message}:`, data);
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
