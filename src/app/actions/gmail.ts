@@ -1,0 +1,554 @@
+'use server';
+
+import { auth } from '@/auth';
+import { getLastEmails as fetchGmailEmails, createDraft as createGmailDraft, getUnreadCount } from '@/lib/gmail';
+
+import { rateEmailFlow } from '@/ai/flows/email-rater';
+import { refineDraftFlow } from '@/ai/flows/draft-refiner';
+import { generateDraftFlow } from '@/ai/flows/draft-generator';
+
+interface AIResult {
+    urgencyScore: number;
+    reasoning: string;
+    confidence: 'low' | 'medium' | 'high';
+}
+
+const EMAIL_AI_LIMIT = 5;
+
+// import { getCachedEmailRatings, trackEmailRating } from '@/lib/analytics';
+import { getEmailRatings, saveEmailRating, getGeneratedDraft, saveGeneratedDraft } from '@/lib/db/email-storage';
+
+export async function fetchEmailsAction(
+    pageToken?: string,
+    filter: '1d' | '7d' | '30d' | 'all' = '7d'
+) {
+    const session = await auth() as any;
+    if (!session || !session.accessToken || session.error === 'RefreshAccessTokenError') {
+        return { emails: [], nextPageToken: undefined, unreadCount: 0, error: 'Unauthorized', message: 'Session expired. Please sign in again.' };
+    }
+
+    try {
+        let query = '';
+        if (filter !== 'all') {
+            query = `newer_than:${filter}`;
+        }
+
+        const { emails, nextPageToken } = await fetchGmailEmails(session.accessToken, 10, pageToken, query);
+
+        // 1. Fetch ratings from Supabase DB
+        const emailIds = emails.map(e => e.id);
+        const cachedRatings = await getEmailRatings(emailIds);
+
+        // Filter for emails needing rating (not in cache)
+        const unratedEmails = emails.filter(e => !cachedRatings[e.id]);
+
+        // Process a subset to avoid rate limits/timeouts
+        const batchToRate = unratedEmails.slice(0, EMAIL_AI_LIMIT);
+
+        if (batchToRate.length > 0) {
+            console.log(`[AI] Rating ${batchToRate.length} new emails...`);
+            await Promise.all(batchToRate.map(async (email) => {
+                try {
+                    // Start timestamp
+                    const start = Date.now();
+
+                    const rating = await rateEmailFlow({
+                        subject: email.subject,
+                        snippet: email.snippet,
+                        sender: email.sender.name
+                    });
+
+                    if (rating) {
+                        // Save to Supabase using dedicated storage service
+                        const saved = await saveEmailRating(email.id, session.user.id!, rating);
+                        if (saved) {
+                            // Update local variable for immediate return
+                            cachedRatings[email.id] = rating;
+                        } else {
+                            console.warn(`[AI] Failed to save rating for ${email.id}`);
+                        }
+
+                        // Optionally track performance stats
+                        // const duration = Date.now() - start;
+                        // trackEvent({ name: 'ai_rating_latency', properties: { duration } });
+                    }
+                } catch (err) {
+                    console.error(`[AI] Failed to rate email ${email.id}:`, err);
+                }
+            }));
+        }
+
+        // Merge ratings into response
+        const enrichedEmails = emails.map(email => {
+            const cached = cachedRatings[email.id];
+            if (cached) {
+                return {
+                    ...email,
+                    urgencyScore: cached.urgencyScore,
+                    urgencyReason: cached.reasoning,
+                    // We can add confidence if the UI supports it later
+                    aiConfidence: cached.confidence
+                };
+            }
+            return email;
+        });
+
+        // Trigger bots for new emails (non-blocking) - Only trigger on first page recent fetch
+        // to avoid re-triggering on old emails when scrolling?
+        // Actually, trigger logic should probably be separate or idempotent.
+        // For now, we only trigger if we are fetching recent (no pageToken usually means top).
+        // Let's keep it simply triggering for everything for now, or maybe only if filter is conservative.
+        // Optimization: checking if 'read' status matters?
+
+        try {
+            const { executeBots } = await import('@/lib/bots/engine/orchestrator');
+
+            // Execute bots for each email in the background
+            for (const email of enrichedEmails) {
+                // Skip bots for old emails if user is just scrolling history?
+                // Just robustly sending events. Bots should check duplication if needed (handled by idempotency usually).
+
+                const emailEvent = {
+                    type: 'new_email' as const,
+                    emailId: email.id,
+                    sender: email.sender,
+                    subject: email.subject,
+                    body: email.snippet, // Using snippet as body proxy
+                    snippet: email.snippet,
+                    date: email.date,
+                    read: email.read,
+                    urgencyScore: cachedRatings[email.id]?.urgencyScore,
+                    threadId: email.threadId,
+                };
+
+                // Fire and forget - don't await to avoid blocking inbox
+                executeBots(emailEvent, session.user.email!).catch(err => {
+                    console.error('[Bots] Background execution failed:', err);
+                });
+            }
+        } catch (error) {
+            // Bot execution failure should never block inbox
+            console.error('[Bots] Failed to trigger bots:', error);
+        }
+
+        // Fetch unread count matching the timeframe filter
+        const unreadCount = await getUnreadCount(session.accessToken, query);
+
+        return { emails: enrichedEmails, nextPageToken, unreadCount };
+
+    } catch (error: any) {
+        console.error("Fetch Emails Action Error:", error);
+
+        // Check for specific auth errors from the Gmail API
+        if (error.message?.includes('401') || error.message?.includes('invalid_grant')) {
+            return { emails: [], nextPageToken: undefined, unreadCount: 0, error: 'Unauthorized', message: 'Gmail access revoked or expired.' };
+        }
+
+        throw new Error(`Failed to fetch emails: ${error.message}`);
+    }
+}
+
+export async function createDraftAction(to: string, subject: string, body: string) {
+    const session = await auth() as any;
+
+    if (!session || !session.accessToken) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const draft = await createGmailDraft(session.accessToken, to, subject, body);
+        return draft;
+    } catch (error) {
+        console.error("Create Draft Action Error:", error);
+        throw new Error("Failed to create draft");
+    }
+}
+
+export async function refineDraftAction(
+    currentDraft: string,
+    instruction: string,
+    emailContext?: { sender?: string; subject?: string; originalEmail?: string }
+) {
+    const session = await auth() as any;
+    if (!session || !session.accessToken) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const result = await refineDraftFlow({
+            draft: currentDraft,
+            instruction,
+            emailContext
+        });
+        return result;
+    } catch (error: any) {
+        console.error("Refine Draft Action Error:", error);
+
+        // Handle Quota Exceeded errors
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        if (errorMessage.includes("Quota exceeded") || errorMessage.includes("429")) {
+            throw new Error("AI Quota Exceeded (Free Tier Limit). Please try again in ~30 seconds.");
+        }
+
+        throw new Error("Failed to refine draft");
+    }
+}
+
+export async function generateDraftAction(
+    emailId: string,
+    sender: string,
+    senderEmail: string,
+    subject: string,
+    emailBody: string,
+    botId?: string,
+    intent?: string,
+    instructions?: string
+) {
+    const session = await auth() as any;
+    if (!session || !session.accessToken) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        console.log('[Generate Draft Action] Generating draft for:', subject);
+
+        // 1. Check cache first
+        const existingDraft = await getGeneratedDraft(emailId);
+        if (existingDraft) {
+            console.log('[Generate Draft Action] Cache hit for:', emailId);
+            return existingDraft;
+        }
+
+        console.log('[Generate Draft Action] Cache miss for:', emailId);
+
+        // 2. Fetch Knowledge Base & Instructions if botId provided
+        let knowledgeBase = '';
+        let botInstructions = instructions || '';
+
+        if (botId && session.user.id) {
+            try {
+                const { getBotById } = await import('@/lib/bots/storage');
+                const bot = await getBotById(botId, session.user.id);
+
+                if (bot) {
+                    // Update instructions if none provided
+                    if (!botInstructions) botInstructions = bot.prompt || '';
+
+                    // Load KB
+                    if (bot.policyConfig?.enabled && bot.policyConfig.policies.length > 0) {
+                        knowledgeBase = bot.policyConfig.policies
+                            .map(p => `[${p.title}]\n${p.content}`)
+                            .join('\n\n');
+                        console.log(`[Generate Draft Action] Loaded ${bot.policyConfig.policies.length} policies for context.`);
+                    }
+                }
+            } catch (err) {
+                console.warn('[Generate Draft Action] Failed to load Bot/KB context:', err);
+            }
+        }
+
+        const result = await generateDraftFlow({
+            sender,
+            senderEmail,
+            subject,
+            emailBody,
+            knowledgeBase,
+            intent,
+            instructions: botInstructions
+        });
+
+        // 3. Save to cache (non-blocking)
+        saveGeneratedDraft(emailId, session.user.id!, result).catch(err => {
+            console.error('[Generate Draft Action] Failed to save draft to cache:', err);
+        });
+
+        console.log('[Generate Draft Action] Draft generated successfully');
+        return result;
+    } catch (error) {
+        console.error("Generate Draft Action Error:", error);
+
+        // Return fallback instead of throwing to prevent UI crashes
+        return {
+            draft: `Dear ${sender},\n\nThank you for your email. I've received your message and will respond shortly.\n\nBest regards`,
+            tone: "professional"
+        };
+    }
+}
+
+/**
+ * Send an email using the Gmail API.
+ * @param to recipient email
+ * @param subject email subject
+ * @param body email body
+ * @returns Gmail API response
+ */
+export async function sendEmailAction(to: string, subject: string, body: string) {
+    const session = await auth() as any;
+
+    if (!session || !session.accessToken) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const { sendEmail } = await import('@/lib/gmail');
+        const result = await sendEmail(session.accessToken, to, subject, body);
+        return result;
+    } catch (error) {
+        console.error("Send Email Action Error:", error);
+        throw new Error("Failed to send email");
+    }
+}
+
+export async function fetchSentEmailsAction() {
+    const session = await auth() as any;
+
+    if (!session || !session.accessToken) {
+        return null;
+    }
+
+    try {
+        const { getSentEmails } = await import('@/lib/gmail');
+        const emails = await getSentEmails(session.accessToken);
+        return emails;
+    } catch (error) {
+        console.error("Fetch Sent Emails Action Error:", error);
+        throw new Error("Failed to fetch sent emails");
+    }
+}
+
+export async function fetchTrashEmailsAction() {
+    const session = await auth() as any;
+
+    if (!session || !session.accessToken) {
+        return { emails: [], error: 'Unauthorized', message: 'Session expired.' };
+    }
+
+    try {
+        const { getTrashEmails } = await import('@/lib/gmail');
+        const emails = await getTrashEmails(session.accessToken);
+        return { emails };
+    } catch (error: any) {
+        console.error("Fetch Trash Emails Action Error:", error);
+        if (error.message?.includes('401') || error.message?.includes('invalid_grant')) {
+            return { emails: [], error: 'Unauthorized', message: 'Gmail access revoked or expired.' };
+        }
+        throw new Error("Failed to fetch trash emails");
+    }
+}
+
+
+export async function searchEmailsAction(query: string) {
+    const session = await auth() as any;
+
+    if (!session || !session.accessToken) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const { searchEmails } = await import('@/lib/gmail');
+        const results = await searchEmails(session.accessToken, query);
+        return results;
+    } catch (error) {
+        console.error("Search Emails Action Error:", error);
+        throw new Error("Failed to search emails");
+    }
+}
+
+export async function fetchEmailBodyAction(messageId: string) {
+    const session = await auth() as any;
+
+    if (!session || !session.accessToken) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const { getEmailBody } = await import('@/lib/gmail');
+        const body = await getEmailBody(session.accessToken, messageId);
+        return body;
+    } catch (error) {
+        console.error("Fetch Email Body Action Error:", error);
+        throw new Error("Failed to fetch email body");
+    }
+}
+
+export async function applyLabelAction(messageId: string, labelName: string) {
+    const session = await auth() as any;
+
+    if (!session || !session.accessToken) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const { getOrCreateLabel, modifyMessage } = await import('@/lib/gmail');
+        const labelId = await getOrCreateLabel(session.accessToken, labelName);
+        const result = await modifyMessage(session.accessToken, messageId, [labelId], []);
+        return result;
+    } catch (error) {
+        console.error("Apply Label Action Error:", error);
+        throw new Error("Failed to apply label");
+    }
+}
+
+export async function markAsReadAction(messageId: string) {
+    const session = await auth() as any;
+
+    if (!session || !session.accessToken) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const { modifyMessage } = await import('@/lib/gmail');
+        // Removing UNREAD label marks it as read
+        const result = await modifyMessage(session.accessToken, messageId, [], ['UNREAD']);
+        return result;
+    } catch (error) {
+        console.error("Mark As Read Action Error:", error);
+        throw new Error("Failed to mark email as read");
+    }
+}
+
+export async function forwardEmailAction(
+    messageId: string,
+    to: string,
+    subject: string,
+    senderName: string,
+    originalDate: string
+) {
+    const session = await auth() as any;
+
+    if (!session || !session.accessToken) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const { getEmailBody, sendEmail } = await import('@/lib/gmail');
+        const originalBody = await getEmailBody(session.accessToken, messageId);
+
+        const forwardedSubject = `Fwd: ${subject}`;
+        const forwardedBody = `
+---------- Forwarded message ---------
+From: ${senderName}
+Date: ${new Date(originalDate).toLocaleString()}
+Subject: ${subject}
+
+${originalBody}
+`;
+
+        const result = await sendEmail(session.accessToken, to, forwardedSubject, forwardedBody);
+        return result;
+    } catch (error) {
+        console.error("Forward Email Action Error:", error);
+        throw new Error("Failed to forward email");
+    }
+}
+
+export async function getDraftStatsAction() {
+    const session = await auth() as any;
+
+    if (!session || !session.accessToken || !session.user?.id) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const { createAdminClient } = await import('@/lib/supabase/admin');
+        const supabase = createAdminClient();
+        const userId = session.user.id;
+
+        // 1. Get Urgent Emails from last 7 days
+        // We'll calculate a simple distribution based on all rated emails for the user
+        const { data: ratingsData, error: ratingsError } = await supabase
+            .from('email_ratings')
+            .select('urgency_score, created_at')
+            .eq('user_id', userId)
+            // .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Optional time filter
+            ;
+
+        if (ratingsError) throw ratingsError;
+
+        // Aggregate urgency distribution
+        const urgencyDistribution = { Low: 0, Medium: 0, High: 0, Critical: 0 };
+        let totalUrgency = 0;
+        let ratedCount = 0;
+
+        // Group by day for the volume chart
+        const dailyVolumes: Record<string, number> = {};
+
+        // Initialize last 7 days including today
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            dailyVolumes[days[d.getDay()]] = 0;
+        }
+
+        if (ratingsData && ratingsData.length > 0) {
+            ratingsData.forEach(rating => {
+                const score = rating.urgency_score;
+                totalUrgency += score;
+                ratedCount++;
+
+                if (score <= 3) urgencyDistribution.Low++;
+                else if (score <= 6) urgencyDistribution.Medium++;
+                else if (score <= 8) urgencyDistribution.High++;
+                else urgencyDistribution.Critical++;
+
+                const dayName = days[new Date(rating.created_at).getDay()];
+                if (dailyVolumes[dayName] !== undefined) {
+                    dailyVolumes[dayName]++;
+                }
+            });
+        }
+
+        const avgUrgency = ratedCount > 0 ? (totalUrgency / ratedCount).toFixed(1) : "0.0";
+
+        // Convert daily volumes to array format expected by Recharts
+        const dailyDataArray = Object.keys(dailyVolumes).map(day => ({
+            day,
+            count: dailyVolumes[day]
+        }));
+
+        // Convert urgency to array
+        const urgencyDataArray = [
+            { name: 'Low', value: urgencyDistribution.Low },
+            { name: 'Medium', value: urgencyDistribution.Medium },
+            { name: 'High', value: urgencyDistribution.High },
+            { name: 'Critical', value: urgencyDistribution.Critical },
+        ].filter(d => d.value > 0); // Remove empty categories
+
+        // If no data, provide a fallback ring so pie chart doesn't crash
+        if (urgencyDataArray.length === 0) {
+            urgencyDataArray.push({ name: 'No Data', value: 1 });
+        }
+
+        // 2. Count generated drafts
+        const { count: draftsCount, error: draftsError } = await supabase
+            .from('generated_drafts')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', userId);
+
+        if (draftsError) console.warn("Failed to count drafts", draftsError);
+
+        // 3. Get total unread count from Gmail
+        const { getUnreadCount } = await import('@/lib/gmail');
+        let unreadCount = 0;
+        try {
+            unreadCount = await getUnreadCount(session.accessToken, '');
+        } catch (e) {
+            console.warn("Failed to get Gmail unread count", e);
+        }
+
+        return {
+            dailyData: dailyDataArray,
+            urgencyData: urgencyDataArray,
+            metrics: {
+                avgUrgency,
+                draftsCount: draftsCount || 0,
+                unreadCount
+            }
+        };
+
+    } catch (error) {
+        console.error("Get Draft Stats Action Error:", error);
+        throw new Error("Failed to fetch draft stats");
+    }
+}

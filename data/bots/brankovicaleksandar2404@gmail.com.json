@@ -1,0 +1,113 @@
+[
+  {
+    "name": "Sales Inquiry Handler",
+    "description": "Auto-reply to emails about pricing, quotes, or demos with calendar link",
+    "enabled": false,
+    "isPremium": true,
+    "trigger": {
+      "type": "email_contains_keyword",
+      "config": {
+        "keywords": [
+          "pricing",
+          "quote",
+          "demo",
+          "trial",
+          "sales"
+        ],
+        "searchIn": "both"
+      }
+    },
+    "conditions": [
+      {
+        "type": "email_is_unread",
+        "config": {}
+      },
+      {
+        "type": "urgency_score_gte",
+        "config": {
+          "threshold": 6
+        }
+      }
+    ],
+    "actions": [
+      {
+        "type": "reply_with_template",
+        "config": {
+          "templateId": "sales_inquiry",
+          "variables": {
+            "calendarLink": "https://cal.com/yourname"
+          }
+        }
+      },
+      {
+        "type": "notify_user",
+        "config": {
+          "message": "Sales inquiry from {{sender}} - auto-replied with calendar link",
+          "priority": "high"
+        }
+      },
+      {
+        "type": "apply_label",
+        "config": {
+          "labelName": "Sales/Auto-Replied",
+          "createIfMissing": true
+        }
+      }
+    ],
+    "safety": {
+      "autoSendEnabled": true,
+      "maxSendsPerDay": 20,
+      "cooldownMinutes": 120,
+      "loopPrevention": true
+    },
+    "stats": {
+      "totalExecutions": 0,
+      "successCount": 0,
+      "failureCount": 0,
+      "emailsSent": 0,
+      "draftsCreated": 0
+    },
+    "id": "c1bcb273-39f4-47c3-906e-4fcf0d2c38ec",
+    "userId": "brankovicaleksandar2404@gmail.com",
+    "createdAt": "2026-01-30T20:27:54.416Z",
+    "updatedAt": "2026-01-30T20:27:54.416Z"
+  },
+  {
+    "name": "sleep responder",
+    "description": "",
+    "enabled": true,
+    "isPremium": false,
+    "trigger": {
+      "type": "time_based",
+      "config": {
+        "businessHoursOnly": true
+      }
+    },
+    "conditions": [],
+    "actions": [
+      {
+        "type": "auto_send_email",
+        "config": {
+          "tone": "professional"
+        }
+      }
+    ],
+    "safety": {
+      "autoSendEnabled": true,
+      "maxSendsPerDay": 50,
+      "cooldownMinutes": 157,
+      "loopPrevention": true
+    },
+    "stats": {
+      "totalExecutions": 0,
+      "successCount": 0,
+      "failureCount": 0,
+      "emailsSent": 0,
+      "draftsCreated": 0
+    },
+    "id": "1174e504-fb94-4e8e-805c-6be528d5e273",
+    "userId": "brankovicaleksandar2404@gmail.com",
+    "createdAt": "2026-01-31T13:22:22.375Z",
+    "updatedAt": "2026-01-31T13:22:26.107Z"
+  }
+]
