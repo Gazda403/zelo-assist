@@ -136,9 +136,41 @@ export default function HomePage() {
         >
             <div className="flex flex-col lg:flex-row gap-6 h-full">
                 
+                {/* Bot Sidebar (Desktop) */}
+                {!selectedEmailId && (
+                    <aside className="hidden lg:block w-64 xl:w-72 shrink-0">
+                        <WelcomeBriefing 
+                            variant="sidebar"
+                            userName={userName}
+                            analyzedCount={emails.length}
+                            urgentCount={urgentEmailsCount}
+                            draftsCount={2}
+                            onSummarizeUrgent={() => {
+                                alert("Please open the AI Assistant bubble in the bottom right to begin summarizing!");
+                            }}
+                            onReviewDrafts={() => {
+                                alert("Draft review panel coming soon!");
+                            }}
+                        />
+                    </aside>
+                )}
+
                 {/* Main Content Column */}
                 <div className={`space-y-6 transition-all duration-300 flex-1`}>
                     
+                    {/* Bot Banner (Mobile/Tablet only) */}
+                    {!selectedEmailId && (
+                        <div className="lg:hidden">
+                            <WelcomeBriefing 
+                                variant="banner"
+                                userName={userName}
+                                analyzedCount={emails.length}
+                                urgentCount={urgentEmailsCount}
+                                draftsCount={2}
+                            />
+                        </div>
+                    )}
+
                     {/* Stats Row */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <motion.div
