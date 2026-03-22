@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowRight, X } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { BotEntity } from './BotEntity';
 
 interface WelcomeBriefingProps {
     userName: string;
@@ -54,16 +55,10 @@ export function WelcomeBriefing({
                 </button>
 
                 {/* Bot Avatar Section */}
-                <div className="relative shrink-0">
-                    <div className={cn(
-                        "rounded-2xl bg-gradient-to-tr from-accent to-purple-500 flex items-center justify-center shadow-lg shadow-accent/20 relative z-10",
-                        isSidebar ? "w-12 h-12" : "w-16 h-16"
-                    )}>
-                        <Sparkles className={cn("text-white animate-pulse", isSidebar ? "w-6 h-6" : "w-8 h-8")} />
-                    </div>
-                    {/* Ping animation behind avatar */}
-                    <div className="absolute inset-0 bg-accent rounded-2xl animate-ping opacity-20" />
-                </div>
+                <BotEntity className={cn(
+                    "relative shrink-0",
+                    isSidebar ? "w-12 h-12" : "w-16 h-16 sm:w-20 sm:h-20"
+                )} />
 
                 {/* Content Section */}
                 <div className="flex-1 relative z-10">
