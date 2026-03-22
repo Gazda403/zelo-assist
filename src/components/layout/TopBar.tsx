@@ -3,13 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Inbox, FileEdit, Send, Trash2, Moon, Sun, Aperture, Bot, Bell, User, LogOut, Settings, Users, ChevronDown, CheckCircle2, Calendar } from "lucide-react";
+import { Inbox, FileEdit, Send, Trash2, Moon, Sun, Aperture, Bot, Bell, User, LogOut, Settings, Users, ChevronDown, CheckCircle2, Calendar, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { SubscriptionBanner } from "@/components/dashboard/SubscriptionBanner";
 import { useReminders } from "../providers/RemindersProvider";
+import { Sidebar } from "./Sidebar";
 
 const NAV_ITEMS = [
     { label: "Inbox", icon: Inbox, href: "/" },
@@ -71,7 +72,10 @@ export function TopBar() {
         ? session.user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
         : session?.user?.email?.slice(0, 2).toUpperCase() || "GS";
 
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
     return (
+        <>
         <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-xl supports-[backdrop-filter]:bg-card/50">
             {/* Subscription banner strip - only for authenticated users not on landing page */}
             {status === "authenticated" && pathname !== "/" && (
@@ -79,79 +83,22 @@ export function TopBar() {
                     <SubscriptionBanner />
                 </div>
             )}
-            <div className="mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2 max-w-7xl">
-                {/* Logo Area */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-accent flex items-center justify-center text-primary-foreground shadow-lg shadow-accent/20">
-                        <Aperture className="w-4 h-4 sm:w-5 sm:h-5" />
-                    </div>
-                    <div className="hidden md:block text-left">
-                        <h1 className="font-serif font-bold text-lg leading-none">Zelo Assist</h1>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest leading-none mt-0.5">Gmail Assistant</p>
+            <div className="mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 w-full">
+                
+                {/* Mobile Menu Button */}
+                <button 
+                    onClick={() => setIsMobileMenuOpen(true)}
+                    className="lg:hidden p-2 -ml-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-colors"
+                >
+                    <Menu className="w-6 h-6" />
+                </button>
+
+                {/* Search Area */}
+                <div className="flex-1 max-w-2xl bg-secondary/30 rounded-2xl border border-transparent hover:border-accent/10 transition-colors">
+                    <div className="p-2 text-xs text-muted-foreground ml-2">
+                        Search workspace...
                     </div>
                 </div>
-
-                {/* Navigation - Centered & Floating style */}
-                <nav className="flex items-center gap-0.5 sm:gap-1">
-                    {NAV_ITEMS.map((item) => {
-                        const isActive = pathname === item.href;
-
-                        return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className="relative"
-                            >
-                                <motion.div
-                                    className={cn(
-                                        "flex items-center justify-center h-9 sm:h-10 px-2 sm:px-3 rounded-full cursor-pointer transition-all duration-300 overflow-hidden",
-                                        isActive
-                                            ? "bg-accent/10 text-accent font-medium shadow-sm"
-                                            : "hover:bg-accent/5 text-muted-foreground hover:text-foreground"
-                                    )}
-                                    // Make button expandable on hover to reveal text
-                                    initial="collapsed"
-                                    whileHover="expanded"
-                                    animate={isActive ? "expanded" : "collapsed"}
-                                    variants={{
-                                        collapsed: { width: "auto" }, // Let it be auto but effectively just icon width + padding
-                                        expanded: { width: "auto" }
-                                    }}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <motion.div
-                                            layout
-                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                                        >
-                                            <item.icon className={cn("w-5 h-5", isActive && "fill-current opacity-20")} />
-                                        </motion.div>
-
-                                        <div className="hidden sm:block">
-                                        <motion.span
-                                            variants={{
-                                                collapsed: { opacity: 0, width: 0 },
-                                                expanded: { opacity: 1, width: "auto" }
-                                            }}
-                                            transition={{ duration: 0.2 }}
-                                            className="whitespace-nowrap overflow-hidden text-sm block"
-                                        >
-                                            {item.label}
-                                        </motion.span>
-                                        </div>
-                                    </div>
-
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="nav-pill"
-                                            className="absolute inset-0 rounded-full border-2 border-accent/20 pointer-events-none"
-                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                        />
-                                    )}
-                                </motion.div>
-                            </Link>
-                        );
-                    })}
-                </nav>
 
                 {/* Actions / Theme Toggle */}
                 <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
@@ -324,5 +271,30 @@ export function TopBar() {
                 </div>
             </div>
         </header>
+
+        {/* Mobile Sidebar Overlay */}
+        <AnimatePresence>
+            {isMobileMenuOpen && (
+                <>
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] lg:hidden"
+                    />
+                    <motion.div 
+                        initial={{ x: "-100%" }}
+                        animate={{ x: 0 }}
+                        exit={{ x: "-100%" }}
+                        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                        className="fixed inset-y-0 left-0 w-80 bg-background z-[80] lg:hidden shadow-2xl"
+                    >
+                        <Sidebar mobile onClose={() => setIsMobileMenuOpen(false)} />
+                    </motion.div>
+                </>
+            )}
+        </AnimatePresence>
+        </>
     );
 }

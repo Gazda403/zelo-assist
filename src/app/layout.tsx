@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { React19Polyfill } from "@/components/React19Polyfill";
 import { TopBar } from "@/components/layout/TopBar";
 import { Providers } from "@/components/providers";
+import { Sidebar } from "@/components/layout/Sidebar";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -31,10 +32,15 @@ export default function RootLayout({
       >
         <React19Polyfill />
         <Providers>
-          <TopBar />
-          <main className="flex-1 flex flex-col">
-            {children}
-          </main>
+          <div className="flex h-screen overflow-hidden bg-background">
+            <Sidebar />
+            <div className="flex-1 flex flex-col overflow-hidden relative">
+              <TopBar />
+              <main className="flex-1 overflow-y-auto scrollbar-hide">
+                {children}
+              </main>
+            </div>
+          </div>
         </Providers>
       </body>
     </html>
