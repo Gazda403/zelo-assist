@@ -30,6 +30,7 @@ export function TopBar() {
     const userMenuRef = useRef<HTMLDivElement>(null);
     const notificationsRef = useRef<HTMLDivElement>(null);
     const [imgError, setImgError] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // Initialize theme based on document class or local storage
     useEffect(() => {
@@ -71,9 +72,6 @@ export function TopBar() {
     const userInitials = session?.user?.name
         ? session.user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
         : session?.user?.email?.slice(0, 2).toUpperCase() || "GS";
-
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
     return (
         <>
         <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-xl supports-[backdrop-filter]:bg-card/50">
