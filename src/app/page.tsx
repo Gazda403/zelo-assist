@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { fetchEmailsAction } from "@/app/actions/gmail";
 import { LandingPage } from "@/components/landing/LandingPage";
 import { EmailDetailPanel } from "@/components/email/EmailDetailPanel";
+import { WelcomeBriefing } from "@/components/dashboard/WelcomeBriefing";
 
 // Using strict types locally if not exported, or just infer
 interface Email {
@@ -125,6 +126,9 @@ export default function HomePage() {
     }
 
     // Authenticated View
+    const userName = session?.user?.name?.split(' ')[0] || "";
+    const urgentEmailsCount = emails.filter(e => e.urgencyScore >= 8).length;
+
     return (
         <AppShell
             title="Inbox"
@@ -133,6 +137,22 @@ export default function HomePage() {
             <div className="flex flex-col lg:flex-row gap-6 h-full">
                 {/* Left Column: Stats and Email List */}
                 <div className={`space-y-6 transition-all duration-300 ${selectedEmailId ? 'hidden lg:block lg:w-1/2' : 'w-full'}`}>
+                    
+                    {!selectedEmailId && (
+                        <WelcomeBriefing 
+                            userName={userName}
+                            analyzedCount={emails.length}
+                            urgentCount={urgentEmailsCount}
+                            draftsCount={2}
+                            onSummarizeUrgent={() => {
+                                alert("Please open the AI Assistant bubble in the bottom right to begin summarizing!");
+                            }}
+                            onReviewDrafts={() => {
+                                alert("Draft review panel coming soon!");
+                            }}
+                        />
+                    )}
+
                     {/* Stats Row */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <motion.div
