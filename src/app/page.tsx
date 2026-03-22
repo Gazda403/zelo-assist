@@ -134,11 +134,11 @@ export default function HomePage() {
             title="Inbox"
             onSelectEmail={setSelectedEmailId}
         >
-            <div className="flex flex-col lg:flex-row gap-8 xl:gap-12 h-full justify-center">
+            <div className="relative max-w-4xl mx-auto h-full px-4 sm:px-0">
                 
-                {/* Bot Sidebar (Desktop) */}
+                {/* Bot Sidebar (Desktop - Absolute Position to keep content centered) */}
                 {!selectedEmailId && (
-                    <aside className="hidden lg:block w-72 xl:w-80 shrink-0">
+                    <aside className="hidden lg:block lg:absolute lg:right-full lg:mr-12 xl:mr-24 top-0 w-72 xl:w-80 shrink-0">
                         <WelcomeBriefing 
                             variant="sidebar"
                             userName={userName}
@@ -155,8 +155,8 @@ export default function HomePage() {
                     </aside>
                 )}
 
-                {/* Main Content Column */}
-                <div className="space-y-6 transition-all duration-300 flex-1 max-w-4xl">
+                {/* Main Content Column (Perfectly Centered) */}
+                <div className="space-y-6 transition-all duration-300 w-full mb-20">
                     
                     {/* Bot Banner (Mobile/Tablet only) */}
                     {!selectedEmailId && (
