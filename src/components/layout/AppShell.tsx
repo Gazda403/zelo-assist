@@ -23,7 +23,7 @@ export function AppShell({
                     />
                 )}
                 <main className="flex-1 overflow-y-auto p-3 md:p-6 scrollbar-hide">
-                    <div className="max-w-7xl mx-auto h-full">
+                    <div className="max-w-[1600px] mx-auto h-full">
                         {children}
                     </div>
                 </main>
