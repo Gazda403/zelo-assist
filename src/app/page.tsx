@@ -135,11 +135,12 @@ export default function HomePage() {
             onSelectEmail={setSelectedEmailId}
         >
             <div className="flex flex-col lg:flex-row gap-6 h-full">
-                {/* Left Column: Stats and Email List */}
-                <div className={`space-y-6 transition-all duration-300 ${selectedEmailId ? 'hidden lg:block lg:w-1/2' : 'w-full'}`}>
-                    
-                    {!selectedEmailId && (
+                
+                {/* Bot Sidebar (Desktop) */}
+                {!selectedEmailId && (
+                    <aside className="hidden lg:block w-64 xl:w-72 shrink-0">
                         <WelcomeBriefing 
+                            variant="sidebar"
                             userName={userName}
                             analyzedCount={emails.length}
                             urgentCount={urgentEmailsCount}
@@ -151,6 +152,23 @@ export default function HomePage() {
                                 alert("Draft review panel coming soon!");
                             }}
                         />
+                    </aside>
+                )}
+
+                {/* Main Content Column */}
+                <div className={`space-y-6 transition-all duration-300 flex-1`}>
+                    
+                    {/* Bot Banner (Mobile/Tablet only) */}
+                    {!selectedEmailId && (
+                        <div className="lg:hidden">
+                            <WelcomeBriefing 
+                                variant="banner"
+                                userName={userName}
+                                analyzedCount={emails.length}
+                                urgentCount={urgentEmailsCount}
+                                draftsCount={2}
+                            />
+                        </div>
                     )}
 
                     {/* Stats Row */}
