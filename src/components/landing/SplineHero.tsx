@@ -50,7 +50,7 @@ export default React.memo(function SplineHero({
     }, [scene]);
 
     return (
-        <div className={`relative w-full h-[500px] lg:h-[600px] flex items-center justify-center pointer-events-auto ${className}`}>
+        <div className={`relative w-full h-[500px] lg:h-[600px] items-center justify-center pointer-events-auto hidden lg:flex ${className}`}>
             <canvas 
                 ref={canvasRef} 
                 style={{ 

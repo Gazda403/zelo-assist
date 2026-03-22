@@ -84,7 +84,7 @@ export default function BenefitsSection() {
                                 <Clock className="w-4 h-4" />
                                 <span>Time Saved</span>
                             </div>
-                            <h3 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-4">
+                            <h3 className="text-4xl sm:text-5xl md:text-4xl font-serif font-bold text-slate-900 mb-4">
                                 Rescue 10 hours a week from inbox triage.
                             </h3>
                             <p className="text-lg text-slate-600 leading-relaxed">
@@ -101,7 +101,7 @@ export default function BenefitsSection() {
                             />
                             {/* Abstract visual background for the image */}
                             <motion.div style={{ y: y1 }} className="absolute inset-0 bg-slate-100 rounded-3xl border border-white flex items-center justify-center overflow-hidden opacity-50 z-0">
-                                <div className="text-[12rem] font-serif font-black text-primary/10 -tracking-[0.1em] pointer-events-none">
+                                <div className="text-[14rem] sm:text-[16rem] md:text-[12rem] font-serif font-black text-primary/10 -tracking-[0.1em] pointer-events-none">
                                     10h
                                 </div>
                             </motion.div>

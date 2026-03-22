@@ -130,11 +130,11 @@ export default function HomePage() {
             title="Inbox"
             onSelectEmail={setSelectedEmailId}
         >
-            <div className="flex gap-6 h-full">
+            <div className="flex flex-col lg:flex-row gap-6 h-full">
                 {/* Left Column: Stats and Email List */}
-                <div className={`space-y-6 transition-all duration-300 ${selectedEmailId ? 'w-1/2' : 'w-full'}`}>
+                <div className={`space-y-6 transition-all duration-300 ${selectedEmailId ? 'hidden lg:block lg:w-1/2' : 'w-full'}`}>
                     {/* Stats Row */}
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -208,7 +208,7 @@ export default function HomePage() {
 
                     {/* Email List */}
                     <div>
-                        <div className="flex items-center justify-between mb-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4 sm:gap-0">
                             <div className="flex flex-col gap-1">
                                 <h2 className="text-lg font-serif font-bold dark:text-white">Your Emails</h2>
                                 <div className="text-sm text-muted-foreground">
@@ -216,7 +216,7 @@ export default function HomePage() {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-1.5 bg-white/60 p-1.5 rounded-xl border border-white/60 dark:bg-zinc-800/80 dark:border-white/10 backdrop-blur-md shadow-sm">
+                            <div className="flex items-center gap-1.5 bg-white/60 p-1.5 rounded-xl border border-white/60 dark:bg-zinc-800/80 dark:border-white/10 backdrop-blur-md shadow-sm w-full sm:w-auto overflow-x-auto">
                                 {(['urgency', 'date', 'alphabetical'] as const).map(s => (
                                     <button
                                         key={s}
@@ -282,7 +282,7 @@ export default function HomePage() {
                     const selectedEmail = emails.find(e => e.id === selectedEmailId);
                     if (!selectedEmail) return null;
                     return (
-                        <div className="w-1/2 h-full">
+                        <div className="w-full lg:w-1/2 h-full">
                             <EmailDetailPanel
                                 emailId={selectedEmail.id}
                                 sender={selectedEmail.sender}

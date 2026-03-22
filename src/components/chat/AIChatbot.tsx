@@ -13,8 +13,14 @@ export function AIChatbot() {
     ]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null); // State for error string
+    const [error, setError] = useState<string | null>(null);
     const [isChatOpen, setIsChatOpen] = useState(false);
+
+    const SUGGESTIONS = [
+        "Summarize my recent emails",
+        "How many unread emails do I have?",
+        "Find emails from GitHub",
+    ];
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -49,11 +55,30 @@ export function AIChatbot() {
         } catch (err) {
             console.error("Failed to get response:", err);
             setError("Failed to get response. Please try again.");
-            // Remove the user message if it failed or just show error? 
-            // Better to show error message in chat or as a toast. 
-            // Integrating error into chat flow as reference app did or separate error state.
-            // Reference app added a message. Let's do that for consistency if separate error state is tricky.
-            // But existing UI has an error block. Let's use that.
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSuggestionSend = async (suggestionText: string) => {
+        if (isLoading) return;
+
+        const userMessage: Message = {
+            id: crypto.randomUUID(),
+            role: "user",
+            content: suggestionText,
+        };
+
+        setMessages((prev) => [...prev, userMessage]);
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const aiMessage = await getAiResponse(suggestionText);
+            setMessages((prev) => [...prev, aiMessage]);
+        } catch (err) {
+            console.error("Failed to get response:", err);
+            setError("Failed to get response. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -166,6 +191,29 @@ export function AIChatbot() {
                                     </button>
                                 </motion.div>
                             )}
+
+                            {messages.length === 1 && !isLoading && (
+                                <div className="flex flex-col gap-2 mt-4">
+                                    <p className="text-xs text-muted-foreground ml-2">Suggestions:</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {SUGGESTIONS.map((suggestion, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => {
+                                                    setInput(suggestion);
+                                                    // optionally we could auto-send, but let's just populate input for safety, 
+                                                    // or actually, sending immediately is better UX:
+                                                    handleSuggestionSend(suggestion);
+                                                }}
+                                                className="text-xs px-3 py-1.5 bg-accent/10 hover:bg-accent/20 text-accent-foreground rounded-full transition-colors border border-accent/20 text-left"
+                                            >
+                                                {suggestion}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             <div ref={messagesEndRef} />
                         </div>
 

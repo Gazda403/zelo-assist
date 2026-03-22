@@ -55,7 +55,7 @@ export function BotListSidebar({
     );
 
     return (
-        <div className="w-[420px] flex-shrink-0 flex flex-col gap-4 h-full bg-white/40 dark:bg-zinc-900/40 backdrop-blur-2xl border-r border-violet-100/50 dark:border-white/5 shadow-[4px_0_24px_rgba(0,0,0,0.02)] p-4">
+        <div className="w-full h-full flex flex-col gap-4 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-2xl border-r border-violet-100/50 dark:border-white/5 shadow-[4px_0_24px_rgba(0,0,0,0.02)] p-4">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold font-serif flex items-center text-gray-900">

@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Settings, Activity, Info, Trash2, Power } from 'lucide-react';
+import { Settings, Activity, Info, Trash2, Power, ArrowLeft } from 'lucide-react';
 import type { EmailBot, AcknowledgmentTemplate } from '@/lib/bots/types';
 import { deleteBotAction, toggleBotAction, acceptBotTermsAction } from '@/app/actions/bots';
 import { BotExecutionLog } from './BotExecutionLog';
@@ -29,11 +29,12 @@ interface BotDetailViewProps {
     bot: EmailBot;
     onBotUpdated: (bot: EmailBot) => void;
     onBotDeleted: (botId: string) => void;
+    onBack?: () => void;
 }
 
 type Tab = 'overview' | 'followups' | 'kb' | 'logs' | 'settings';
 
-export function BotDetailView({ bot, onBotUpdated, onBotDeleted }: BotDetailViewProps) {
+export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDetailViewProps) {
     const [activeTab, setActiveTab] = useState<Tab>('overview');
     const [isDeleting, setIsDeleting] = useState(false);
     const [isToggling, setIsToggling] = useState(false);
@@ -132,7 +133,12 @@ export function BotDetailView({ bot, onBotUpdated, onBotDeleted }: BotDetailView
                 <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                            <h1 className="text-3xl font-bold font-serif">{bot.name}</h1>
+                            {onBack && (
+                                <button onClick={onBack} className="lg:hidden p-2 -ml-2 text-gray-500 hover:text-gray-900 transition-colors">
+                                    <ArrowLeft className="w-5 h-5" />
+                                </button>
+                            )}
+                            <h1 className="text-2xl sm:text-3xl font-bold font-serif">{bot.name}</h1>
                             <button
                                 onClick={handleToggle}
                                 disabled={isToggling}

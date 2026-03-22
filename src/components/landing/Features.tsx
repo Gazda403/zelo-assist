@@ -52,7 +52,7 @@ const Features: React.FC = () => {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="flex overflow-x-auto pb-8 -mx-4 px-4 snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:overflow-visible md:snap-none md:pb-0 md:mx-0 md:px-0 hide-scrollbar">
                     {features.map((feature, index) => (
                         <motion.div
                             key={index}
@@ -61,7 +61,7 @@ const Features: React.FC = () => {
                             viewport={{ once: true, margin: "-50px" }}
                             transition={{ delay: index * 0.1, duration: 0.5 }}
                             whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                            className="p-8 rounded-3xl bg-[#FAFAF9] border border-gray-100 hover:shadow-soft transition-all duration-300 group"
+                            className="flex-none w-[85vw] sm:w-[320px] md:w-auto snap-center mr-4 md:mr-0 p-8 rounded-3xl bg-[#FAFAF9] border border-gray-100 hover:shadow-soft transition-all duration-300 group"
                         >
                             <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center mb-6 shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-300">
                                 {feature.icon}

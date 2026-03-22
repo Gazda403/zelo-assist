@@ -59,10 +59,10 @@ function DraftsPageContent() {
             title="Drafts"
             onSelectEmail={setSelectedEmailId}
         >
-            <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-50/50 dark:bg-zinc-950/50">
+            <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] overflow-hidden bg-gray-50/50 dark:bg-zinc-950/50">
 
-                {/* Left Sidebar: Email List */}
-                <div className="w-1/4 min-w-[300px] h-full">
+                {/* Left Sidebar: Email List — hidden on mobile when email is selected */}
+                <div className={`lg:w-1/4 lg:min-w-[300px] h-full ${selectedEmailId ? 'hidden lg:block' : 'block w-full'}`}>
                     {isLoading ? (
                         <div className="h-full flex items-center justify-center text-gray-400">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
@@ -76,13 +76,22 @@ function DraftsPageContent() {
                     )}
                 </div>
 
-                {/* Center: Draft Workspace */}
-                <div className="w-1/2 min-w-[500px] h-full border-r border-violet-100 relative">
+                {/* Center: Draft Workspace — full width on mobile when email selected */}
+                <div className={`lg:w-1/2 h-full border-r border-violet-100 relative ${selectedEmailId ? 'block w-full' : 'hidden lg:block'}`}>
+                    {/* Mobile back button */}
+                    {selectedEmailId && (
+                        <button
+                            onClick={() => setSelectedEmailId(null)}
+                            className="lg:hidden flex items-center gap-2 p-3 text-sm text-gray-600 hover:text-gray-900 border-b border-gray-100 w-full"
+                        >
+                            ← Back to emails
+                        </button>
+                    )}
                     <DraftWorkspace selectedEmail={selectedEmail} />
                 </div>
 
-                {/* Right Sidebar: Stats */}
-                <div className="w-1/4 min-w-[300px] h-full">
+                {/* Right Sidebar: Stats — hidden on mobile */}
+                <div className="hidden lg:block lg:w-1/4 lg:min-w-[300px] h-full">
                     <StatsSidebar emails={emails} />
                 </div>
 

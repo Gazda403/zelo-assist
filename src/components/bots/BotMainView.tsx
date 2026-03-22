@@ -18,6 +18,7 @@ interface BotMainViewProps {
     onBotUpdated: (bot: EmailBot) => void;
     onBotDeleted: (botId: string) => void;
     onCancelCreate: () => void;
+    onBack?: () => void;
 }
 
 export function BotMainView({
@@ -27,6 +28,7 @@ export function BotMainView({
     onBotUpdated,
     onBotDeleted,
     onCancelCreate,
+    onBack,
 }: BotMainViewProps) {
     // Show wizard when creating
     if (isCreating) {
@@ -48,6 +50,7 @@ export function BotMainView({
                     bot={selectedBot}
                     onBotUpdated={onBotUpdated}
                     onBotDeleted={onBotDeleted}
+                    onBack={onBack}
                 />
             </div>
         );

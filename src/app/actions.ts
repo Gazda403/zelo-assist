@@ -3,10 +3,22 @@
 import { rateEmailFlow } from '@/ai/flows/email-rater';
 import { enhancedChatbotResponse } from '@/ai/flows/use-tools-to-enhance-responses';
 import type { Message } from '@/lib/types';
+import { auth } from '@/auth';
 
 export async function getAiResponse(prompt: string): Promise<Message> {
     try {
-        const aiResponse = await enhancedChatbotResponse({ query: prompt });
+        const session = await auth();
+        const accessToken = (session as any)?.accessToken as string | undefined;
+
+        if (!accessToken) {
+            return {
+                id: crypto.randomUUID(),
+                role: 'assistant',
+                content: "I can't access your emails right now — it looks like your session has expired. Please sign out and sign back in.",
+            };
+        }
+
+        const aiResponse = await enhancedChatbotResponse({ query: prompt, accessToken });
 
         return {
             id: crypto.randomUUID(),
@@ -32,8 +44,6 @@ export async function rateEmailAction(input: RateEmailInput) {
         return result;
     } catch (error) {
         console.error("Error rating email:", error);
-        // Return a fallback or rethrow depending on UI needs
-        // For now returning null so UI can handle it
         return null;
     }
 }

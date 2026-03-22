@@ -124,11 +124,11 @@ export function BotWizard({ onBotCreated, onCancel }: BotWizardProps) {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-6">
+        <div className="max-w-4xl mx-auto p-4 sm:p-6">
             {/* Header */}
-            <div className="mb-8">
-                <div className="flex items-center justify-between mb-6">
-                    <h1 className="text-3xl font-bold font-serif">Create Email Bot</h1>
+            <div className="mb-6 sm:mb-8">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <h1 className="text-2xl sm:text-3xl font-bold font-serif">Create Email Bot</h1>
                     <button
                         onClick={onCancel}
                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -137,8 +137,24 @@ export function BotWizard({ onBotCreated, onCancel }: BotWizardProps) {
                     </button>
                 </div>
 
-                {/* Progress Steps */}
-                <div className="flex items-center gap-2 mb-8">
+                {/* Progress Steps — compact on mobile, full on desktop */}
+                {/* Mobile: simple step indicator */}
+                <div className="sm:hidden mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-semibold text-violet-600">
+                            Step {currentStep + 1} of {STEPS.length} &bull; {STEPS[currentStep].title}
+                        </span>
+                    </div>
+                    <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                            className="h-full bg-violet-600 rounded-full transition-all duration-300"
+                            style={{ width: `${((currentStep + 1) / STEPS.length) * 100}%` }}
+                        />
+                    </div>
+                </div>
+
+                {/* Desktop: full step pills */}
+                <div className="hidden sm:flex items-center gap-2 mb-8">
                     {STEPS.map((step, index) => (
                         <div key={step.id} className="flex items-center flex-1">
                             <div

@@ -79,20 +79,20 @@ export function TopBar() {
                     <SubscriptionBanner />
                 </div>
             )}
-            <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+            <div className="mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2 max-w-7xl">
                 {/* Logo Area */}
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-primary-foreground shadow-lg shadow-accent/20">
-                        <Aperture className="w-5 h-5" />
+                <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-accent flex items-center justify-center text-primary-foreground shadow-lg shadow-accent/20">
+                        <Aperture className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <div className="hidden sm:block text-left">
+                    <div className="hidden md:block text-left">
                         <h1 className="font-serif font-bold text-lg leading-none">Zelo Assist</h1>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-widest leading-none mt-0.5">Gmail Assistant</p>
                     </div>
                 </div>
 
                 {/* Navigation - Centered & Floating style */}
-                <nav className="flex items-center gap-1 sm:gap-2">
+                <nav className="flex items-center gap-0.5 sm:gap-1">
                     {NAV_ITEMS.map((item) => {
                         const isActive = pathname === item.href;
 
@@ -104,7 +104,7 @@ export function TopBar() {
                             >
                                 <motion.div
                                     className={cn(
-                                        "flex items-center justify-center h-10 px-3 rounded-full cursor-pointer transition-all duration-300 overflow-hidden",
+                                        "flex items-center justify-center h-9 sm:h-10 px-2 sm:px-3 rounded-full cursor-pointer transition-all duration-300 overflow-hidden",
                                         isActive
                                             ? "bg-accent/10 text-accent font-medium shadow-sm"
                                             : "hover:bg-accent/5 text-muted-foreground hover:text-foreground"
@@ -126,16 +126,18 @@ export function TopBar() {
                                             <item.icon className={cn("w-5 h-5", isActive && "fill-current opacity-20")} />
                                         </motion.div>
 
+                                        <div className="hidden sm:block">
                                         <motion.span
                                             variants={{
-                                                collapsed: { opacity: 0, width: 0, display: "none" },
-                                                expanded: { opacity: 1, width: "auto", display: "block" }
+                                                collapsed: { opacity: 0, width: 0 },
+                                                expanded: { opacity: 1, width: "auto" }
                                             }}
                                             transition={{ duration: 0.2 }}
-                                            className="whitespace-nowrap overflow-hidden text-sm"
+                                            className="whitespace-nowrap overflow-hidden text-sm block"
                                         >
                                             {item.label}
                                         </motion.span>
+                                        </div>
                                     </div>
 
                                     {isActive && (
@@ -152,9 +154,9 @@ export function TopBar() {
                 </nav>
 
                 {/* Actions / Theme Toggle */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
                     {/* Notification Bell */}
-                    <div className="relative" ref={notificationsRef}>
+                    <div className="relative hidden sm:block" ref={notificationsRef}>
                         <button
                             onClick={() => setShowNotifications(!showNotifications)}
                             className="w-9 h-9 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors hover:bg-muted rounded-full relative"

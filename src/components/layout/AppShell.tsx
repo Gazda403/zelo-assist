@@ -22,7 +22,7 @@ export function AppShell({
                         onSelectEmail={onSelectEmail}
                     />
                 )}
-                <main className="flex-1 overflow-y-auto p-6 scrollbar-hide">
+                <main className="flex-1 overflow-y-auto p-3 md:p-6 scrollbar-hide">
                     <div className="max-w-7xl mx-auto h-full">
                         {children}
                     </div>

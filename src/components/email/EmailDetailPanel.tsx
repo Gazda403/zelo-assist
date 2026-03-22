@@ -81,7 +81,7 @@ export function EmailDetailPanel({ emailId, sender, subject, date, snippet, onCl
             className="h-full flex flex-col bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 shadow-2xl overflow-hidden"
         >
             {/* Header */}
-            <div className="p-6 border-b border-gray-100 dark:border-white/10 bg-gradient-to-br from-accent/5 to-transparent dark:bg-zinc-900/40">
+            <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/10 bg-gradient-to-br from-accent/5 to-transparent dark:bg-zinc-900/40">
                 <div className="flex items-center gap-3 mb-4">
                     <button
                         onClick={onClose}
@@ -107,7 +107,7 @@ export function EmailDetailPanel({ emailId, sender, subject, date, snippet, onCl
             </div>
 
             {/* Body */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
                 {loading ? (
                     <div className="flex items-center justify-center h-full">
                         <Loader2 className="w-8 h-8 text-accent animate-spin" />
@@ -122,7 +122,7 @@ export function EmailDetailPanel({ emailId, sender, subject, date, snippet, onCl
             </div>
 
             {/* Action Buttons */}
-            <div className="p-5 border-t border-white/40 dark:border-white/10 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-sm flex gap-4">
+            <div className="p-4 sm:p-5 border-t border-white/40 dark:border-white/10 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-sm flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button
                     onClick={handleAiDraftReply}
                     className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 bg-accent text-white rounded-xl font-semibold hover:bg-accent/90 dark:hover:bg-zinc-700/50 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
