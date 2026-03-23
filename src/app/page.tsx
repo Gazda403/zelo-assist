@@ -145,12 +145,8 @@ export default function HomePage() {
                             analyzedCount={emails.length}
                             urgentCount={urgentEmailsCount}
                             draftsCount={2}
-                            onSummarizeUrgent={() => {
-                                alert("Please open the AI Assistant bubble in the bottom right to begin summarizing!");
-                            }}
-                            onReviewDrafts={() => {
-                                alert("Draft review panel coming soon!");
-                            }}
+                            emailsPayload={emails}
+                            unreadCount={unreadCount}
                         />
                     </aside>
                 )}
@@ -167,6 +163,8 @@ export default function HomePage() {
                                 analyzedCount={emails.length}
                                 urgentCount={urgentEmailsCount}
                                 draftsCount={2}
+                                emailsPayload={emails}
+                                unreadCount={unreadCount}
                             />
                         </div>
                     )}
@@ -334,5 +332,4 @@ export default function HomePage() {
                 })()}
             </div>
         </AppShell>
-    );
-}
+);
