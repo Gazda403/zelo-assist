@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Mail, AlertCircle, X, ArrowRight } from 'lucide-react';
+import { Mail, AlertCircle, X, ArrowRight, Star } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -57,6 +57,7 @@ export function SubscriptionBanner() {
         free: 'Free Trial',
         starter: 'Starter',
         pro: 'Pro',
+        exclusive: 'Exclusive Admin',
     };
 
     const isExpired = status.currentPeriodEnd
@@ -81,24 +82,42 @@ export function SubscriptionBanner() {
                         "relative overflow-hidden p-5 rounded-2xl shadow-2xl backdrop-blur-xl border border-white/40 dark:border-white/10",
                         showWarning 
                             ? "bg-red-500/10 border-red-500/30" 
-                            : "bg-white/70 dark:bg-zinc-900/60"
+                            : status.planType === 'exclusive'
+                                ? "bg-amber-500/10 border-amber-500/30 shadow-amber-500/20"
+                                : "bg-white/70 dark:bg-zinc-900/60"
                     )}>
-                        {/* Background Gradient Accents */}
-                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/20 rounded-full blur-3xl pointer-events-none" />
-                        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+                        {/* Background Graduate Accents */}
+                        {status.planType === 'exclusive' ? (
+                            <>
+                                <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
+                                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none" />
+                            </>
+                        ) : (
+                            <>
+                                <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/20 rounded-full blur-3xl pointer-events-none" />
+                                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+                            </>
+                        )}
 
                         {/* Header */}
                         <div className="flex items-center justify-between mb-4 relative z-10">
                             <div className="flex items-center gap-2">
                                 <div className={cn(
                                     "p-2 rounded-lg",
-                                    showWarning ? "bg-red-500/20 text-red-600" : "bg-accent/10 text-accent"
+                                    showWarning 
+                                        ? "bg-red-500/20 text-red-600" 
+                                        : status.planType === 'exclusive'
+                                            ? "bg-amber-500/20 text-amber-600"
+                                            : "bg-accent/10 text-accent"
                                 )}>
-                                    {showWarning ? <AlertCircle className="w-4 h-4" /> : <Mail className="w-4 h-4" />}
+                                    {showWarning ? <AlertCircle className="w-4 h-4" /> : status.planType === 'exclusive' ? <Star className="w-4 h-4 fill-current" /> : <Mail className="w-4 h-4" />}
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-bold font-serif text-foreground">
-                                        {planLabel[status.planType] ?? 'Unknown'} Plan
+                                    <h4 className={cn(
+                                        "text-sm font-bold font-serif",
+                                        status.planType === 'exclusive' ? "text-amber-700 dark:text-amber-400" : "text-foreground"
+                                    )}>
+                                        {planLabel[status.planType] ?? 'Unknown'} Rank
                                     </h4>
                                     <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">
                                         Usage Insight
@@ -126,7 +145,7 @@ export function SubscriptionBanner() {
                                     transition={{ duration: 1, ease: "easeOut" }}
                                     className={cn(
                                         "h-full rounded-full",
-                                        usagePercentage > 90 ? "bg-red-500" : "bg-accent"
+                                        usagePercentage > 90 ? "bg-red-500" : status.planType === 'exclusive' ? "bg-amber-500" : "bg-accent"
                                     )}
                                 />
                             </div>
@@ -139,6 +158,10 @@ export function SubscriptionBanner() {
                                     <p className="text-[10px] text-red-600 font-medium">
                                         {isCanceled ? 'Subscription canceled' : 'Payment required'}
                                     </p>
+                                ) : status.planType === 'exclusive' ? (
+                                    <p className="text-[10px] text-amber-600 font-bold italic">
+                                        Unlimited Access Granted
+                                    </p>
                                 ) : (
                                     <p className="text-[10px] text-muted-foreground italic">
                                         Premium features enabled
@@ -146,7 +169,7 @@ export function SubscriptionBanner() {
                                 )}
                             </div>
                             
-                            {status.planType !== 'pro' && (
+                            {status.planType !== 'pro' && status.planType !== 'exclusive' && (
                                 <Link
                                     href="/#pricing"
                                     className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-all shadow-sm active:scale-95"

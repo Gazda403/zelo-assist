@@ -12,7 +12,10 @@ const PLAN_LIMITS: Record<string, number> = {
     free: 1,
     starter: 3,
     pro: 10,
+    exclusive: 999,
 };
+
+const ADMIN_EMAIL = "brankovicaleksandar2404@gmail.com";
 
 export async function GET() {
     const session = await auth();
@@ -34,8 +37,15 @@ export async function GET() {
         return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
     }
 
-    const planType = profile?.plan_type ?? "free";
-    const subscriptionStatus = profile?.subscription_status ?? "inactive";
+    let planType = profile?.plan_type ?? "free";
+    let subscriptionStatus = profile?.subscription_status ?? "inactive";
+
+    // Admin override
+    if (session.user.email === ADMIN_EMAIL) {
+        planType = "exclusive";
+        subscriptionStatus = "active";
+    }
+
     const maxSlots = PLAN_LIMITS[planType] ?? 1;
 
     // Count connected emails (the primary account always counts as 1)
