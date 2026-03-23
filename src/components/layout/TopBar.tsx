@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { SubscriptionBanner } from "@/components/dashboard/SubscriptionBanner";
 import { useReminders } from "../providers/RemindersProvider";
 
 const NAV_ITEMS = [
@@ -73,12 +72,6 @@ export function TopBar() {
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-xl supports-[backdrop-filter]:bg-card/50">
-            {/* Subscription banner strip - only for authenticated users not on landing page */}
-            {status === "authenticated" && pathname !== "/" && (
-                <div className="container mx-auto px-4 pt-2">
-                    <SubscriptionBanner />
-                </div>
-            )}
             <div className="mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2 max-w-7xl">
                 {/* Logo Area */}
                 <div className="flex items-center gap-2 flex-shrink-0">

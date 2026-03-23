@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Zap, Star, Mail, AlertCircle } from 'lucide-react';
+import { Mail, AlertCircle, X, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface SubscriptionStatus {
     planType: string;
@@ -16,7 +18,19 @@ interface SubscriptionStatus {
 
 export function SubscriptionBanner() {
     const [status, setStatus] = useState<SubscriptionStatus | null>(null);
+    const [isVisible, setIsVisible] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const handleShow = () => {
+            setIsVisible(true);
+            const timer = setTimeout(() => setIsVisible(false), 5000);
+            return () => clearTimeout(timer);
+        };
+
+        window.addEventListener('show-subscription-status', handleShow);
+        return () => window.removeEventListener('show-subscription-status', handleShow);
+    }, []);
 
     useEffect(() => {
         fetch('/api/subscription/status')
@@ -24,6 +38,15 @@ export function SubscriptionBanner() {
             .then(data => {
                 setStatus(data);
                 setLoading(false);
+                
+                // Automatically show on load for a few seconds
+                if (data) {
+                    setIsVisible(true);
+                    const timer = setTimeout(() => {
+                        setIsVisible(false);
+                    }, 6000); // 6 seconds total (fade in/out included)
+                    return () => clearTimeout(timer);
+                }
             })
             .catch(() => setLoading(false));
     }, []);
@@ -36,56 +59,106 @@ export function SubscriptionBanner() {
         pro: 'Pro',
     };
 
-    const planIcon: Record<string, React.ReactNode> = {
-        free: <Mail className="w-4 h-4" />,
-        starter: <Star className="w-4 h-4" />,
-        pro: <Zap className="w-4 h-4" />,
-    };
-
     const isExpired = status.currentPeriodEnd
         ? new Date(status.currentPeriodEnd) < new Date()
         : false;
     const isCanceled = status.subscriptionStatus === 'canceled';
     const showWarning = isExpired || isCanceled || status.subscriptionStatus === 'inactive';
 
-    return (
-        <div className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm border ${showWarning ? 'bg-red-50 border-red-200 text-red-800' : 'bg-stone-50 border-stone-200 text-stone-700'}`}>
-            <div className="flex items-center gap-3">
-                <span className={`flex items-center gap-1.5 font-semibold ${showWarning ? 'text-red-700' : 'text-stone-900'}`}>
-                    {showWarning ? <AlertCircle className="w-4 h-4" /> : planIcon[status.planType]}
-                    {planLabel[status.planType] ?? 'Unknown'} Plan
-                </span>
-                <span className="text-stone-400">·</span>
-                {/* Email slot usage */}
-                <span className="flex items-center gap-1">
-                    <Mail className="w-3.5 h-3.5 text-stone-400" />
-                    <span>
-                        {status.usedSlots} / {status.maxSlots} email slot{status.maxSlots !== 1 ? 's' : ''} used
-                    </span>
-                </span>
-                {status.currentPeriodEnd && !showWarning && (
-                    <>
-                        <span className="text-stone-400">·</span>
-                        <span className="text-stone-400 text-xs">
-                            Renews {new Date(status.currentPeriodEnd).toLocaleDateString()}
-                        </span>
-                    </>
-                )}
-                {showWarning && (
-                    <span className="text-xs">
-                        {isCanceled ? 'Subscription canceled.' : 'Subscription inactive.'}
-                    </span>
-                )}
-            </div>
+    const usagePercentage = Math.min((status.usedSlots / status.maxSlots) * 100, 100);
 
-            {(status.planType !== 'pro') && (
-                <Link
-                    href="/#pricing"
-                    className="text-xs font-bold px-3 py-1 bg-primary text-white rounded-full hover:bg-orange-600 transition-colors whitespace-nowrap"
+    return (
+        <AnimatePresence>
+            {isVisible && (
+                <motion.div
+                    initial={{ opacity: 0, y: 100, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 50, scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    className="fixed bottom-6 right-6 z-[100] w-full max-w-[320px] pointer-events-auto"
                 >
-                    Upgrade →
-                </Link>
+                    <div className={cn(
+                        "relative overflow-hidden p-5 rounded-2xl shadow-2xl backdrop-blur-xl border border-white/40 dark:border-white/10",
+                        showWarning 
+                            ? "bg-red-500/10 border-red-500/30" 
+                            : "bg-white/70 dark:bg-zinc-900/60"
+                    )}>
+                        {/* Background Gradient Accents */}
+                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/20 rounded-full blur-3xl pointer-events-none" />
+                        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+
+                        {/* Header */}
+                        <div className="flex items-center justify-between mb-4 relative z-10">
+                            <div className="flex items-center gap-2">
+                                <div className={cn(
+                                    "p-2 rounded-lg",
+                                    showWarning ? "bg-red-500/20 text-red-600" : "bg-accent/10 text-accent"
+                                )}>
+                                    {showWarning ? <AlertCircle className="w-4 h-4" /> : <Mail className="w-4 h-4" />}
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-bold font-serif text-foreground">
+                                        {planLabel[status.planType] ?? 'Unknown'} Plan
+                                    </h4>
+                                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">
+                                        Usage Insight
+                                    </p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => setIsVisible(false)}
+                                className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors"
+                            >
+                                <X className="w-3.5 h-3.5 text-muted-foreground" />
+                            </button>
+                        </div>
+
+                        {/* Progress Section */}
+                        <div className="space-y-2 mb-4 relative z-10">
+                            <div className="flex justify-between text-[11px] font-medium">
+                                <span className="text-muted-foreground">Email Slots</span>
+                                <span className="text-foreground">{status.usedSlots} / {status.maxSlots}</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
+                                <motion.div 
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${usagePercentage}%` }}
+                                    transition={{ duration: 1, ease: "easeOut" }}
+                                    className={cn(
+                                        "h-full rounded-full",
+                                        usagePercentage > 90 ? "bg-red-500" : "bg-accent"
+                                    )}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Footer / CTA */}
+                        <div className="flex items-center justify-between gap-3 relative z-10">
+                            <div>
+                                {showWarning ? (
+                                    <p className="text-[10px] text-red-600 font-medium">
+                                        {isCanceled ? 'Subscription canceled' : 'Payment required'}
+                                    </p>
+                                ) : (
+                                    <p className="text-[10px] text-muted-foreground italic">
+                                        Premium features enabled
+                                    </p>
+                                )}
+                            </div>
+                            
+                            {status.planType !== 'pro' && (
+                                <Link
+                                    href="/#pricing"
+                                    className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-all shadow-sm active:scale-95"
+                                >
+                                    Upgrade
+                                    <ArrowRight className="w-3 h-3" />
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+                </motion.div>
             )}
-        </div>
+        </AnimatePresence>
     );
 }

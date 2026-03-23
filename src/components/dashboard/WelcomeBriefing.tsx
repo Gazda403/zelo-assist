@@ -41,6 +41,10 @@ export function WelcomeBriefing({
 
         setIsGenerating(true);
         setIsExpanded(true);
+        
+        // Contextually show the subscription status/usage
+        window.dispatchEvent(new CustomEvent('show-subscription-status'));
+        
         try {
             const data = await generateInboxSummaryAction({
                 emails: emailsPayload.slice(0, 15).map(e => ({
