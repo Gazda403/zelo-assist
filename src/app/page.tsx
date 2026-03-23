@@ -11,6 +11,7 @@ import { fetchEmailsAction } from "@/app/actions/gmail";
 import { LandingPage } from "@/components/landing/LandingPage";
 import { EmailDetailPanel } from "@/components/email/EmailDetailPanel";
 import { WelcomeBriefing } from "@/components/dashboard/WelcomeBriefing";
+import { cn } from "@/lib/utils";
 
 // Using strict types locally if not exported, or just infer
 interface Email {
@@ -134,11 +135,11 @@ export default function HomePage() {
             title="Inbox"
             onSelectEmail={setSelectedEmailId}
         >
-            <div className="relative max-w-4xl mx-auto h-full px-4 sm:px-0">
+            <div className="flex relative max-w-6xl mx-auto h-full px-4 sm:px-0">
                 
                 {/* Bot Sidebar (Desktop - Absolute Position to keep content centered) */}
                 {!selectedEmailId && (
-                    <aside className="hidden lg:block lg:absolute lg:right-full lg:mr-12 xl:mr-24 top-0 w-72 xl:w-80 shrink-0">
+                    <aside className="hidden lg:block lg:absolute lg:right-full lg:mr-8 xl:mr-16 top-0 w-72 xl:w-80 shrink-0">
                         <WelcomeBriefing 
                             variant="sidebar"
                             userName={userName}
@@ -151,8 +152,13 @@ export default function HomePage() {
                     </aside>
                 )}
 
-                {/* Main Content Column (Perfectly Centered) */}
-                <div className="space-y-6 transition-all duration-300 w-full mb-20">
+                {/* Main Content Column (Email List & Stats) */}
+                <div className={cn(
+                    "space-y-6 transition-all duration-300 h-full overflow-y-auto hide-scrollbar pb-20",
+                    selectedEmailId 
+                        ? "hidden lg:block lg:w-1/2 pr-4 lg:pr-6" 
+                        : "w-full max-w-4xl mx-auto"
+                )}>
                     
                     {/* Bot Banner (Mobile/Tablet only) */}
                     {!selectedEmailId && (
@@ -318,7 +324,7 @@ export default function HomePage() {
                     const selectedEmail = emails.find(e => e.id === selectedEmailId);
                     if (!selectedEmail) return null;
                     return (
-                        <div className="w-full lg:w-1/2 h-full">
+                        <div className="w-full lg:w-1/2 h-full border-l border-black/5 dark:border-white/5 pl-0 lg:pl-6 transition-all duration-300">
                             <EmailDetailPanel
                                 emailId={selectedEmail.id}
                                 sender={selectedEmail.sender}
