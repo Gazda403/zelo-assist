@@ -121,22 +121,25 @@ export function EmailDetailPanel({ emailId, sender, subject, date, snippet, onCl
                 )}
             </div>
 
-            {/* Action Buttons */}
             <div className="p-4 sm:p-5 border-t border-white/40 dark:border-white/10 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-sm flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <button
+                <motion.button
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={handleAiDraftReply}
-                    className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 bg-accent text-white rounded-xl font-semibold hover:bg-accent/90 dark:hover:bg-zinc-700/50 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-br from-[#A182EE] via-[#A182EE] to-[#8B5CF6] text-white rounded-2xl font-bold transition-all shadow-[0_10px_20px_-5px_rgba(161,130,238,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(161,130,238,0.6)] hover:brightness-110 group"
                 >
-                    <Sparkles className="w-5 h-5" />
+                    <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
                     AI Draft Reply
-                </button>
-                <button
+                </motion.button>
+                <motion.button
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={handleCreateNew}
-                    className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 dark:hover:bg-zinc-700/50 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 shadow-primary/20"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-br from-[#FF7F11] via-[#FF7F11] to-[#F97316] text-white rounded-2xl font-bold transition-all shadow-[0_10px_20px_-5px_rgba(255,127,17,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(255,127,17,0.6)] hover:brightness-110 group"
                 >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     Create New with AI
-                </button>
+                </motion.button>
             </div>
         </motion.div>
     );

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Mail, AlertCircle, X, ArrowRight, Star } from 'lucide-react';
+import { Zap, Star, Mail, AlertCircle, X, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';

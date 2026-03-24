@@ -1,8 +1,9 @@
 'use server';
 
 import { auth } from '@/auth';
-import { summarizeInboxFlow, InboxSummaryInputSchema } from '@/ai/flows/inbox-summarizer';
-import { z } from 'genkit';
+import { summarizeInboxFlow } from '@/ai/flows/inbox-summarizer';
+import { InboxSummaryInputSchema } from '@/ai/flows/schema';
+import { z } from 'zod';
 
 type GenerateSummaryInput = z.infer<typeof InboxSummaryInputSchema>;
 
