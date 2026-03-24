@@ -11,6 +11,7 @@ import { fetchEmailsAction } from "@/app/actions/gmail";
 import { LandingPage } from "@/components/landing/LandingPage";
 import { EmailDetailPanel } from "@/components/email/EmailDetailPanel";
 import { WelcomeBriefing } from "@/components/dashboard/WelcomeBriefing";
+import { OnboardingGuide } from "@/components/onboarding/OnboardingGuide";
 import { cn } from "@/lib/utils";
 
 // Using strict types locally if not exported, or just infer
@@ -35,6 +36,7 @@ export default function HomePage() {
     const router = useRouter();
     const [unreadCount, setUnreadCount] = useState<number>(0);
     const [sortBy, setSortBy] = useState<'urgency' | 'date' | 'alphabetical'>('urgency');
+    const [showGuide, setShowGuide] = useState(false);
 
     // Filtering & Pagination
     const [filter, setFilter] = useState<'1d' | '7d' | '30d' | 'all'>('7d');
@@ -79,6 +81,10 @@ export default function HomePage() {
     useEffect(() => {
         if (status === "authenticated") {
             loadData(true);
+            // Show onboarding guide for first-time users
+            if (session?.user?.isNewUser) {
+                setShowGuide(true);
+            }
         }
     }, [filter, status]);
 
@@ -135,6 +141,11 @@ export default function HomePage() {
             title="Inbox"
             onSelectEmail={setSelectedEmailId}
         >
+            {/* First-time user onboarding guide */}
+            <OnboardingGuide
+                open={showGuide}
+                onClose={() => setShowGuide(false)}
+            />
             <div className="flex relative max-w-6xl mx-auto h-full px-4 sm:px-0">
                 
                 {/* Bot Sidebar (Desktop - Absolute Position to keep content centered) */}

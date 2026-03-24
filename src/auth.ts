@@ -43,22 +43,43 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     }
                 }
 
-                // Fetch role from profiles
+                // Fetch role from profiles & detect first-time login
                 let role = 'user';
+                let isNewUser = false;
                 try {
                     const { createAdminClient } = await import("@/lib/supabase/admin");
                     const supabase = createAdminClient();
-                    const { data: profileData } = await supabase
+                    const { data: profileData, error: profileError } = await supabase
                         .from('profiles')
-                        .select('role')
+                        .select('role, onboarding_completed')
                         .eq('id', user.email)
                         .single();
 
-                    if (profileData?.role) {
-                        role = profileData.role;
+                    if (profileError || !profileData) {
+                        // No profile yet — this is a first-time login
+                        isNewUser = true;
+                        const { error: insertError } = await supabase
+                            .from('profiles')
+                            .insert({
+                                id: user.email,
+                                full_name: user.name,
+                                avatar_url: profile?.picture || user.image,
+                                role: 'user',
+                                onboarding_completed: false,
+                                first_login_at: new Date().toISOString(),
+                            });
+                        if (insertError) {
+                            console.error("Failed to create profile for new user:", insertError);
+                        } else {
+                            console.log("Created profile for new user:", user.email);
+                        }
+                    } else {
+                        role = profileData.role || 'user';
+                        // Returning user — show guide only if not yet completed
+                        isNewUser = !profileData.onboarding_completed;
                     }
                 } catch (err) {
-                    console.error("Failed to fetch user role:", err);
+                    console.error("Failed to fetch/create user profile:", err);
                 }
 
                 return {
@@ -68,6 +89,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     refresh_token: account.refresh_token,
                     picture: profile?.picture || user.image || token.picture,
                     role: role,
+                    isNewUser: isNewUser,
                 }
             }
 
@@ -138,6 +160,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 session.user.id = token.sub as string;
                 session.user.image = (token.picture || token.image || session.user.image) as string;
                 session.user.role = token.role as string || 'user';
+                session.user.isNewUser = (token.isNewUser as boolean) ?? false;
                 session.accessToken = token.access_token as string;
                 session.error = token.error as string | undefined;
                 debugLog("Session Callback - Image", session.user.image);
@@ -157,6 +180,7 @@ declare module "next-auth" {
             name?: string
             image?: string
             role?: string
+            isNewUser?: boolean
         }
     }
 }
