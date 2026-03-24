@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Inbox, FileEdit, Send, Trash2, Moon, Sun, Aperture, Bot, Bell, User, LogOut, Settings, Users, ChevronDown, CheckCircle2, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useReminders } from "../providers/RemindersProvider";
