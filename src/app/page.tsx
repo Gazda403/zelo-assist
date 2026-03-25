@@ -122,8 +122,8 @@ export default function HomePage() {
         ]
         : sortedEmails;
 
-    // If checking auth or fetching initial data
-    if (status === "loading" || (status === "authenticated" && loading)) {
+    // If checking auth or fetching initial data (only block on true first load, not filter changes)
+    if (status === "loading" || (status === "authenticated" && loading && emails.length === 0)) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-[#FAFAF9]">
                 <div className="flex flex-col items-center gap-4">

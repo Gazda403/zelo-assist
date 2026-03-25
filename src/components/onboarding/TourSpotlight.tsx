@@ -114,7 +114,17 @@ interface TourSpotlightProps {
 }
 
 export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
-    const [step, setStep] = useState(0);
+    // Restore step from sessionStorage if tour was interrupted mid-way
+    const [step, setStep] = useState<number>(() => {
+        if (typeof window !== "undefined") {
+            const saved = sessionStorage.getItem("tour_step");
+            if (saved !== null) {
+                const n = parseInt(saved, 10);
+                if (!isNaN(n) && n >= 0 && n < STEPS.length) return n;
+            }
+        }
+        return 0;
+    });
     const [rect, setRect] = useState<DOMRect | null>(null);
     const rafRef = useRef<number | null>(null);
     const closingRef = useRef(false);
@@ -183,16 +193,20 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
         if (closingRef.current) return;
         if (isLast) {
             closingRef.current = true;
+            sessionStorage.removeItem("tour_step");
             await markOnboardingCompleteAction();
             onClose();
         } else {
-            setStep((s) => s + 1);
+            const next = step + 1;
+            sessionStorage.setItem("tour_step", String(next));
+            setStep(next);
         }
-    }, [isLast, onClose]);
+    }, [isLast, step, onClose]);
 
     const dismiss = useCallback(async () => {
         if (closingRef.current) return;
         closingRef.current = true;
+        sessionStorage.removeItem("tour_step");
         await markOnboardingCompleteAction();
         onClose();
     }, [onClose]);
