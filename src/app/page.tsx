@@ -12,6 +12,7 @@ import { LandingPage } from "@/components/landing/LandingPage";
 import { EmailDetailPanel } from "@/components/email/EmailDetailPanel";
 import { WelcomeBriefing } from "@/components/dashboard/WelcomeBriefing";
 import { OnboardingGuide } from "@/components/onboarding/OnboardingGuide";
+import { TourSpotlight } from "@/components/onboarding/TourSpotlight";
 import { cn } from "@/lib/utils";
 
 // Using strict types locally if not exported, or just infer
@@ -81,12 +82,18 @@ export default function HomePage() {
     useEffect(() => {
         if (status === "authenticated") {
             loadData(true);
-            // Show onboarding guide for first-time users
-            if (session?.user?.isNewUser) {
-                setShowGuide(true);
-            }
         }
     }, [filter, status]);
+
+    // Show spotlight tour for first-time users (once per browser session)
+    useEffect(() => {
+        if (status === "authenticated" && session?.user?.isNewUser) {
+            if (!sessionStorage.getItem("tour_shown")) {
+                setShowGuide(true);
+                sessionStorage.setItem("tour_shown", "1");
+            }
+        }
+    }, [status, session]);
 
     const handleLoadMore = () => {
         if (nextPageToken) {
@@ -141,8 +148,8 @@ export default function HomePage() {
             title="Inbox"
             onSelectEmail={setSelectedEmailId}
         >
-            {/* First-time user onboarding guide */}
-            <OnboardingGuide
+            {/* First-time user spotlight tour */}
+            <TourSpotlight
                 open={showGuide}
                 onClose={() => setShowGuide(false)}
             />
@@ -187,7 +194,7 @@ export default function HomePage() {
                     )}
 
                     {/* Stats Row */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div id="tour-stats" className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -244,7 +251,7 @@ export default function HomePage() {
                     </div>
 
                     {/* Filters */}
-                    <div className="flex gap-2 pb-2 overflow-x-auto">
+                    <div id="tour-filters" className="flex gap-2 pb-2 overflow-x-auto">
                         {(['1d', '7d', '30d', 'all'] as const).map(f => (
                             <button
                                 key={f}
@@ -269,7 +276,7 @@ export default function HomePage() {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-1.5 bg-white/60 p-1.5 rounded-xl border border-white/60 dark:bg-zinc-800/80 dark:border-white/10 backdrop-blur-md shadow-sm w-full sm:w-auto overflow-x-auto">
+                            <div id="tour-sort" className="flex items-center gap-1.5 bg-white/60 p-1.5 rounded-xl border border-white/60 dark:bg-zinc-800/80 dark:border-white/10 backdrop-blur-md shadow-sm w-full sm:w-auto overflow-x-auto">
                                 {(['urgency', 'date', 'alphabetical'] as const).map(s => (
                                     <button
                                         key={s}
@@ -296,7 +303,7 @@ export default function HomePage() {
                                 No emails found matching criteria.
                             </div>
                         ) : (
-                            <div className="space-y-3">
+                            <div id="tour-email-list" className="space-y-3">
                                 {displayEmails.map((email, index) => (
                                     <motion.div
                                         key={email.id}
