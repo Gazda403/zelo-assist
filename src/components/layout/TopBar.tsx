@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Inbox, FileEdit, Send, Trash2, Moon, Sun, Aperture, Bot, Bell, User, LogOut, Settings, Users, ChevronDown, CheckCircle2, Calendar } from "lucide-react";
+import { Inbox, FileEdit, Send, Trash2, Moon, Sun, Aperture, Bot, Bell, User, LogOut, Settings, Users, ChevronDown, CheckCircle2, Calendar, PlayCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -286,6 +286,19 @@ export function TopBar() {
                                             <button className="w-full text-left flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent/10 rounded-lg transition-colors">
                                                 <Settings className="w-4 h-4 text-muted-foreground" />
                                                 Settings
+                                            </button>
+                                            <button 
+                                                onClick={async () => {
+                                                    const { resetOnboardingAction } = await import("@/app/actions/onboarding");
+                                                    await resetOnboardingAction();
+                                                    sessionStorage.removeItem("tour_step");
+                                                    localStorage.setItem("tour_force", "1");
+                                                    window.location.reload();
+                                                }}
+                                                className="w-full text-left flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                                            >
+                                                <PlayCircle className="w-4 h-4 text-muted-foreground" />
+                                                Restart Tour
                                             </button>
                                             <div className="h-px bg-border my-1" />
                                             <button

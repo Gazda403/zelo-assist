@@ -29,3 +29,28 @@ export async function markOnboardingCompleteAction(): Promise<{ success: boolean
     console.log("Onboarding marked complete for:", session.user.email);
     return { success: true };
 }
+
+/**
+ * Resets onboarding status for the current user.
+ */
+export async function resetOnboardingAction(): Promise<{ success: boolean }> {
+    const session = await auth();
+
+    if (!session?.user?.email) {
+        return { success: false };
+    }
+
+    const supabase = createAdminClient();
+
+    const { error } = await supabase
+        .from("profiles")
+        .update({ onboarding_completed: false })
+        .eq("id", session.user.email);
+
+    if (error) {
+        console.error("Failed to reset onboarding:", error);
+        return { success: false };
+    }
+
+    return { success: true };
+}

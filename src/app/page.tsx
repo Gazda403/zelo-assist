@@ -85,12 +85,14 @@ export default function HomePage() {
         }
     }, [filter, status]);
 
-    // Show spotlight tour for first-time users (once per browser session)
+    // Show spotlight tour for first-time users or forced reset
     useEffect(() => {
-        if (status === "authenticated" && session?.user?.isNewUser) {
-            if (!sessionStorage.getItem("tour_shown")) {
+        if (status === "authenticated") {
+            const isNew = session?.user?.isNewUser;
+            const isForced = localStorage.getItem("tour_force") === "1";
+            
+            if (isNew || isForced) {
                 setShowGuide(true);
-                sessionStorage.setItem("tour_shown", "1");
             }
         }
     }, [status, session]);

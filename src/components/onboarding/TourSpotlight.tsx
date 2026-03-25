@@ -194,6 +194,7 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
         if (isLast) {
             closingRef.current = true;
             sessionStorage.removeItem("tour_step");
+            localStorage.removeItem("tour_force");
             await markOnboardingCompleteAction();
             onClose();
         } else {
@@ -207,6 +208,7 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
         if (closingRef.current) return;
         closingRef.current = true;
         sessionStorage.removeItem("tour_step");
+        localStorage.removeItem("tour_force");
         await markOnboardingCompleteAction();
         onClose();
     }, [onClose]);
