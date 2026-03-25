@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { React19Polyfill } from "@/components/React19Polyfill";
 import { TopBar } from "@/components/layout/TopBar";
 import { Providers } from "@/components/providers";
+import { TourProvider } from "@/components/providers/TourProvider";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -31,10 +32,12 @@ export default function RootLayout({
       >
         <React19Polyfill />
         <Providers>
-          <TopBar />
-          <main className="flex-1 flex flex-col">
-            {children}
-          </main>
+          <TourProvider>
+            <TopBar />
+            <main className="flex-1 flex flex-col">
+              {children}
+            </main>
+          </TourProvider>
         </Providers>
       </body>
     </html>

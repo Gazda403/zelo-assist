@@ -22,7 +22,7 @@ interface EmailSidebarProps {
 
 export default function EmailSidebar({ emails, selectedEmailId, onSelectEmail }: EmailSidebarProps) {
     return (
-        <div className="h-full flex flex-col bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border-r border-violet-100/50 dark:border-white/5">
+        <div id="tour-draft-list" className="h-full flex flex-col bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border-r border-violet-100/50 dark:border-white/5">
             <div className="p-4 border-b border-violet-100/50 dark:border-white/5">
                 <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                     <LucideInbox className="w-5 h-5 text-violet-600" />

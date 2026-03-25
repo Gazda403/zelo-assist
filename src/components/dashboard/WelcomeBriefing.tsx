@@ -81,10 +81,7 @@ export function WelcomeBriefing({
                 {isVisible && !isExpanded && (
                     <motion.div
                         layoutId="briefing-card"
-                        initial={{ opacity: 0, scale: 0.95, y: isSidebar ? 0 : -20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ layout: { type: "spring", bounce: 0.2, duration: 0.6 } }}
+                        id={isSidebar ? "tour-summary" : undefined}
                         className={cn(
                             "relative overflow-hidden border shadow-sm group bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md",
                             "border-accent/20",

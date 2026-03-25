@@ -127,7 +127,7 @@ export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDe
     ];
 
     return (
-        <div className="max-w-5xl mx-auto p-6">
+        <div id="tour-bot-settings" className="max-w-5xl mx-auto p-6">
             {/* Header */}
             <div className="mb-6">
                 <div className="flex items-start justify-between mb-4">

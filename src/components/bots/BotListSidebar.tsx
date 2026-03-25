@@ -57,7 +57,7 @@ export function BotListSidebar({
     return (
         <div className="w-full h-full flex flex-col gap-4 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-2xl border-r border-violet-100/50 dark:border-white/5 shadow-[4px_0_24px_rgba(0,0,0,0.02)] p-4">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div id="tour-bots-header" className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold font-serif flex items-center text-gray-900">
                     <Bot className="w-8 h-8 text-violet-600 mr-2" />
                     Email Bots
@@ -94,7 +94,7 @@ export function BotListSidebar({
             </div>
 
             {/* Scrollable List Container */}
-            <div className="flex-1 overflow-y-auto space-y-6 pr-2 -mr-2 custom-scrollbar pb-4">
+            <div id="tour-bot-grid" className="flex-1 overflow-y-auto space-y-6 pr-2 -mr-2 custom-scrollbar pb-4">
                 {/* Preset Bots */}
                 {!searchQuery && (
                     <div className="mb-4 space-y-2">

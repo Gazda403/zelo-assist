@@ -63,7 +63,7 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
     };
 
     return (
-        <div className="flex-1 flex flex-col bg-white overflow-hidden rounded-2xl border border-gray-100/80 shadow-xl shadow-black/[0.03] transition-all duration-500 hover:shadow-2xl hover:shadow-black/[0.05]">
+        <div id="tour-send-logic" className="flex-1 flex flex-col bg-white overflow-hidden rounded-2xl border border-gray-100/80 shadow-xl shadow-black/[0.03] transition-all duration-500 hover:shadow-2xl hover:shadow-black/[0.05]">
             {/* Headers */}
             <div className="p-6 border-b border-gray-50/80 space-y-4">
                 <div className="flex items-center gap-4 group">

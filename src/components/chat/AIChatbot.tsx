@@ -97,10 +97,8 @@ export function AIChatbot() {
             <AnimatePresence>
                 {!isChatOpen && (
                     <motion.button
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
                         onClick={() => setIsChatOpen(true)}
+                        id="tour-chatbot"
                         aria-label="Open chat assistant"
                         className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-tr from-accent to-purple-500 text-white shadow-2xl shadow-accent/30 flex items-center justify-center hover:scale-110 transition-transform z-50"
                     >

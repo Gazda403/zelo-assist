@@ -4,12 +4,13 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, X, MousePointerClick } from "lucide-react";
 import { markOnboardingCompleteAction } from "@/app/actions/onboarding";
+import { usePathname, useRouter } from "next/navigation";
 
 // ─── Step Definitions ───────────────────────────────────────────────────────
 
 interface TourStep {
-    /** ID of the element to spotlight, or null for a centred welcome card */
     targetId: string | null;
+    path: string;
     title: string;
     description: string;
     /** 'button' = user clicks Next in the tooltip; 'element-click' = user must click the spotlit element */
@@ -23,50 +24,130 @@ interface TourStep {
 const STEPS: TourStep[] = [
     {
         targetId: null,
+        path: "/",
         title: "Welcome to Zelo Assist! 👋",
-        description:
-            "Let's take a live tour of the app. We'll highlight each feature one by one — some steps ask you to try a feature yourself before moving on.",
+        description: "Let's take a tour of your new AI email workspace. We'll explore Inbox, Drafts, Send, and Bots.",
         nextType: "button",
-        clickHint: undefined,
     },
     {
         targetId: "tour-stats",
-        title: "Inbox at a Glance 📊",
-        description:
-            "Here you can see how many emails are unread, your average AI urgency score, and how many emails have been analyzed. These update every time you load your inbox.",
+        path: "/",
+        title: "Workspace Stats 📊",
+        description: "Get a quick pulse of your inbox—unread counts, average urgency, and total AI-analyzed emails are always visible at a glance.",
         nextType: "button",
         tooltipSide: "bottom",
         padding: 12,
-    },
-    {
-        targetId: "tour-filters",
-        title: "Time Filters ⏱",
-        description:
-            "Filter your inbox by time range — last 24 hours, 7 days, a full month, or all time. Try it! Click any filter button to continue.",
-        nextType: "element-click",
-        clickHint: "Click a filter button to continue →",
-        tooltipSide: "bottom",
-        padding: 10,
-    },
-    {
-        targetId: "tour-sort",
-        title: "Sort Controls ⚡",
-        description:
-            "Sort emails by AI Urgency (most critical first), by Date, or Alphabetically by sender. The urgency sort is the default — your most important messages float to the top.",
-        nextType: "button",
-        tooltipSide: "bottom",
-        padding: 10,
     },
     {
         targetId: "tour-email-list",
-        title: "Your Emails ✉️",
-        description:
-            "Every email has an AI urgency score from 1–10. Click any email card below to open it — you'll find AI-powered reply drafts, thread details, and more.",
-        nextType: "element-click",
-        clickHint: "Click any email to continue →",
+        path: "/",
+        title: "Smart Inbox ✨",
+        description: "Whenever you click an email in this list, a popup options panel appears instantly. It also includes an AI chatbot and an AI-generated summary of the thread.",
+        nextType: "button",
+        tooltipSide: "right",
+        padding: 8,
+    },
+    {
+        targetId: "tour-summary",
+        path: "/",
+        title: "AI Workspace Summary 🧠",
+        description: "On your left, I synthesize your entire inbox contextually. I'll highlight urgent matters and prepare your day before you even start.",
+        nextType: "button",
+        tooltipSide: "right",
+        padding: 10,
+    },
+    {
+        targetId: "tour-chatbot",
+        path: "/",
+        title: "Your Personal AI 🤖",
+        description: "Down here, I'm always available. Ask me to find specific emails, summarize threads, or draft complex replies for you.",
+        nextType: "button",
         tooltipSide: "top",
+        padding: 8,
+    },
+    {
+        targetId: "tour-nav-drafts",
+        path: "/",
+        title: "Let's go to Drafts",
+        description: "Next, let's explore how AI helps you write. Click the 'Drafts' tab in the top navigation to continue.",
+        nextType: "element-click",
+        clickHint: "Click the 'Drafts' tab →",
+        tooltipSide: "bottom",
+        padding: 4,
+    },
+    {
+        targetId: "tour-draft-list",
+        path: "/drafts",
+        title: "AI Drafts ✍️",
+        description: "Clicking any email here reveals an auto-generated draft. You can freely edit these drafts yourself, or instruct the AI to alter them for you before sending.",
+        nextType: "button",
+        tooltipSide: "right",
         padding: 12,
     },
+    {
+        targetId: "tour-nav-send",
+        path: "/drafts",
+        title: "Moving to Send",
+        description: "Perfect. Now let's see how you write brand new emails. Click the 'Send' tab above.",
+        nextType: "element-click",
+        clickHint: "Click the 'Send' tab →",
+        tooltipSide: "bottom",
+        padding: 4,
+    },
+    {
+        targetId: "tour-send-logic",
+        path: "/send",
+        title: "Fancy Email Writing 🎩",
+        description: "Here you can compose new emails using our advanced generative writing logic. Just provide bullet points, and the AI crafts a professional, articulate message instantly.",
+        nextType: "button",
+        tooltipSide: "right",
+        padding: 16,
+    },
+    {
+        targetId: "tour-nav-bots",
+        path: "/send",
+        title: "Explore Automations",
+        description: "Finally, the real magic. Click the 'Bots' tab to see how they automate your workflow.",
+        nextType: "element-click",
+        clickHint: "Click the 'Bots' tab →",
+        tooltipSide: "bottom",
+        padding: 4,
+    },
+    {
+        targetId: "tour-bots-header",
+        path: "/bots",
+        title: "AI Bots 🤖",
+        description: "Bots are autonomous agents that continuously monitor your inbox. You can create them to auto-reply, categorize, or alert you based on specific conditions.",
+        nextType: "button",
+        tooltipSide: "bottom",
+        padding: 10,
+    },
+    {
+        targetId: "tour-bot-grid",
+        path: "/bots",
+        title: "Configure a Bot",
+        description: "Let's look at one in detail. Click on any of your active bot cards below to open its settings.",
+        nextType: "element-click",
+        clickHint: "Click a Bot card →",
+        tooltipSide: "top",
+        padding: 8,
+    },
+    {
+        targetId: "tour-bot-settings",
+        path: "/bots",
+        title: "Bot Settings & Presets ⚙️",
+        description: "Here you can customize exactly what this bot does. Set presets, adjust its instructions, and define when it should trigger. You're fully in control!",
+        nextType: "button",
+        tooltipSide: "left",
+        padding: 12,
+    },
+    {
+        targetId: null,
+        path: "/bots",
+        title: "You're All Set! 🚀",
+        description: "That's everything! You now know how to navigate the core features of Zelo Assist. Enjoy your empty inbox!",
+        nextType: "button",
+    }
 ];
 
 // ─── Tooltip Positioning ─────────────────────────────────────────────────────
@@ -114,6 +195,9 @@ interface TourSpotlightProps {
 }
 
 export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
+    const router = useRouter();
+    const pathname = usePathname();
+
     // Restore step from sessionStorage if tour was interrupted mid-way
     const [step, setStep] = useState<number>(() => {
         if (typeof window !== "undefined") {
@@ -133,9 +217,11 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
     const isLast = step === STEPS.length - 1;
     const padding = currentStep.padding ?? 12;
 
+    const isPathMismatch = currentStep.path !== pathname;
+
     // ─── Track spotlit element position live via rAF ──────────────────────
     useEffect(() => {
-        if (!open || !currentStep.targetId) {
+        if (!open || !currentStep.targetId || isPathMismatch) {
             setRect(null);
             return;
         }
@@ -165,14 +251,15 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
         return () => {
             if (rafRef.current) cancelAnimationFrame(rafRef.current);
         };
-    }, [open, step, currentStep.targetId]);
+    }, [open, step, currentStep.targetId, pathname]);
 
     // ─── Listen for click on target for 'element-click' steps ────────────
     useEffect(() => {
         if (
             !open ||
             currentStep.nextType !== "element-click" ||
-            !currentStep.targetId
+            !currentStep.targetId ||
+            isPathMismatch
         )
             return;
 
@@ -199,10 +286,17 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
             onClose();
         } else {
             const next = step + 1;
+            const nextStep = STEPS[next];
+            
             sessionStorage.setItem("tour_step", String(next));
             setStep(next);
+
+            // If the next step is on a different page, navigate there
+            if (nextStep && nextStep.path !== pathname) {
+                router.push(nextStep.path);
+            }
         }
-    }, [isLast, step, onClose]);
+    }, [isLast, step, onClose, pathname, router]);
 
     const dismiss = useCallback(async () => {
         if (closingRef.current) return;
@@ -234,7 +328,7 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
         // Outer shell: pointer-events:none so spotlight pass-through works via children
         <div
             className="fixed inset-0 z-[100]"
-            style={{ pointerEvents: "none" }}
+            style={{ pointerEvents: "none", opacity: isPathMismatch ? 0 : 1, transition: "opacity 0.2s" }}
         >
             {/* ── SVG overlay with spotlight hole ── */}
             <svg

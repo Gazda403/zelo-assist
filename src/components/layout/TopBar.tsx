@@ -94,6 +94,7 @@ export function TopBar() {
                                 key={item.href}
                                 href={item.href}
                                 className="relative"
+                                id={`tour-nav-${item.label.toLowerCase()}`}
                             >
                                 <motion.div
                                     className={cn(
