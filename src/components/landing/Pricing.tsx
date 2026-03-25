@@ -84,12 +84,12 @@ export function Pricing() {
     // Actual Sandbox Plan IDs generated via PayPal API
     const PLAN_IDS: Record<string, { monthly: string; annual: string }> = {
         "Starter": {
-            monthly: "P-5T3678661N225224LNGY4T4I",
-            annual: "P-7LU13169F7423202JNGY4T4I"
+            monthly: "P-0G345889PP367702PNHCEERA",
+            annual: "P-74N72422VD313690PNHCEERA"
         },
         "Pro": {
-            monthly: "P-062658637E219450YNGY4T4I",
-            annual: "P-2US94421VA592105WNGY4T4Q"
+            monthly: "P-5M650937436226326NHCEERA",
+            annual: "P-2W102421T2805691UNHCEERI"
         }
     };
 
