@@ -91,9 +91,9 @@ export default function BotsPage() {
                 setSelectedBotId(savedBot.id);
 
                 toast.success("Startup Bot added successfully!");
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Failed to add preset bot:", error);
-                toast.error("Failed to add bot");
+                toast.error(error.message || "Failed to add bot");
                 // Rollback on error would be ideal here
             }
         } else if (presetId === 'preset_ecommerce_bot') {
@@ -114,9 +114,9 @@ export default function BotsPage() {
                 setSelectedBotId(savedBot.id);
 
                 toast.success("E-Commerce Bot added successfully!");
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Failed to add ecom bot:", error);
-                toast.error("Failed to add bot");
+                toast.error(error.message || "Failed to add bot");
             }
         } else if (presetId === 'preset_generic_reply_bot') {
             try {
@@ -135,9 +135,9 @@ export default function BotsPage() {
                 setSelectedBotId(savedBot.id);
 
                 toast.success("Generic Reply Bot added successfully!");
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Failed to add generic bot:", error);
-                toast.error("Failed to add bot");
+                toast.error(error.message || "Failed to add bot");
             }
         } else if (presetId === 'preset_follow_up_bot') {
             try {
@@ -156,9 +156,9 @@ export default function BotsPage() {
                 setSelectedBotId(savedBot.id);
 
                 toast.success("Follow-Up Bot added successfully!");
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Failed to add follow-up bot:", error);
-                toast.error("Failed to add bot");
+                toast.error(error.message || "Failed to add bot");
             }
         }
     };

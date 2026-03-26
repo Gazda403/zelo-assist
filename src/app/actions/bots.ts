@@ -67,6 +67,31 @@ export async function createBotAction(
         throw new Error('Unauthorized');
     }
 
+    const userId = session.user.email;
+
+    // --- Subscription Limits Enforced Here ---
+    const { createAdminClient } = await import('@/lib/supabase/admin');
+    const supabaseAdmin = createAdminClient();
+
+    const { data: profile } = await supabaseAdmin
+        .from('profiles')
+        .select('plan_type')
+        .eq('id', userId)
+        .single();
+        
+    let planType = profile?.plan_type ?? 'free';
+    if (userId === 'brankovicaleksandar2404@gmail.com') {
+        planType = 'exclusive';
+    }
+    
+    const maxBots = (planType === 'pro' || planType === 'exclusive') ? Infinity : 3;
+    const existingBots = await getAllBots(userId);
+    
+    if (existingBots.length >= maxBots) {
+        throw new Error(`Bot limit reached. Your ${planType} plan allows up to ${maxBots} bots. Please upgrade your plan to create more bots.`);
+    }
+    // -----------------------------------------
+
     // Validate safety
     const warnings = validateBotSafety(bot as EmailBot);
     if (warnings.length > 0) {

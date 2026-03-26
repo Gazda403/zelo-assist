@@ -103,9 +103,9 @@ export function BotWizard({ onBotCreated, onCancel }: BotWizardProps) {
             });
 
             onBotCreated(newBot);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to create bot:', error);
-            alert('Failed to create bot. Please try again.');
+            alert(error.message || 'Failed to create bot. Please try again.');
         } finally {
             setIsCreating(false);
         }

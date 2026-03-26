@@ -7,6 +7,7 @@ const PLAN_LIMITS: Record<string, number> = {
     free: 1,
     starter: 3,
     pro: 10,
+    exclusive: 999,
 };
 
 const supabaseAdmin = createClient(
@@ -35,8 +36,14 @@ export async function POST(req: Request) {
         .eq("id", userId)
         .single();
 
-    const planType = profile?.plan_type ?? "free";
-    const subscriptionStatus = profile?.subscription_status ?? "inactive";
+    let planType = profile?.plan_type ?? "free";
+    let subscriptionStatus = profile?.subscription_status ?? "inactive";
+
+    // Admin override
+    if (session.user.email === "brankovicaleksandar2404@gmail.com") {
+        planType = "exclusive";
+        subscriptionStatus = "active";
+    }
 
     // Free users without active subscription still get 1 slot (their own account)
     // Only allow connecting extras if subscription is active
