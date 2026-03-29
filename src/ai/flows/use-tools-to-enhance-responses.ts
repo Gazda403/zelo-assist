@@ -11,7 +11,8 @@ import { getLastEmails, searchEmails as gmailSearch, getUnreadCount } from '@/li
 
 const EnhancedChatbotInputSchema = z.object({
     query: z.string().describe('The user query.'),
-    accessToken: z.string().describe('Gmail OAuth access token for the current user.'),
+    accessToken: z.string().describe('OAuth access token for the current user.'),
+    provider: z.string().optional().describe('OAuth provider (google or microsoft-entra-id)'),
 });
 export type EnhancedChatbotInput = z.infer<typeof EnhancedChatbotInputSchema>;
 
@@ -22,8 +23,16 @@ export type EnhancedChatbotOutput = z.infer<typeof EnhancedChatbotOutputSchema>;
 
 // ─── Tools ───────────────────────────────────────────────────────────────────
 
-// We store the access token in a closure so tools can use it
+// We store the access token and provider in a closure so tools can use it
 let _accessToken = '';
+let _provider = '';
+
+async function getClient() {
+    if (_provider === 'microsoft-entra-id') {
+        return await import('@/lib/outlook');
+    }
+    return await import('@/lib/gmail');
+}
 
 const getRecentEmailsTool = ai.defineTool(
     {
@@ -41,7 +50,8 @@ const getRecentEmailsTool = ai.defineTool(
     },
     async (input) => {
         try {
-            const { emails } = await getLastEmails(_accessToken, input.limit ?? 10);
+            const client = await getClient();
+            const { emails } = await client.getLastEmails(_accessToken, input.limit ?? 10);
             return emails.map((e: any) => ({
                 subject: e.subject,
                 sender: e.sender?.name || e.sender?.email || 'Unknown',
@@ -72,7 +82,8 @@ const searchEmailsTool = ai.defineTool(
     },
     async (input) => {
         try {
-            const emails = await gmailSearch(_accessToken, input.query, input.limit ?? 5);
+            const client = await getClient();
+            const emails = await client.searchEmails(_accessToken, input.query, input.limit ?? 5);
             return emails.map((e: any) => ({
                 subject: e.subject,
                 sender: e.sender?.name || e.sender?.email || 'Unknown',
@@ -97,7 +108,8 @@ const getUnreadCountTool = ai.defineTool(
     },
     async () => {
         try {
-            const count = await getUnreadCount(_accessToken);
+            const client = await getClient();
+            const count = await client.getUnreadCount(_accessToken);
             return { unreadCount: count };
         } catch (err) {
             console.error('getUnreadCount tool error:', err);
@@ -138,8 +150,9 @@ const enhancedChatbotResponseFlow = ai.defineFlow(
         outputSchema: EnhancedChatbotOutputSchema,
     },
     async (input) => {
-        // Set token for tool closures
+        // Set token and provider for tool closures
         _accessToken = input.accessToken;
+        _provider = input.provider || 'google';
         const { output } = await prompt(input);
         return output!;
     }

@@ -4,13 +4,13 @@ import React from 'react';
 import { Mail } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-import { PlanPickerModal } from './PlanPickerModal';
 
 interface NavbarProps {
     onGetStarted: () => void;
+    onLogin: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onGetStarted }) => {
+const Navbar: React.FC<NavbarProps> = ({ onGetStarted, onLogin }) => {
     const [activeSection, setActiveSection] = useState<string>('');
 
     useEffect(() => {
@@ -82,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({ onGetStarted }) => {
                         </button>
 
                         <button
-                            onClick={() => signIn('google')}
+                            onClick={onLogin}
                             className="hidden md:block relative px-5 py-2 text-sm font-medium text-gray-900 bg-primary rounded-full overflow-hidden group transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/25 cursor-pointer"
                         >
                             <span className="relative z-10">Log In</span>

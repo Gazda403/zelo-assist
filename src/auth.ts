@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
+import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id"
 function debugLog(message: string, data: any) {
     const timestamp = new Date().toISOString();
     console.log(`[AUTH DEBUG][${timestamp}] ${message}:`, data);
@@ -16,6 +17,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 },
             },
         }),
+        {
+            id: "microsoft-entra-id",
+            name: "Microsoft",
+            type: "oauth",
+            clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID,
+            clientSecret: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
+            authorization: {
+                url: "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize",
+                params: {
+                    scope: "User.Read Mail.Read Mail.ReadWrite Mail.Send offline_access",
+                    prompt: "consent",
+                    response_type: "code",
+                },
+            },
+            token: "https://login.microsoftonline.com/consumers/oauth2/v2.0/token",
+            userinfo: "https://graph.microsoft.com/v1.0/me",
+            profile(profile: any) {
+                return {
+                    id: profile.id,
+                    name: profile.displayName,
+                    email: profile.mail ?? profile.userPrincipalName,
+                    image: null,
+                }
+            },
+        } as any,
     ],
     callbacks: {
         async jwt({ token, account, user, profile }) {
@@ -90,6 +116,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     picture: profile?.picture || user.image || token.picture,
                     role: role,
                     isNewUser: isNewUser,
+                    provider: account.provider,
                 }
             }
 
@@ -106,20 +133,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     throw new Error("No refresh token available");
                 }
 
-                const response = await fetch("https://oauth2.googleapis.com/token", {
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams({
-                        client_id: process.env.AUTH_GOOGLE_ID!,
-                        client_secret: process.env.AUTH_GOOGLE_SECRET!,
-                        grant_type: "refresh_token",
-                        refresh_token: token.refresh_token as string,
-                    }),
-                    method: "POST",
-                })
-
-                const tokens = await response.json()
-
-                if (!response.ok) throw tokens
+                let tokens;
+                if (token.provider === "microsoft-entra-id") {
+                    const response = await fetch("https://login.microsoftonline.com/common/oauth2/v2.0/token", {
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: new URLSearchParams({
+                            client_id: process.env.AUTH_MICROSOFT_ENTRA_ID_ID!,
+                            client_secret: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET!,
+                            grant_type: "refresh_token",
+                            refresh_token: token.refresh_token as string,
+                        }),
+                        method: "POST",
+                    });
+                    tokens = await response.json();
+                    if (!response.ok) throw tokens;
+                } else {
+                    const response = await fetch("https://oauth2.googleapis.com/token", {
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: new URLSearchParams({
+                            client_id: process.env.AUTH_GOOGLE_ID!,
+                            client_secret: process.env.AUTH_GOOGLE_SECRET!,
+                            grant_type: "refresh_token",
+                            refresh_token: token.refresh_token as string,
+                        }),
+                        method: "POST",
+                    });
+                    tokens = await response.json();
+                    if (!response.ok) throw tokens;
+                }
 
                 // Update refresh token in DB if a new one was issued
                 if (tokens.refresh_token) {
@@ -162,6 +203,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 session.user.role = token.role as string || 'user';
                 session.user.isNewUser = (token.isNewUser as boolean) ?? false;
                 session.accessToken = token.access_token as string;
+                session.provider = token.provider as string;
                 session.error = token.error as string | undefined;
                 debugLog("Session Callback - Image", session.user.image);
             }
@@ -173,6 +215,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 declare module "next-auth" {
     interface Session {
         accessToken?: string
+        provider?: string
         error?: string
         user: {
             id?: string

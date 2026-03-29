@@ -1,8 +1,12 @@
 'use server';
 
 import { auth } from '@/auth';
-import { getLastEmails as fetchGmailEmails, createDraft as createGmailDraft, getUnreadCount } from '@/lib/gmail';
+import * as gmailClient from '@/lib/gmail';
+import * as outlookClient from '@/lib/outlook';
 
+function getClient(provider?: string) {
+    return provider === 'microsoft-entra-id' ? outlookClient : gmailClient;
+}
 import { rateEmailFlow } from '@/ai/flows/email-rater';
 import { refineDraftFlow } from '@/ai/flows/draft-refiner';
 import { generateDraftFlow } from '@/ai/flows/draft-generator';
@@ -33,21 +37,22 @@ export async function fetchEmailsAction(
             query = `newer_than:${filter}`;
         }
 
-        const { emails, nextPageToken } = await fetchGmailEmails(session.accessToken, 10, pageToken, query);
+        const client = getClient(session.provider);
+        const { emails, nextPageToken } = await client.getLastEmails(session.accessToken, 10, pageToken, query);
 
         // 1. Fetch ratings from Supabase DB
-        const emailIds = emails.map(e => e.id);
+        const emailIds = emails.map((e: any) => e.id);
         const cachedRatings = await getEmailRatings(emailIds);
 
         // Filter for emails needing rating (not in cache)
-        const unratedEmails = emails.filter(e => !cachedRatings[e.id]);
+        const unratedEmails = emails.filter((e: any) => !cachedRatings[e.id]);
 
         // Process a subset to avoid rate limits/timeouts
         const batchToRate = unratedEmails.slice(0, EMAIL_AI_LIMIT);
 
         if (batchToRate.length > 0) {
             console.log(`[AI] Rating ${batchToRate.length} new emails...`);
-            await Promise.all(batchToRate.map(async (email) => {
+            await Promise.all(batchToRate.map(async (email: any) => {
                 try {
                     // Start timestamp
                     const start = Date.now();
@@ -79,7 +84,7 @@ export async function fetchEmailsAction(
         }
 
         // Merge ratings into response
-        const enrichedEmails = emails.map(email => {
+        const enrichedEmails = emails.map((email: any) => {
             const cached = cachedRatings[email.id];
             if (cached) {
                 return {
@@ -132,7 +137,7 @@ export async function fetchEmailsAction(
         }
 
         // Fetch unread count matching the timeframe filter
-        const unreadCount = await getUnreadCount(session.accessToken, query);
+        const unreadCount = await client.getUnreadCount(session.accessToken, query);
 
         return { emails: enrichedEmails, nextPageToken, unreadCount };
 
@@ -156,7 +161,8 @@ export async function createDraftAction(to: string, subject: string, body: strin
     }
 
     try {
-        const draft = await createGmailDraft(session.accessToken, to, subject, body);
+        const client = getClient(session.provider);
+        const draft = await client.createDraft(session.accessToken, to, subject, body);
         return draft;
     } catch (error) {
         console.error("Create Draft Action Error:", error);
@@ -290,8 +296,8 @@ export async function sendEmailAction(to: string, subject: string, body: string)
     }
 
     try {
-        const { sendEmail } = await import('@/lib/gmail');
-        const result = await sendEmail(session.accessToken, to, subject, body);
+        const client = getClient(session.provider);
+        const result = await client.sendEmail(session.accessToken, to, subject, body);
         return result;
     } catch (error) {
         console.error("Send Email Action Error:", error);
@@ -307,8 +313,8 @@ export async function fetchSentEmailsAction() {
     }
 
     try {
-        const { getSentEmails } = await import('@/lib/gmail');
-        const emails = await getSentEmails(session.accessToken);
+        const client = getClient(session.provider);
+        const emails = await client.getSentEmails(session.accessToken);
         return emails;
     } catch (error) {
         console.error("Fetch Sent Emails Action Error:", error);
@@ -324,8 +330,8 @@ export async function fetchTrashEmailsAction() {
     }
 
     try {
-        const { getTrashEmails } = await import('@/lib/gmail');
-        const emails = await getTrashEmails(session.accessToken);
+        const client = getClient(session.provider);
+        const emails = await client.getTrashEmails(session.accessToken);
         return { emails };
     } catch (error: any) {
         console.error("Fetch Trash Emails Action Error:", error);
@@ -345,8 +351,8 @@ export async function searchEmailsAction(query: string) {
     }
 
     try {
-        const { searchEmails } = await import('@/lib/gmail');
-        const results = await searchEmails(session.accessToken, query);
+        const client = getClient(session.provider);
+        const results = await client.searchEmails(session.accessToken, query);
         return results;
     } catch (error) {
         console.error("Search Emails Action Error:", error);
@@ -362,8 +368,8 @@ export async function fetchEmailBodyAction(messageId: string) {
     }
 
     try {
-        const { getEmailBody } = await import('@/lib/gmail');
-        const body = await getEmailBody(session.accessToken, messageId);
+        const client = getClient(session.provider);
+        const body = await client.getEmailBody(session.accessToken, messageId);
         return body;
     } catch (error) {
         console.error("Fetch Email Body Action Error:", error);
@@ -379,9 +385,9 @@ export async function applyLabelAction(messageId: string, labelName: string) {
     }
 
     try {
-        const { getOrCreateLabel, modifyMessage } = await import('@/lib/gmail');
-        const labelId = await getOrCreateLabel(session.accessToken, labelName);
-        const result = await modifyMessage(session.accessToken, messageId, [labelId], []);
+        const client = getClient(session.provider);
+        const labelId = await client.getOrCreateLabel(session.accessToken, labelName);
+        const result = await client.modifyMessage(session.accessToken, messageId, [labelId], []);
         return result;
     } catch (error) {
         console.error("Apply Label Action Error:", error);
@@ -397,9 +403,9 @@ export async function markAsReadAction(messageId: string) {
     }
 
     try {
-        const { modifyMessage } = await import('@/lib/gmail');
+        const client = getClient(session.provider);
         // Removing UNREAD label marks it as read
-        const result = await modifyMessage(session.accessToken, messageId, [], ['UNREAD']);
+        const result = await client.modifyMessage(session.accessToken, messageId, [], ['UNREAD']);
         return result;
     } catch (error) {
         console.error("Mark As Read Action Error:", error);
@@ -421,8 +427,8 @@ export async function forwardEmailAction(
     }
 
     try {
-        const { getEmailBody, sendEmail } = await import('@/lib/gmail');
-        const originalBody = await getEmailBody(session.accessToken, messageId);
+        const client = getClient(session.provider);
+        const originalBody = await client.getEmailBody(session.accessToken, messageId);
 
         const forwardedSubject = `Fwd: ${subject}`;
         const forwardedBody = `
@@ -434,7 +440,7 @@ Subject: ${subject}
 ${originalBody}
 `;
 
-        const result = await sendEmail(session.accessToken, to, forwardedSubject, forwardedBody);
+        const result = await client.sendEmail(session.accessToken, to, forwardedSubject, forwardedBody);
         return result;
     } catch (error) {
         console.error("Forward Email Action Error:", error);
@@ -529,10 +535,10 @@ export async function getDraftStatsAction() {
         if (draftsError) console.warn("Failed to count drafts", draftsError);
 
         // 3. Get total unread count from Gmail
-        const { getUnreadCount } = await import('@/lib/gmail');
+        const client = getClient(session.provider);
         let unreadCount = 0;
         try {
-            unreadCount = await getUnreadCount(session.accessToken, '');
+            unreadCount = await client.getUnreadCount(session.accessToken, '');
         } catch (e) {
             console.warn("Failed to get Gmail unread count", e);
         }

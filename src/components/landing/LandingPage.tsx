@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import Navbar from './Navbar';
 import Hero from './Hero';
@@ -11,16 +12,19 @@ import StickyCTA from './StickyCTA';
 import { VideoTextHero } from './VideoTextHero';
 import { Pricing } from './Pricing';
 import { PlanPickerModal } from './PlanPickerModal';
+import { LoginModal } from './LoginModal';
 
 export function LandingPage() {
     const [isPlanPickerOpen, setIsPlanPickerOpen] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
     return (
         <div className="min-h-screen animate-gradient-brand font-sans selection:bg-white/20 selection:text-white">
             <PlanPickerModal isOpen={isPlanPickerOpen} onClose={() => setIsPlanPickerOpen(false)} />
-            <Navbar onGetStarted={() => setIsPlanPickerOpen(true)} />
+            <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+            <Navbar onGetStarted={() => setIsPlanPickerOpen(true)} onLogin={() => setIsLoginModalOpen(true)} />
             <main>
-                <Hero />
+                <Hero onGetStarted={() => setIsPlanPickerOpen(true)} />
                 <BenefitsSection />
                 <Features />
                 <VideoTextHero />

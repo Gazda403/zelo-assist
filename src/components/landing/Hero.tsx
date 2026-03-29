@@ -7,7 +7,11 @@ import { signIn } from 'next-auth/react';
 import VideoHero from './VideoHero';
 import SplineHero from './SplineHero';
 
-const Hero: React.FC = () => {
+interface HeroProps {
+    onGetStarted?: () => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onGetStarted }) => {
     return (
         <section id="hero" className="relative pt-32 pb-10 lg:pt-40 lg:pb-16 overflow-hidden min-h-[90vh] flex items-center">
             {/* Custom Curvy Animated Lines Component */}
@@ -132,7 +136,7 @@ const Hero: React.FC = () => {
                             className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
                         >
                             <button
-                                onClick={() => signIn('google')}
+                                onClick={onGetStarted}
                                 className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white transition-all duration-200 bg-primary rounded-2xl hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:-translate-y-1 shadow-lg shadow-orange-500/30 cursor-pointer"
                             >
                                 Try it Free
@@ -142,7 +146,10 @@ const Hero: React.FC = () => {
                                 <div className="absolute inset-0 rounded-2xl ring-2 ring-white/20 group-hover:ring-white/40 transition-all" />
                             </button>
 
-                            <button className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-gray-700 transition-all duration-200 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50 hover:text-gray-900 hover:-translate-y-1 shadow-sm hover:shadow-md cursor-pointer">
+                            <button
+                                onClick={onGetStarted}
+                                className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-gray-700 transition-all duration-200 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50 hover:text-gray-900 hover:-translate-y-1 shadow-sm hover:shadow-md cursor-pointer"
+                            >
                                 View Pricing
                             </button>
                         </motion.div>

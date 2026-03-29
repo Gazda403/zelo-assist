@@ -17,8 +17,9 @@ export async function getAiResponse(prompt: string): Promise<Message> {
                 content: "I can't access your emails right now — it looks like your session has expired. Please sign out and sign back in.",
             };
         }
+        const provider = (session as any)?.provider as string | undefined;
 
-        const aiResponse = await enhancedChatbotResponse({ query: prompt, accessToken });
+        const aiResponse = await enhancedChatbotResponse({ query: prompt, accessToken, provider });
 
         return {
             id: crypto.randomUUID(),
