@@ -127,74 +127,82 @@ export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDe
     ];
 
     return (
-        <div id="tour-bot-settings" className="max-w-5xl mx-auto px-3 py-4 sm:p-6">
+        <div id="tour-bot-settings" className="max-w-5xl mx-auto p-6 max-md:px-3 max-md:py-4">
             {/* Header */}
-            <div className="mb-4 sm:mb-6">
-                {/* Top row: back + title + actions */}
-                <div className="flex items-start justify-between mb-2 sm:mb-4 gap-2">
-                    <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <div className="mb-6 max-md:mb-4">
+                <div className="flex items-start justify-between mb-4 max-md:mb-2 max-md:gap-2">
+                    <div className="flex-1 max-md:min-w-0">
+                        <div className="flex items-center gap-3 mb-2 max-md:gap-2 max-md:mb-1">
                             {onBack && (
-                                <button onClick={onBack} className="lg:hidden p-1.5 -ml-1 text-gray-500 hover:text-gray-900 transition-colors shrink-0">
-                                    <ArrowLeft className="w-4 h-4" />
+                                <button onClick={onBack} className="lg:hidden p-2 -ml-2 text-gray-500 hover:text-gray-900 transition-colors max-md:p-1.5 max-md:-ml-1">
+                                    <ArrowLeft className="w-5 h-5 max-md:w-4 max-md:h-4" />
                                 </button>
                             )}
-                            <h1 className="text-xl sm:text-3xl font-bold font-serif leading-tight">{bot.name}</h1>
+                            <h1 className="text-2xl sm:text-3xl font-bold font-serif max-md:text-xl max-md:leading-tight">{bot.name}</h1>
+                            {/* Enable toggle — inline on desktop, moved to actions column on mobile */}
+                            <button
+                                onClick={handleToggle}
+                                disabled={isToggling}
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all disabled:opacity-50 max-md:hidden ${bot.enabled
+                                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    }`}
+                            >
+                                <Power className="w-4 h-4" />
+                                {bot.enabled ? 'Enabled' : 'Disabled'}
+                            </button>
                         </div>
                         {bot.description && (
-                            <p className="text-gray-600 text-xs sm:text-base line-clamp-2 sm:line-clamp-none">{bot.description}</p>
+                            <p className="text-gray-600 max-md:text-xs max-md:line-clamp-2">{bot.description}</p>
                         )}
                     </div>
-                    {/* Actions: enable toggle + preview + delete */}
-                    <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <div className="flex items-center gap-2 max-md:gap-1.5 max-md:shrink-0">
+                        {/* Enable toggle on mobile only — compact icon+label */}
                         <button
                             onClick={handleToggle}
                             disabled={isToggling}
-                            className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all disabled:opacity-50 ${bot.enabled
+                            className={`hidden max-md:flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition-all disabled:opacity-50 ${bot.enabled
                                 ? 'bg-green-100 text-green-700 hover:bg-green-200'
                                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                 }`}
                         >
-                            <Power className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            <span className="hidden xs:inline sm:inline">{bot.enabled ? 'Enabled' : 'Disabled'}</span>
+                            <Power className="w-3.5 h-3.5" />
                         </button>
                         <ExecutionPreview bot={bot} />
                         <button
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 max-md:p-1.5"
                             title="Delete bot"
                         >
-                            <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <Trash2 className="w-5 h-5 max-md:w-4 max-md:h-4" />
                         </button>
                     </div>
                 </div>
 
-                {/* Tabs - icon+label desktop, icon-only with tooltip on mobile, all fit in one row */}
-                <div className="flex border-b overflow-x-auto hide-scrollbar">
+                {/* Tabs */}
+                <div className="flex gap-2 border-b max-md:overflow-x-auto max-md:hide-scrollbar">
                     {tabs.map(tab => {
                         const Icon = tab.icon;
-                        // Shorten labels for mobile
                         const shortLabel: Record<string, string> = {
-                            'Overview': 'Overview',
-                            'Follow Ups': 'Follow Ups',
                             'Knowledge Base': 'KB',
                             'Execution Logs': 'Logs',
-                            'Settings': 'Settings',
                         };
                         return (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 title={tab.label}
-                                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 border-b-2 transition-colors whitespace-nowrap text-xs sm:text-sm font-medium ${
+                                className={`flex items-center gap-2 px-4 py-2 border-b-2 transition-colors whitespace-nowrap max-md:gap-1.5 max-md:px-3 max-md:text-xs ${
                                     activeTab === tab.id
                                         ? 'border-violet-600 text-violet-600'
                                         : 'border-transparent text-gray-600 hover:text-gray-900'
                                     }`}
                             >
-                                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                                <span className="sm:inline">{shortLabel[tab.label] ?? tab.label}</span>
+                                <Icon className="w-4 h-4 max-md:w-3.5 max-md:h-3.5 shrink-0" />
+                                {/* Full label on desktop, short label on mobile */}
+                                <span className="max-md:hidden">{tab.label}</span>
+                                <span className="hidden max-md:inline">{shortLabel[tab.label] ?? tab.label}</span>
                             </button>
                         );
                     })}
@@ -231,22 +239,22 @@ export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDe
                         ) : (
                             <div className="space-y-6">
                                 {/* Stats */}
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                                    <motion.div whileHover={{ y: -2 }} className="p-4 sm:p-5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-violet-100/50 dark:border-white/5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] transition-all">
-                                        <div className="text-2xl sm:text-3xl font-black text-violet-600 dark:text-violet-400">{bot.stats.totalExecutions}</div>
-                                        <div className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Total Runs</div>
+                                <div className="grid grid-cols-4 gap-4 max-md:grid-cols-2 max-md:gap-3">
+                                    <motion.div whileHover={{ y: -2 }} className="p-5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-violet-100/50 dark:border-white/5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] transition-all max-md:p-4">
+                                        <div className="text-3xl font-black text-violet-600 dark:text-violet-400 max-md:text-2xl">{bot.stats.totalExecutions}</div>
+                                        <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 max-md:text-xs">Total Runs</div>
                                     </motion.div>
-                                    <motion.div whileHover={{ y: -2 }} className="p-4 sm:p-5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-violet-100/50 dark:border-white/5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] transition-all">
-                                        <div className="text-2xl sm:text-3xl font-black text-green-600 dark:text-green-400">{bot.stats.successCount}</div>
-                                        <div className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Successful</div>
+                                    <motion.div whileHover={{ y: -2 }} className="p-5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-violet-100/50 dark:border-white/5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] transition-all max-md:p-4">
+                                        <div className="text-3xl font-black text-green-600 dark:text-green-400 max-md:text-2xl">{bot.stats.successCount}</div>
+                                        <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 max-md:text-xs">Successful</div>
                                     </motion.div>
-                                    <motion.div whileHover={{ y: -2 }} className="p-4 sm:p-5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-violet-100/50 dark:border-white/5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] transition-all">
-                                        <div className="text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400">{bot.stats.emailsSent}</div>
-                                        <div className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Emails Sent</div>
+                                    <motion.div whileHover={{ y: -2 }} className="p-5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-violet-100/50 dark:border-white/5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] transition-all max-md:p-4">
+                                        <div className="text-3xl font-black text-blue-600 dark:text-blue-400 max-md:text-2xl">{bot.stats.emailsSent}</div>
+                                        <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 max-md:text-xs">Emails Sent</div>
                                     </motion.div>
-                                    <motion.div whileHover={{ y: -2 }} className="p-4 sm:p-5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-violet-100/50 dark:border-white/5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] transition-all">
-                                        <div className="text-2xl sm:text-3xl font-black text-purple-600 dark:text-purple-400">{bot.stats.draftsCreated}</div>
-                                        <div className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Drafts Created</div>
+                                    <motion.div whileHover={{ y: -2 }} className="p-5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-violet-100/50 dark:border-white/5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] transition-all max-md:p-4">
+                                        <div className="text-3xl font-black text-purple-600 dark:text-purple-400 max-md:text-2xl">{bot.stats.draftsCreated}</div>
+                                        <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 max-md:text-xs">Drafts Created</div>
                                     </motion.div>
                                 </div>
 

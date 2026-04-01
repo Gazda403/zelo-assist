@@ -105,7 +105,7 @@ export function GenericReplyBotDashboard({ bot, onBotUpdated }: GenericReplyBotD
             >
                 <div className="grid grid-cols-12 divide-x divide-zinc-200 dark:divide-zinc-800">
                     {/* Left: Key Metrics Overview */}
-                    <div className="col-span-12 lg:col-span-5 p-4 sm:p-8 space-y-5 sm:space-y-8">
+                    <div className="col-span-12 lg:col-span-5 p-8 space-y-8 max-md:p-4 max-md:space-y-5">
                         <div>
                             <p className="text-[10px] font-black text-fuchsia-500 uppercase tracking-[0.2em] mb-2">Automated Engagement</p>
                             <h4 className="text-2xl font-serif font-bold text-zinc-900 dark:text-zinc-50 tracking-tight">Acknowledgment Health</h4>
@@ -123,7 +123,7 @@ export function GenericReplyBotDashboard({ bot, onBotUpdated }: GenericReplyBotD
                                         <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">{item.label}</span>
                                     </div>
                                     <div className="flex items-baseline gap-3">
-                                        <span className="text-2xl sm:text-4xl font-black text-zinc-900 dark:text-zinc-100 group-hover:text-fuchsia-500 transition-colors">{item.value}</span>
+                                        <span className="text-4xl font-black text-zinc-900 dark:text-zinc-100 group-hover:text-fuchsia-500 transition-colors max-md:text-2xl">{item.value}</span>
                                         <span className="text-[10px] font-medium text-zinc-500 italic">{item.sub}</span>
                                     </div>
                                 </div>
@@ -132,7 +132,7 @@ export function GenericReplyBotDashboard({ bot, onBotUpdated }: GenericReplyBotD
                     </div>
 
                     {/* Right: Interactive Visual Analytics */}
-                    <div className="col-span-12 lg:col-span-7 p-4 sm:p-8 bg-zinc-50/50 dark:bg-zinc-950/20 relative">
+                    <div className="col-span-12 lg:col-span-7 p-8 bg-zinc-50/50 dark:bg-zinc-950/20 relative max-md:p-4">
                         <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 xl:gap-0 mb-8">
                             <div className="flex items-center gap-4">
                                 <div className="flex items-center gap-2">
@@ -160,7 +160,7 @@ export function GenericReplyBotDashboard({ bot, onBotUpdated }: GenericReplyBotD
                 </div>
             </motion.div>
 
-            <div className="grid grid-cols-12 gap-4 sm:gap-8">
+            <div className="grid grid-cols-12 gap-8 max-md:gap-4">
                 {/* Template Usage Breakdown */}
                 <div className="col-span-12 lg:col-span-5 space-y-8">
                     <motion.div
