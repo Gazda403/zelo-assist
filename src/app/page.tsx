@@ -176,21 +176,22 @@ export default function HomePage() {
                     )}
 
                     {/* Stats Row */}
-                    <div id="tour-stats" className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div id="tour-stats" className="grid grid-cols-3 gap-2 md:gap-4 pb-2 md:pb-0">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="p-5 rounded-2xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md border border-white/60 dark:border-white/10 shadow-sm relative overflow-hidden group hover:shadow-md transition-all"
+                            className="p-3 md:p-5 rounded-xl md:rounded-2xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md border border-white/60 dark:border-white/10 shadow-sm relative overflow-hidden group hover:shadow-md transition-all flex flex-col justify-center items-center md:block"
                         >
                             <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-accent/20 dark:bg-accent/40 rounded-full blur-2xl group-hover:bg-accent/30 dark:group-hover:bg-accent/50 transition-all duration-500" />
-                            <div className="flex items-center gap-3 mb-2 relative">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent/30 to-accent/10 dark:from-accent/20 dark:to-accent/5 flex items-center justify-center border border-accent/20 dark:border-white/10 shadow-inner">
-                                    <Mail className="w-5 h-5 text-accent" />
+                            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-2 md:gap-3 relative w-full">
+                                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-gradient-to-br from-accent/30 to-accent/10 dark:from-accent/20 dark:to-accent/5 flex items-center justify-center border border-accent/20 dark:border-white/10 shadow-inner shrink-0">
+                                    <Mail className="w-4 h-4 md:w-5 md:h-5 text-accent" />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold font-serif text-gray-900 dark:text-white">{unreadCount}</p>
-                                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Unread</p>
+                                    <p className="text-lg md:text-2xl font-bold font-serif text-gray-900 dark:text-white leading-tight">{unreadCount}</p>
+                                    <p className="text-[9px] md:text-xs text-gray-500 font-semibold uppercase tracking-wider hidden sm:block">Unread</p>
+                                    <p className="text-[9px] md:text-xs text-gray-500 font-semibold uppercase tracking-wider block sm:hidden">Unread</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -199,16 +200,17 @@ export default function HomePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="p-5 rounded-2xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md border border-white/60 dark:border-white/10 shadow-sm relative overflow-hidden group hover:shadow-md transition-all"
+                            className="p-3 md:p-5 rounded-xl md:rounded-2xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md border border-white/60 dark:border-white/10 shadow-sm relative overflow-hidden group hover:shadow-md transition-all flex flex-col justify-center items-center md:block"
                         >
                             <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-amber-500/20 dark:bg-amber-500/40 rounded-full blur-2xl group-hover:bg-amber-500/30 dark:group-hover:bg-amber-500/50 transition-all duration-500" />
-                            <div className="flex items-center gap-3 mb-2 relative">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/30 to-amber-500/10 dark:from-amber-500/20 dark:to-amber-500/5 flex items-center justify-center border border-amber-500/20 dark:border-white/10 shadow-inner">
-                                    <TrendingUp className="w-5 h-5 text-amber-500" />
+                            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-2 md:gap-3 relative w-full">
+                                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-gradient-to-br from-amber-500/30 to-amber-500/10 dark:from-amber-500/20 dark:to-amber-500/5 flex items-center justify-center border border-amber-500/20 dark:border-white/10 shadow-inner shrink-0">
+                                    <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-amber-500" />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold font-serif text-gray-900 dark:text-white">{avgUrgency}</p>
-                                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Avg Urgency</p>
+                                    <p className="text-lg md:text-2xl font-bold font-serif text-gray-900 dark:text-white leading-tight">{avgUrgency}</p>
+                                    <p className="text-[9px] md:text-xs text-gray-500 font-semibold uppercase tracking-wider hidden sm:block">Avg Urgency</p>
+                                    <p className="text-[9px] md:text-xs text-gray-500 font-semibold uppercase tracking-wider block sm:hidden">Urgency</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -217,16 +219,17 @@ export default function HomePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="p-5 rounded-2xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md border border-white/60 dark:border-white/10 shadow-sm relative overflow-hidden group hover:shadow-md transition-all"
+                            className="p-3 md:p-5 rounded-xl md:rounded-2xl bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md border border-white/60 dark:border-white/10 shadow-sm relative overflow-hidden group hover:shadow-md transition-all flex flex-col justify-center items-center md:block"
                         >
                             <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-purple-500/20 dark:bg-purple-500/40 rounded-full blur-2xl group-hover:bg-purple-500/30 dark:group-hover:bg-purple-500/50 transition-all duration-500" />
-                            <div className="flex items-center gap-3 mb-2 relative">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/30 to-purple-500/10 dark:from-purple-500/20 dark:to-purple-500/5 flex items-center justify-center border border-purple-500/20 dark:border-white/10 shadow-inner">
-                                    <Sparkles className="w-5 h-5 text-purple-600" />
+                            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-2 md:gap-3 relative w-full">
+                                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-gradient-to-br from-purple-500/30 to-purple-500/10 dark:from-purple-500/20 dark:to-purple-500/5 flex items-center justify-center border border-purple-500/20 dark:border-white/10 shadow-inner shrink-0">
+                                    <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-purple-600" />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold font-serif text-gray-900 dark:text-white">{emails.length}</p>
-                                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">AI Analyzed</p>
+                                    <p className="text-lg md:text-2xl font-bold font-serif text-gray-900 dark:text-white leading-tight">{emails.length}</p>
+                                    <p className="text-[9px] md:text-xs text-gray-500 font-semibold uppercase tracking-wider hidden sm:block">AI Analyzed</p>
+                                    <p className="text-[9px] md:text-xs text-gray-500 font-semibold uppercase tracking-wider block sm:hidden">Analyzed</p>
                                 </div>
                             </div>
                         </motion.div>

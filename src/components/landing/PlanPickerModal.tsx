@@ -75,20 +75,22 @@ export function PlanPickerModal({ isOpen, onClose }: PlanPickerModalProps) {
     return (
         <AnimatePresence>
             {authSelection ? (
-                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[110]">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setAuthSelection(null)}
-                        className="absolute inset-0 bg-stone-900/60 backdrop-blur-md"
+                        className="fixed inset-0 bg-stone-900/60 backdrop-blur-md"
                     />
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="relative w-full max-w-md bg-white rounded-3xl p-8 shadow-2xl border border-stone-100"
-                    >
+                    <div className="fixed inset-0 overflow-y-auto overflow-x-hidden">
+                        <div className="flex min-h-full items-center justify-center p-4 py-12 sm:p-6">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                className="relative w-full max-w-md bg-white rounded-3xl p-8 shadow-2xl border border-stone-100"
+                            >
                         <div className="text-center mb-8">
                             <h3 className="text-2xl font-bold text-gray-900 mb-2">Continue to {typeof authSelection === 'string' ? 'Free Trial' : authSelection.name}</h3>
                             <p className="text-gray-500">Choose your preferred email provider</p>
@@ -128,7 +130,9 @@ export function PlanPickerModal({ isOpen, onClose }: PlanPickerModalProps) {
                         >
                             Go back to plans
                         </button>
-                    </motion.div>
+                            </motion.div>
+                        </div>
+                    </div>
                 </div>
             ) : checkoutPlan ? (
                 <CheckoutModal
@@ -139,23 +143,25 @@ export function PlanPickerModal({ isOpen, onClose }: PlanPickerModalProps) {
                     planId={checkoutPlan.planId}
                 />
             ) : (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[100]">
                     {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="absolute inset-0 bg-stone-900/40 backdrop-blur-md"
+                        className="fixed inset-0 bg-stone-900/40 backdrop-blur-md"
                     />
 
-                    {/* Card */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="relative w-full max-w-6xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-stone-100"
-                    >
+                    <div className="fixed inset-0 overflow-y-auto overflow-x-hidden">
+                        <div className="flex min-h-full items-center justify-center p-4 py-12 sm:p-6">
+                            {/* Card */}
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                className="relative w-full max-w-6xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-stone-100"
+                            >
                         {/* Header */}
                         <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gradient-to-b from-orange-50/50 to-white">
                             <div>
@@ -264,7 +270,9 @@ export function PlanPickerModal({ isOpen, onClose }: PlanPickerModalProps) {
                                 ))}
                             </div>
                         </div>
-                    </motion.div>
+                            </motion.div>
+                        </div>
+                    </div>
                 </div>
             )}
         </AnimatePresence>

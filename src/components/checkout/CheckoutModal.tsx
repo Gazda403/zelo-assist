@@ -44,23 +44,25 @@ export function CheckoutModal({ isOpen, onClose, planName, planPrice, planId }: 
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-[100]">
                 {/* Backdrop */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={onClose}
-                    className="absolute inset-0 bg-stone-900/40 backdrop-blur-md"
+                    className="fixed inset-0 bg-stone-900/40 backdrop-blur-md"
                 />
 
-                {/* Modal Content */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    className="relative w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-stone-100"
-                >
+                <div className="fixed inset-0 overflow-y-auto overflow-x-hidden">
+                    <div className="flex min-h-full items-center justify-center p-4 py-12 sm:p-6">
+                        {/* Modal Content */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-stone-100"
+                        >
                     {/* Header */}
                     <div className="p-6 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
                         <div>
@@ -185,7 +187,9 @@ export function CheckoutModal({ isOpen, onClose, planName, planPrice, planId }: 
                             </>
                         )}
                     </div>
-                </motion.div>
+                        </motion.div>
+                    </div>
+                </div>
             </div>
         </AnimatePresence>
     );
