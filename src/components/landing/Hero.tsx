@@ -97,7 +97,7 @@ const Hero: React.FC<HeroProps> = ({ onGetStarted }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
 
                     {/* Left Column: Text Content */}
-                    <div className="text-center lg:text-left">
+                    <div className="text-center lg:text-left pb-24 lg:pb-0 relative z-30">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}

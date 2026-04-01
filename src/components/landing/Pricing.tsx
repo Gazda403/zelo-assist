@@ -76,7 +76,11 @@ const pricingTiers: PricingTier[] = [
     }
 ];
 
-export function Pricing() {
+interface PricingProps {
+    onGetStarted?: () => void;
+}
+
+export function Pricing({ onGetStarted }: PricingProps = {}) {
     const [isAnnual, setIsAnnual] = useState(true);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null);
@@ -95,7 +99,9 @@ export function Pricing() {
 
     const handleCheckout = (tier: PricingTier) => {
         if (tier.name === "Free") {
-            // Handle free tier logic (e.g., direct signup)
+            if (onGetStarted) {
+                onGetStarted();
+            }
             return;
         }
         setSelectedTier(tier);

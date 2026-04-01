@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { EmailCard } from "@/components/email/EmailCard";
 import { AppShell } from "@/components/layout/AppShell";
 import { motion } from "framer-motion";
-import { Sparkles, TrendingUp, Mail, LogIn, Loader2 } from "lucide-react";
+import { Sparkles, TrendingUp, Mail, LogIn, Loader2, ChevronDown } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { fetchEmailsAction } from "@/app/actions/gmail";
@@ -251,9 +251,20 @@ export default function HomePage() {
                         ))}
                     </div>
 
+                    {/* Mobile scroll hint - hidden on desktop */}
+                    <div className="flex flex-col items-center gap-0.5 pb-1 md:hidden">
+                        <span className="text-[10px] text-gray-400 font-medium tracking-wider uppercase">Your Emails</span>
+                        <motion.div
+                            animate={{ y: [0, 4, 0] }}
+                            transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
+                        >
+                            <ChevronDown className="w-4 h-4 text-gray-300" />
+                        </motion.div>
+                    </div>
+
                     {/* Email List */}
                     <div>
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4 sm:gap-0">
+                        <div className="hidden sm:flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4 sm:gap-0">
                             <div className="flex flex-col gap-1">
                                 <h2 className="text-lg font-serif font-bold dark:text-white">Your Emails</h2>
                                 <div className="text-sm text-muted-foreground">

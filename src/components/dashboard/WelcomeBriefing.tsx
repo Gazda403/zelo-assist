@@ -87,7 +87,7 @@ export function WelcomeBriefing({
                             "border-accent/20",
                             isSidebar
                                 ? "rounded-3xl p-5 flex flex-col gap-4 sticky top-6"
-                                : "rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-6 mb-6 w-full"
+                                : "rounded-2xl p-4 sm:p-6 md:p-8 flex flex-col items-start gap-4 sm:gap-6 mb-4 sm:mb-6 w-full"
                         )}
                     >
                         {/* Background Glow */}
@@ -109,19 +109,19 @@ export function WelcomeBriefing({
                             <X className="w-3.5 h-3.5" />
                         </button>
 
-                        <div className={cn("relative z-10 w-full flex", isSidebar ? "flex-col gap-4" : "flex-row items-center gap-6")}>
-                            <motion.div layoutId="briefing-bot" className={cn("shrink-0", isSidebar ? "w-12 h-12 self-start" : "w-16 h-16 sm:w-20 sm:h-20")}>
+                        <div className={cn("relative z-10 w-full flex", isSidebar ? "flex-col gap-4" : "flex-row items-center gap-3 sm:gap-6")}>
+                            <motion.div layoutId="briefing-bot" className={cn("shrink-0", isSidebar ? "w-12 h-12 self-start" : "w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20")}>
                                 <BotEntity className="w-full h-full" />
                             </motion.div>
                             
                             <div className="flex-1">
-                                <motion.h2 layoutId="briefing-title" className={cn("font-bold font-serif text-foreground leading-tight", isSidebar ? "text-base mb-1" : "text-xl sm:text-2xl mb-2")}>
+                                <motion.h2 layoutId="briefing-title" className={cn("font-bold font-serif text-foreground leading-tight", isSidebar ? "text-base mb-1" : "text-base sm:text-xl md:text-2xl mb-1.5 sm:mb-2")}>
                                     {isSidebar ? `Hi ${userName}!` : `Welcome back${userName ? `, ${userName}` : ''}!`}
                                 </motion.h2>
 
                                 <motion.p
                                     layoutId="briefing-desc"
-                                    className={cn("text-muted-foreground leading-relaxed", isSidebar ? "text-sm" : "text-sm sm:text-base max-w-3xl mb-4")}
+                                    className={cn("text-muted-foreground leading-relaxed", isSidebar ? "text-sm" : "text-xs sm:text-sm md:text-base max-w-3xl mb-2 sm:mb-4")}
                                 >
                                     {isSidebar ? (
                                         <>I've analyzed your inbox. {urgentCount} email{urgentCount === 1 ? '' : 's'} need attention.</>

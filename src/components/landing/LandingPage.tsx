@@ -28,7 +28,7 @@ export function LandingPage() {
                 <BenefitsSection />
                 <Features />
                 <VideoTextHero />
-                <Pricing />
+                <Pricing onGetStarted={() => setIsPlanPickerOpen(true)} />
                 <SocialProof />
                 <FAQ />
                 <BottomCTA onGetStarted={() => setIsPlanPickerOpen(true)} />
