@@ -138,6 +138,13 @@ export function VideoTextHero() {
                     text-shadow: 0 0 1px, 0 0 2px;
                 }
 
+                @media (max-width: 768px) {
+                    .text-content {
+                        font-size: 22vw;
+                        padding: 1rem 0;
+                    }
+                }
+
                 @media (forced-colors: active) {
                     .text-content {
                         filter: none;
