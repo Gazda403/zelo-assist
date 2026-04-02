@@ -46,16 +46,16 @@ export function SentHistory() {
     }, [sentEmails, timeframe]);
 
     return (
-        <div className="flex flex-col bg-white/40 rounded-2xl border border-gray-100 overflow-hidden relative">
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                    <LucideHistory className="w-4 h-4 text-violet-500" />
+        <div className="flex flex-col bg-white/40 dark:bg-zinc-800/40 rounded-2xl border border-gray-100 dark:border-white/10 overflow-hidden relative">
+            <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <LucideHistory className="w-4 h-4 text-violet-500 dark:text-violet-400" />
                     Emails Sent
                 </h3>
                 <div className="relative">
                     <button
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        className="flex items-center gap-2 text-[10px] font-bold text-gray-400 bg-white px-2 py-1 rounded-lg border border-gray-50 cursor-pointer hover:border-violet-100 transition-colors"
+                        className="flex items-center gap-2 text-[10px] font-bold text-gray-400 dark:text-gray-400 bg-white dark:bg-zinc-900 px-2 py-1 rounded-lg border border-gray-50 dark:border-white/10 cursor-pointer hover:border-violet-100 dark:hover:border-violet-500/50 transition-colors"
                     >
                         <LucideFilter className="w-3 h-3" />
                         {timeframe.toUpperCase()}
@@ -68,7 +68,7 @@ export function SentHistory() {
                                 initial={{ opacity: 0, y: 5, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 5, scale: 0.95 }}
-                                className="absolute right-0 mt-2 w-32 bg-white border border-gray-100 rounded-xl shadow-lg z-20 py-1 overflow-hidden"
+                                className="absolute right-0 mt-2 w-32 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-white/10 rounded-xl shadow-lg z-20 py-1 overflow-hidden"
                             >
                                 {TIMEFRAMES.map((t) => (
                                     <button
@@ -79,7 +79,7 @@ export function SentHistory() {
                                         }}
                                         className={cn(
                                             "w-full text-left px-3 py-2 text-[10px] font-bold transition-colors flex items-center justify-between",
-                                            timeframe === t ? "text-violet-600 bg-violet-50" : "text-gray-400 hover:bg-gray-50"
+                                            timeframe === t ? "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-500/20" : "text-gray-400 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-800"
                                         )}
                                     >
                                         {t.toUpperCase()}
@@ -97,10 +97,10 @@ export function SentHistory() {
                     <div className="space-y-4">
                         {[1, 2, 3].map(i => (
                             <div key={i} className="animate-pulse flex items-start gap-3">
-                                <div className="w-8 h-8 bg-gray-100 rounded-lg flex-shrink-0" />
+                                <div className="w-8 h-8 bg-gray-100 dark:bg-zinc-700 rounded-lg flex-shrink-0" />
                                 <div className="flex-1 space-y-2">
-                                    <div className="h-3 bg-gray-100 rounded w-1/2" />
-                                    <div className="h-2 bg-gray-50 rounded w-full" />
+                                    <div className="h-3 bg-gray-100 dark:bg-zinc-700 rounded w-1/2" />
+                                    <div className="h-2 bg-gray-50 dark:bg-zinc-800 rounded w-full" />
                                 </div>
                             </div>
                         ))}
@@ -115,21 +115,21 @@ export function SentHistory() {
                             key={email.id}
                             initial={{ opacity: 0, x: 10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="group flex items-start gap-3 p-2 hover:bg-white rounded-xl transition-all cursor-pointer"
+                            className="group flex items-start gap-3 p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-xl transition-all cursor-pointer"
                         >
-                            <div className="w-8 h-8 bg-violet-50 text-violet-600 rounded-lg flex flex-shrink-0 items-center justify-center group-hover:bg-violet-600 group-hover:text-white transition-colors">
+                            <div className="w-8 h-8 bg-violet-50 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 rounded-lg flex flex-shrink-0 items-center justify-center group-hover:bg-violet-600 dark:group-hover:bg-violet-500 group-hover:text-white transition-colors">
                                 <LucideArrowUpRight className="w-4 h-4" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex justify-between items-center mb-0.5">
-                                    <p className="text-xs font-bold text-gray-900 truncate">
+                                    <p className="text-xs font-bold text-gray-900 dark:text-gray-100 truncate">
                                         {email.recipient.name}
                                     </p>
                                     <span className="text-[10px] text-gray-400 whitespace-nowrap">
                                         {new Date(email.date).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                                     </span>
                                 </div>
-                                <p className="text-[11px] text-gray-500 font-medium truncate">{email.subject}</p>
+                                <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">{email.subject}</p>
                             </div>
                         </motion.div>
                     ))

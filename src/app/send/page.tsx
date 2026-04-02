@@ -15,7 +15,7 @@ function SendPageContent() {
 
     return (
         <AppShell title="Send">
-            <div className="min-h-screen flex flex-col md:flex-row gap-6 p-6 bg-slate-50/30">
+            <div className="min-h-screen flex flex-col md:flex-row gap-6 p-6 bg-slate-50/30 dark:bg-zinc-900">
                 {/* Main Composer Area - Left */}
                 <div className="flex-[2] flex flex-col min-w-0">
                     <motion.div
@@ -33,7 +33,7 @@ function SendPageContent() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="bg-white/40 backdrop-blur-md rounded-2xl border border-gray-100 p-6 shadow-sm"
+                        className="bg-white/40 dark:bg-zinc-800/40 backdrop-blur-md rounded-2xl border border-gray-100 dark:border-white/10 p-6 shadow-sm"
                     >
                         <ReminderSidebar />
                     </motion.div>
@@ -57,7 +57,7 @@ function SendPageContent() {
 export default function SendPage() {
     return (
         <Suspense fallback={
-            <div className="h-screen flex items-center justify-center bg-gray-50">
+            <div className="h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-900">
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-violet-600" />
             </div>
         }>

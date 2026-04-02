@@ -49,10 +49,10 @@ export function ReminderSidebar() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 tracking-tight">Daily Task Reminder</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Daily Task Reminder</h2>
                 <button
                     onClick={() => setIsAdding(true)}
-                    className="p-1.5 bg-violet-50 text-violet-600 rounded-full hover:bg-violet-100 transition-colors"
+                    className="p-1.5 bg-violet-50 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 rounded-full hover:bg-violet-100 dark:hover:bg-violet-500/30 transition-colors"
                 >
                     <LucidePlus className="w-5 h-5" />
                 </button>
@@ -64,12 +64,12 @@ export function ReminderSidebar() {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="p-4 bg-white border border-violet-100 rounded-xl shadow-sm space-y-3"
+                        className="p-4 bg-white dark:bg-zinc-900 border border-violet-100 dark:border-white/10 rounded-xl shadow-sm space-y-3"
                     >
                         <input
                             type="text"
                             placeholder="What needs a reminder?"
-                            className="w-full text-sm focus:outline-none border-b border-gray-100 pb-2"
+                            className="w-full text-sm focus:outline-none border-b border-gray-100 dark:border-white/10 pb-2 bg-transparent dark:text-white dark:placeholder-gray-500"
                             value={newReminder}
                             onChange={(e) => setNewReminder(e.target.value)}
                         />
@@ -98,11 +98,11 @@ export function ReminderSidebar() {
                     reminders.map((reminder) => (
                         <div
                             key={reminder.id}
-                            className="group flex items-start gap-3 p-3 bg-white/40 hover:bg-white/80 border border-transparent hover:border-violet-100 rounded-xl transition-all"
+                            className="group flex items-start gap-3 p-3 bg-white/40 dark:bg-zinc-800/40 hover:bg-white/80 dark:hover:bg-zinc-700/80 border border-transparent hover:border-violet-100 dark:hover:border-violet-500/30 rounded-xl transition-all"
                         >
                             <div className="mt-1 w-2 h-2 rounded-full bg-violet-400 shrink-0" />
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm text-gray-800 font-medium leading-tight">{reminder.text}</p>
+                                <p className="text-sm text-gray-800 dark:text-gray-200 font-medium leading-tight">{reminder.text}</p>
                                 <div className="flex items-center gap-1 mt-1 text-[10px] text-gray-400 uppercase font-bold tracking-wider">
                                     <LucideClock className="w-3 h-3" />
                                     {reminder.time}
@@ -120,12 +120,12 @@ export function ReminderSidebar() {
             </div>
 
             {/* Real Calendar */}
-            <div className="mt-8 p-4 bg-white/60 rounded-2xl border border-gray-100 shadow-sm">
+            <div className="mt-8 p-4 bg-white/60 dark:bg-zinc-900/60 rounded-2xl border border-gray-100 dark:border-white/10 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                     <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">
                         {format(currentDate, 'MMMM yyyy')}
                     </span>
-                    <LucideCalendar className="w-4 h-4 text-violet-500" />
+                    <LucideCalendar className="w-4 h-4 text-violet-500 dark:text-violet-400" />
                 </div>
                 <div className="grid grid-cols-7 gap-2 text-center mb-2">
                     {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d, i) => (
@@ -142,8 +142,8 @@ export function ReminderSidebar() {
                                 key={i}
                                 className={cn(
                                     "aspect-square flex items-center justify-center text-[10px] rounded-lg transition-colors cursor-pointer",
-                                    !isCurrentMonth ? "text-gray-300" : "text-gray-700 hover:bg-violet-50",
-                                    isToday ? "bg-violet-600 text-white font-bold hover:bg-violet-700" : ""
+                                    !isCurrentMonth ? "text-gray-300 dark:text-zinc-600" : "text-gray-700 dark:text-zinc-300 hover:bg-violet-50 dark:hover:bg-violet-500/20",
+                                    isToday ? "bg-violet-600 !text-white font-bold hover:bg-violet-700" : ""
                                 )}
                             >
                                 {format(day, 'd')}

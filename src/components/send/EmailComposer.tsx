@@ -63,9 +63,9 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
     };
 
     return (
-        <div id="tour-send-logic" className="flex-1 flex flex-col bg-white overflow-hidden rounded-2xl border border-gray-100/80 shadow-xl shadow-black/[0.03] transition-all duration-500 hover:shadow-2xl hover:shadow-black/[0.05]">
+        <div id="tour-send-logic" className="flex-1 flex flex-col bg-white dark:bg-zinc-900 overflow-hidden rounded-2xl border border-gray-100/80 dark:border-white/10 shadow-xl shadow-black/[0.03] transition-all duration-500 hover:shadow-2xl hover:shadow-black/[0.05]">
             {/* Headers */}
-            <div className="p-6 border-b border-gray-50/80 space-y-4">
+            <div className="p-6 border-b border-gray-50/80 dark:border-white/10 space-y-4">
                 <div className="flex items-center gap-4 group">
                     <span className="text-sm font-medium text-gray-400 w-12 transition-colors group-focus-within:text-violet-500">To</span>
                     <input
@@ -99,13 +99,13 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
                     ref={textareaRef}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    className="w-full text-base bg-transparent focus:outline-none resize-none placeholder:text-gray-300 min-h-[200px] overflow-hidden leading-relaxed"
+                    className="w-full text-base bg-transparent focus:outline-none resize-none placeholder:text-gray-300 dark:placeholder:text-gray-600 dark:text-gray-200 min-h-[200px] overflow-hidden leading-relaxed"
                     placeholder="Write your email here or use the AI assistant below..."
                 />
             </div>
 
             {/* AI Action Area & Footer */}
-            <div className="p-5 flex flex-col gap-4 bg-gradient-to-b from-transparent to-gray-50/50 mt-auto border-t border-gray-50/80">
+            <div className="p-5 flex flex-col gap-4 bg-gradient-to-b from-transparent to-gray-50/50 dark:to-zinc-800/50 mt-auto border-t border-gray-50/80 dark:border-white/10">
                 {/* AI Input (Floating Input Style) */}
                 <div className="relative group">
                     <div className="absolute inset-0 bg-violet-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -117,7 +117,7 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
                         value={aiInput}
                         onChange={(e) => setAiInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleAiGenerate()}
-                        className="w-full bg-white/80 backdrop-blur-xl border border-gray-200/60 rounded-full pl-12 pr-14 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-300 transition-all duration-300 shadow-sm hover:shadow-md hover:border-gray-300 placeholder:text-gray-400"
+                        className="w-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl border border-gray-200/60 dark:border-white/10 rounded-full pl-12 pr-14 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-300 transition-all duration-300 shadow-sm hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600 placeholder:text-gray-400 dark:text-gray-200"
                         placeholder="Write an email invitation to a dinner..."
                     />
                     <button
@@ -140,17 +140,17 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
                             {isSending ? "Sending..." : "Send"}
                             <LucideSend className="w-4 h-4" />
                         </button>
-                        <div className="h-5 w-px bg-gray-200" />
-                        <div className="flex items-center gap-0.5 text-gray-400">
-                            <button className="p-2 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideType className="w-4 h-4" /></button>
-                            <button className="p-2 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucidePaperclip className="w-4 h-4" /></button>
-                            <button className="p-2 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideImage className="w-4 h-4" /></button>
-                            <button className="p-2 hover:bg-violet-50 hover:text-violet-600 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideSmile className="w-4 h-4" /></button>
+                        <div className="h-5 w-px bg-gray-200 dark:bg-zinc-700" />
+                        <div className="flex items-center gap-0.5 text-gray-400 dark:text-gray-500">
+                            <button className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideType className="w-4 h-4" /></button>
+                            <button className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucidePaperclip className="w-4 h-4" /></button>
+                            <button className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideImage className="w-4 h-4" /></button>
+                            <button className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideSmile className="w-4 h-4" /></button>
                         </div>
                     </div>
-                    <div className="flex items-center gap-0.5 text-gray-400">
-                        <button className="p-2 hover:bg-gray-100 hover:text-gray-600 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideMoreVertical className="w-4 h-4" /></button>
-                        <button className="p-2 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideTrash2 className="w-4 h-4" /></button>
+                    <div className="flex items-center gap-0.5 text-gray-400 dark:text-gray-500">
+                        <button className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-gray-600 dark:hover:text-gray-300 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideMoreVertical className="w-4 h-4" /></button>
+                        <button className="p-2 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideTrash2 className="w-4 h-4" /></button>
                     </div>
                 </div>
             </div>

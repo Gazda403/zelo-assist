@@ -242,8 +242,8 @@ export default function HomePage() {
                                 key={f}
                                 onClick={() => setFilter(f)}
                                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all shadow-sm ${filter === f
-                                    ? 'bg-primary text-white shadow-primary/30'
-                                    : 'bg-white/70 backdrop-blur-sm text-gray-500 hover:bg-white/90 hover:text-gray-800 border border-white/60'
+                                    ? 'bg-primary text-white shadow-primary/30 dark:bg-violet-600 dark:text-white'
+                                    : 'bg-white/70 backdrop-blur-sm text-gray-500 hover:bg-white/90 hover:text-gray-800 border border-white/60 dark:bg-zinc-800/80 dark:text-gray-400 dark:hover:bg-zinc-700 dark:hover:text-gray-200 dark:border-white/10'
                                     }`}
                             >
                                 {f === '1d' ? 'Last 24h' : f === '7d' ? 'Last 7 Days' : f === '30d' ? 'Last Month' : 'All Time'}
@@ -278,8 +278,8 @@ export default function HomePage() {
                                         key={s}
                                         onClick={() => setSortBy(s)}
                                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all duration-200 ${sortBy === s
-                                            ? 'bg-white text-primary shadow-sm ring-1 ring-black/5'
-                                            : 'text-gray-500 hover:text-gray-900 hover:bg-white/80'
+                                            ? 'bg-white text-primary shadow-sm ring-1 ring-black/5 dark:bg-zinc-700 dark:text-white dark:ring-white/10'
+                                            : 'text-gray-500 hover:text-gray-900 hover:bg-white/80 dark:text-gray-400 dark:hover:text-white dark:hover:bg-zinc-700/80'
                                             }`}
                                     >
                                         {s}

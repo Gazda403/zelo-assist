@@ -102,8 +102,8 @@ export default function DraftWorkspace({ selectedEmail }: DraftWorkspaceProps) {
     // For this demo, we'll start with a blank or placeholder draft
     if (!selectedEmail) {
         return (
-            <div className="h-full flex flex-col items-center justify-center text-gray-400 bg-white/30">
-                <LucideEdit3 className="w-12 h-12 mb-4 opacity-20" />
+            <div className="h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 bg-white/30 dark:bg-zinc-900/30">
+                <LucideEdit3 className="w-12 h-12 mb-4 opacity-20 dark:opacity-30" />
                 <p>Select an email to start drafting</p>
             </div>
         );
@@ -286,13 +286,13 @@ export default function DraftWorkspace({ selectedEmail }: DraftWorkspaceProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 z-50 bg-white/80 backdrop-blur-xl flex flex-col"
+                        className="absolute inset-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl flex flex-col"
                     >
-                        <div className="p-6 border-b border-violet-100 flex items-center justify-between bg-white/60">
-                            <h2 className="font-bold text-gray-900">Original Email Content</h2>
+                        <div className="p-6 border-b border-violet-100 dark:border-white/5 flex items-center justify-between bg-white/60 dark:bg-zinc-900/60">
+                            <h2 className="font-bold text-gray-900 dark:text-gray-100">Original Email Content</h2>
                             <button
                                 onClick={() => setShowFullEmail(false)}
-                                className="p-2 hover:bg-gray-100 rounded-full text-gray-500 transition-colors"
+                                className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full text-gray-500 transition-colors"
                             >
                                 <LucideX className="w-5 h-5" />
                             </button>
@@ -300,12 +300,12 @@ export default function DraftWorkspace({ selectedEmail }: DraftWorkspaceProps) {
                         <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
                             {isLoadingBody ? (
                                 <div className="h-full flex flex-col items-center justify-center space-y-4">
-                                    <div className="w-8 h-8 border-4 border-violet-100 border-t-violet-600 rounded-full animate-spin" />
+                                    <div className="w-8 h-8 border-4 border-violet-100 dark:border-zinc-800 border-t-violet-600 dark:border-t-violet-500 rounded-full animate-spin" />
                                     <p className="text-sm text-gray-500 animate-pulse">Fetching full content...</p>
                                 </div>
                             ) : (
                                 <div className="max-w-3xl mx-auto">
-                                    <p className="whitespace-pre-wrap text-gray-700 leading-relaxed text-base font-sans">
+                                    <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-300 leading-relaxed text-base font-sans">
                                         {fullEmailBody}
                                     </p>
                                 </div>
