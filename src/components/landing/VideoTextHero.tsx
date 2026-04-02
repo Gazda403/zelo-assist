@@ -140,8 +140,9 @@ export function VideoTextHero() {
 
                 @media (max-width: 768px) {
                     .text-content {
-                        font-size: 22vw;
-                        padding: 1rem 0;
+                        font-size: 26vw;
+                        line-height: 0.85;
+                        padding: 2rem 3rem;
                     }
                 }
 
