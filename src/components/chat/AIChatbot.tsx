@@ -114,7 +114,7 @@ export function AIChatbot() {
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className="fixed bottom-6 right-6 w-96 h-[500px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50"
+                        className="fixed bottom-[80px] right-4 sm:bottom-6 sm:right-6 w-[calc(100vw-2rem)] sm:w-96 h-[65vh] sm:h-[500px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50"
                     >
                         {/* Header */}
                         <div className="p-4 border-b border-border bg-gradient-to-r from-accent/10 to-purple-500/10 flex items-center justify-between">
@@ -203,7 +203,7 @@ export function AIChatbot() {
                                                     // or actually, sending immediately is better UX:
                                                     handleSuggestionSend(suggestion);
                                                 }}
-                                                className="text-xs px-3 py-1.5 bg-accent/10 hover:bg-accent/20 text-accent-foreground rounded-full transition-colors border border-accent/20 text-left"
+                                                className="text-xs px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 font-medium rounded-full transition-colors text-left"
                                             >
                                                 {suggestion}
                                             </button>
