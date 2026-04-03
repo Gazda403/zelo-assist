@@ -3,12 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Inbox, FileEdit, Send, Trash2, Moon, Sun, Aperture, Bot, Bell, User, LogOut, Settings, Users, ChevronDown, CheckCircle2, Calendar, PlayCircle } from "lucide-react";
+import { Inbox, FileEdit, Send, Trash2, Moon, Sun, Aperture, Bot, Bell, User, LogOut, Settings, Users, ChevronDown, CheckCircle2, Calendar, PlayCircle, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useReminders } from "../providers/RemindersProvider";
+import { usePWA } from "../providers/PWAProvider";
 
 const NAV_ITEMS = [
     { label: "Inbox", icon: Inbox, href: "/" },
@@ -28,6 +29,7 @@ export function TopBar() {
     const userMenuRef = useRef<HTMLDivElement>(null);
     const notificationsRef = useRef<HTMLDivElement>(null);
     const [imgError, setImgError] = useState(false);
+    const { isInstallable, installApp } = usePWA();
 
     // Initialize theme based on document class or local storage
     useEffect(() => {
@@ -284,6 +286,18 @@ export function TopBar() {
                                                 <Users className="w-4 h-4 text-muted-foreground" />
                                                 Switch Account
                                             </button>
+                                            {isInstallable && (
+                                                <button 
+                                                    onClick={() => {
+                                                        installApp();
+                                                        setShowUserMenu(false);
+                                                    }}
+                                                    className="w-full text-left flex items-center gap-2 px-3 py-2 text-sm text-accent font-bold hover:bg-accent/10 rounded-lg transition-colors"
+                                                >
+                                                    <Download className="w-4 h-4" />
+                                                    Install Zelo Assist
+                                                </button>
+                                            )}
                                             <button className="w-full text-left flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent/10 rounded-lg transition-colors">
                                                 <Settings className="w-4 h-4 text-muted-foreground" />
                                                 Settings

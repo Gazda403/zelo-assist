@@ -39,13 +39,20 @@ export function SubscriptionBanner() {
                 setStatus(data);
                 setLoading(false);
                 
-                // Automatically show on load for a few seconds
+                // Automatically show on load for a few seconds, but only once every 24 hours
                 if (data) {
-                    setIsVisible(true);
-                    const timer = setTimeout(() => {
-                        setIsVisible(false);
-                    }, 6000); // 6 seconds total (fade in/out included)
-                    return () => clearTimeout(timer);
+                    const lastShown = localStorage.getItem('last_subscription_banner_shown');
+                    const now = new Date().getTime();
+                    const twentyFourHours = 24 * 60 * 60 * 1000;
+
+                    if (!lastShown || now - parseInt(lastShown) > twentyFourHours) {
+                        setIsVisible(true);
+                        localStorage.setItem('last_subscription_banner_shown', now.toString());
+                        const timer = setTimeout(() => {
+                            setIsVisible(false);
+                        }, 8000); 
+                        return () => clearTimeout(timer);
+                    }
                 }
             })
             .catch(() => setLoading(false));
