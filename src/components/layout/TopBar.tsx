@@ -75,8 +75,8 @@ export function TopBar() {
             <div className="mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2 max-w-7xl">
                 {/* Logo Area */}
                 <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-accent flex items-center justify-center text-primary-foreground shadow-lg shadow-accent/20">
-                        <Aperture className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden flex items-center justify-center shadow-lg shadow-accent/20 bg-white p-0.5">
+                        <img src="/icons/icon-512x512.png" alt="Zelo logo" className="w-full h-full object-contain" />
                     </div>
                     <div className="hidden md:block text-left">
                         <h1 className="font-serif font-bold text-lg leading-none">Zelo Assist</h1>

@@ -51,8 +51,8 @@ const Navbar: React.FC<NavbarProps> = ({ onGetStarted, onLogin }) => {
             <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
                 <nav className="pointer-events-auto h-12 md:h-14 px-6 md:px-12 flex items-center justify-between gap-4 md:gap-12 bg-white/45 backdrop-blur-xl border border-white/20 rounded-full shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] w-full max-w-4xl mx-auto transition-all duration-300 hover:bg-white/55 hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.1)]">
                     <div className="flex items-center space-x-2">
-                        <div className="bg-primary/10 p-1.5 rounded-lg text-primary">
-                            <Mail size={20} />
+                        <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shadow-sm bg-white p-0.5">
+                            <img src="/icons/icon-512x512.png" alt="Zelo logo" className="w-full h-full object-contain" />
                         </div>
                         <span className="font-sans font-bold text-lg text-gray-900 tracking-tight whitespace-nowrap">Zelo Assist</span>
                     </div>
