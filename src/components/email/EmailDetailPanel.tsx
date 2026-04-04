@@ -113,10 +113,19 @@ export function EmailDetailPanel({ emailId, sender, subject, date, snippet, onCl
                         <Loader2 className="w-8 h-8 text-accent animate-spin" />
                     </div>
                 ) : (
-                    <div className="prose prose-sm max-w-none">
-                        <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-                            {fullBody}
-                        </pre>
+                    <div className="prose prose-sm max-w-none h-full relative">
+                        {fullBody && /<html|<body|<div|<p|<br/i.test(fullBody) ? (
+                            <iframe
+                                srcDoc={`<base target="_blank" />${fullBody}`}
+                                className="w-full h-[60vh] bg-white rounded-xl border border-gray-100"
+                                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+                                title="Email Content"
+                            />
+                        ) : (
+                            <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-700 dark:text-gray-300 p-4 bg-gray-50 dark:bg-zinc-900 rounded-xl mt-2">
+                                {fullBody}
+                            </pre>
+                        )}
                     </div>
                 )}
             </div>

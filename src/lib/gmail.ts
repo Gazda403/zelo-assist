@@ -299,17 +299,24 @@ export async function getEmailBody(accessToken: string, messageId: string) {
 
         const getBody = (payload: any): string => {
             if (payload.body?.data) {
-                return Buffer.from(payload.body.data, 'base64').toString();
+                return Buffer.from(payload.body.data, 'base64').toString('utf-8');
             }
 
             if (payload.parts) {
+                // First try to find HTML
+                for (const part of payload.parts) {
+                    if (part.mimeType === 'text/html' && part.body?.data) {
+                        return Buffer.from(part.body.data, 'base64').toString('utf-8');
+                    }
+                }
+                // Fallback to plain text
                 for (const part of payload.parts) {
                     if (part.mimeType === 'text/plain' && part.body?.data) {
-                        return Buffer.from(part.body.data, 'base64').toString();
+                        return Buffer.from(part.body.data, 'base64').toString('utf-8');
                     }
-                    if (part.mimeType === 'text/html' && part.body?.data) {
-                        return Buffer.from(part.body.data, 'base64').toString();
-                    }
+                }
+                // Check nested parts
+                for (const part of payload.parts) {
                     if (part.parts) {
                         const result = getBody(part);
                         if (result) return result;
