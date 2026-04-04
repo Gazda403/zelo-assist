@@ -276,15 +276,15 @@ export default function HomePage() {
 
                     {/* Email List */}
                     <div>
-                        <div className="hidden sm:flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4 sm:gap-0">
-                            <div className="flex flex-col gap-1">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4 sm:gap-0">
+                            <div className="hidden sm:flex flex-col gap-1">
                                 <h2 className="text-lg font-serif font-bold dark:text-white">Your Emails</h2>
                                 <div className="text-sm text-muted-foreground">
                                     Sorted by {sortBy} &bull; {emails.length} items
                                 </div>
                             </div>
 
-                            <div id="tour-sort" className="flex items-center gap-1.5 bg-white/60 p-1.5 rounded-xl border border-white/60 dark:bg-zinc-800/80 dark:border-white/10 backdrop-blur-md shadow-sm w-full sm:w-auto overflow-x-auto">
+                            <div id="tour-sort" className="flex items-center justify-center sm:justify-start gap-1.5 bg-white/60 p-1.5 rounded-xl border border-white/60 dark:bg-zinc-800/80 dark:border-white/10 backdrop-blur-md shadow-sm w-full sm:w-auto overflow-x-auto">
                                 {(['urgency', 'date', 'alphabetical'] as const).map(s => (
                                     <button
                                         key={s}
