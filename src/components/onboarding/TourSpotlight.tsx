@@ -158,33 +158,44 @@ function getTooltipPos(
     rect: DOMRect,
     side: TourStep["tooltipSide"],
     padding: number
-): { top: number; left: number } {
+): { top: number; left: number; width: number } {
     const gap = 14;
     const vw = typeof window !== "undefined" ? window.innerWidth : 1280;
     const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+    const actualWidth = Math.min(TOOLTIP_WIDTH, vw - 32);
     let top = 0;
     let left = 0;
 
     if (side === "bottom") {
         top = rect.bottom + padding + gap;
-        left = rect.left + rect.width / 2 - TOOLTIP_WIDTH / 2;
+        left = rect.left + rect.width / 2 - actualWidth / 2;
     } else if (side === "top") {
         top = rect.top - padding - gap - 220;
-        left = rect.left + rect.width / 2 - TOOLTIP_WIDTH / 2;
+        left = rect.left + rect.width / 2 - actualWidth / 2;
     } else if (side === "right") {
         top = rect.top + rect.height / 2 - 100;
         left = rect.right + padding + gap;
+        // Fallback to bottom on small screens if it overflows to the right
+        if (vw < 768 && left + actualWidth > vw - 16) {
+            top = rect.bottom + padding + gap;
+            left = rect.left + rect.width / 2 - actualWidth / 2;
+        }
     } else {
         top = rect.top + rect.height / 2 - 100;
-        left = rect.left - padding - gap - TOOLTIP_WIDTH;
+        left = rect.left - padding - gap - actualWidth;
+        // Fallback to bottom on small screens if it overflows to the left
+        if (vw < 768 && left < 16) {
+            top = rect.bottom + padding + gap;
+            left = rect.left + rect.width / 2 - actualWidth / 2;
+        }
     }
 
     // Clamp to viewport
-    left = Math.max(16, Math.min(left, vw - TOOLTIP_WIDTH - 16));
+    left = Math.max(16, Math.min(left, vw - actualWidth - 16));
     if (top < 16) top = 16;
     if (top + 260 > vh) top = vh - 276;
 
-    return { top, left };
+    return { top, left, width: actualWidth };
 }
 
 // ─── Main Component ──────────────────────────────────────────────────────────
@@ -456,16 +467,15 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
                 {!currentStep.targetId && (
                     <motion.div
                         key="welcome"
-                        initial={{ scale: 0.88, opacity: 0, y: 24 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.88, opacity: 0 }}
+                        initial={{ scale: 0.88, opacity: 0, x: "-50%", y: "calc(-50% + 24px)" }}
+                        animate={{ scale: 1, opacity: 1, x: "-50%", y: "-50%" }}
+                        exit={{ scale: 0.88, opacity: 0, x: "-50%", y: "-50%" }}
                         transition={{ type: "spring", stiffness: 300, damping: 26 }}
                         style={{
                             position: "absolute",
                             top: "50%",
                             left: "50%",
-                            transform: "translate(-50%, -50%)",
-                            width: TOOLTIP_WIDTH,
+                            width: "min(340px, calc(100vw - 32px))",
                             pointerEvents: "auto",
                             zIndex: 101,
                         }}
@@ -496,7 +506,7 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
                             position: "absolute",
                             top: tooltipPos.top,
                             left: tooltipPos.left,
-                            width: TOOLTIP_WIDTH,
+                            width: tooltipPos.width,
                             pointerEvents: "auto",
                             zIndex: 101,
                         }}
