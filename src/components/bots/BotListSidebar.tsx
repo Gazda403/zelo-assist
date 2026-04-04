@@ -167,6 +167,23 @@ export function BotListSidebar({
                                 Monitors threads and suggests follow-up drafts.
                             </p>
                         </div>
+
+                        {/* Alert Bot */}
+                        <div
+                            onClick={() => onAddPreset?.('preset_alert_bot')}
+                            className={`
+                            p-3.5 rounded-2xl border transition-all cursor-pointer group hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:-translate-y-0.5
+                            bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md hover:bg-white dark:hover:bg-zinc-800 border-gray-200/50 dark:border-white/5 hover:border-amber-200 dark:hover:border-amber-500/30
+                        `}
+                        >
+                            <div className="flex justify-between items-start mb-1.5">
+                                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">🔔 Alert Bot</h3>
+                                <span className="text-[10px] bg-gray-100/80 dark:bg-zinc-700/80 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider group-hover:bg-amber-100 dark:group-hover:bg-amber-500/20 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">Free</span>
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
+                                Trip wire for your inbox. AI-powered rule detection.
+                            </p>
+                        </div>
                     </div>
                 )}
 

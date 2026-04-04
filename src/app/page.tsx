@@ -8,6 +8,7 @@ import { Sparkles, TrendingUp, Mail, LogIn, Loader2, ChevronDown } from "lucide-
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { fetchEmailsAction } from "@/app/actions/gmail";
+import { getBotsAction, updateBotAction } from "@/app/actions/bots";
 import { LandingPage } from "@/components/landing/LandingPage";
 import { EmailDetailPanel } from "@/components/email/EmailDetailPanel";
 import { WelcomeBriefing } from "@/components/dashboard/WelcomeBriefing";
@@ -93,6 +94,126 @@ export default function HomePage() {
             loadData(true);
         }
     }, [filter, status]);
+
+    // ── Alert Bot Notification Engine ──────────────────────────────────────
+    // After emails load, check them against any enabled Alert Bots.
+    // Fires in-app browser notifications for any match.
+    useEffect(() => {
+        if (status !== 'authenticated' || emails.length === 0) return;
+
+        const runAlertCheck = async () => {
+            try {
+                const allBots = await getBotsAction();
+                const alertBots = allBots.filter(b =>
+                    b.enabled &&
+                    b.alertConfig &&
+                    (b.alertConfig.senderFilters.length > 0 || b.alertConfig.keywords.length > 0) &&
+                    (b.id === 'preset_alert_bot' || b.name.includes('Alert Bot'))
+                );
+
+                if (alertBots.length === 0) return;
+
+                // Request notification permission if not yet granted
+                if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
+                    await Notification.requestPermission();
+                }
+
+                // Only scan the most recent emails (first 20 after reset)
+                const toScan = emails.slice(0, 20);
+
+                for (const bot of alertBots) {
+                    const cfg = bot.alertConfig!;
+                    const newMatches: any[] = [];
+
+                    for (const email of toScan) {
+                        const subjectLower = email.subject.toLowerCase();
+                        const senderEmail = email.sender.email.toLowerCase();
+                        const textToSearch =
+                            cfg.searchIn === 'subject' ? subjectLower :
+                            cfg.searchIn === 'body' ? '' :   // body not available here, skip
+                            subjectLower;
+
+                        let matchedKeyword: string | undefined;
+                        let matchedSender: string | undefined;
+
+                        // Check sender filters
+                        for (const filter of cfg.senderFilters) {
+                            const f = filter.toLowerCase();
+                            if (f.startsWith('@')) {
+                                if (senderEmail.endsWith(f)) { matchedSender = filter; break; }
+                            } else {
+                                if (senderEmail === f) { matchedSender = filter; break; }
+                            }
+                        }
+
+                        // Check keywords in subject
+                        if (!matchedSender) {
+                            for (const kw of cfg.keywords) {
+                                if (textToSearch.includes(kw.toLowerCase())) {
+                                    matchedKeyword = kw;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (matchedKeyword || matchedSender) {
+                            // Check we haven't already alerted on this email
+                            const alreadyAlerted = (cfg.recentAlerts ?? []).some(a => a.emailId === email.id);
+                            if (!alreadyAlerted) {
+                                newMatches.push({
+                                    emailId: email.id,
+                                    subject: email.subject,
+                                    sender: `${email.sender.name} <${email.sender.email}>`,
+                                    matchedKeyword,
+                                    matchedSender,
+                                    detectedAt: new Date().toISOString(),
+                                });
+
+                                // Fire browser notification
+                                if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+                                    new Notification('🔔 Alert Bot', {
+                                        body: `${email.subject}\nFrom: ${email.sender.name}`,
+                                        icon: '/icon.png',
+                                        tag: email.id, // deduplication
+                                    });
+                                }
+                            }
+                        }
+                    }
+
+                    if (newMatches.length > 0) {
+                        // Persist the matches back to the bot's alertConfig
+                        const updatedAlerts = [
+                            ...newMatches,
+                            ...(cfg.recentAlerts ?? []),
+                        ].slice(0, 20); // Keep last 20
+
+                        await updateBotAction(bot.id, {
+                            alertConfig: { ...cfg, recentAlerts: updatedAlerts },
+                            stats: {
+                                ...bot.stats,
+                                totalExecutions: bot.stats.totalExecutions + newMatches.length,
+                                successCount: bot.stats.successCount + newMatches.length,
+                            },
+                        });
+
+                        toast(`🔔 Alert: ${newMatches[0].subject}`, {
+                            description: `From ${emails.find(e => e.id === newMatches[0].emailId)?.sender.name}`,
+                            duration: 6000,
+                        });
+                    }
+                }
+            } catch (err) {
+                // Silent fail — don't block inbox on alert errors
+                console.warn('Alert Bot check failed:', err);
+            }
+        };
+
+        // Run check after a short delay so it doesn't compete with render
+        const timer = setTimeout(runAlertCheck, 2000);
+        return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [emails, status]);
 
     const handleLoadMore = () => {
         if (nextPageToken) {

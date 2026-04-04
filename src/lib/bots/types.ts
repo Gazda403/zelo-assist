@@ -44,6 +44,9 @@ export interface EmailBot {
 
     // Knowledge Base
     policyConfig?: BotPolicyConfig;
+
+    // Alert Bot
+    alertConfig?: AlertBotConfig;
 }
 
 // ============================================================================
@@ -404,6 +407,31 @@ export interface KnowledgeBasePolicy {
 export interface BotPolicyConfig {
     enabled: boolean;
     policies: KnowledgeBasePolicy[];
+}
+
+// ============================================================================
+// Alert Bot Config
+// ============================================================================
+
+/**
+ * Configuration for the Alert Bot — stores AI-generated detection rules
+ */
+export interface AlertBotConfig {
+    userDescription: string;   // The raw text the user typed
+    senderFilters: string[];   // Email addresses or @domain.com patterns
+    keywords: string[];        // Words/phrases to match against
+    searchIn: 'subject' | 'body' | 'both';
+    recentAlerts?: AlertMatch[]; // Last 10 matched emails
+    lastGeneratedAt?: string;  // ISO date string
+}
+
+export interface AlertMatch {
+    emailId: string;
+    subject: string;
+    sender: string;
+    matchedKeyword?: string;
+    matchedSender?: string;
+    detectedAt: string; // ISO date string
 }
 
 // ============================================================================

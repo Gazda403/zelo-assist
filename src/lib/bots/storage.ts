@@ -131,6 +131,9 @@ export async function updateBot(
     if (updates.actions) dbUpdates.actions = updates.actions;
     if (updates.safety) dbUpdates.safety = updates.safety;
     if (updates.stats) dbUpdates.stats = updates.stats;
+    if (updates.followUpConfig !== undefined) dbUpdates.follow_up_config = updates.followUpConfig;
+    if (updates.policyConfig !== undefined) dbUpdates.policy_config = updates.policyConfig;
+    if (updates.alertConfig !== undefined) dbUpdates.alert_config = updates.alertConfig;
     if (updates.acceptedTermsAt) dbUpdates.accepted_terms_at = updates.acceptedTermsAt;
     if (updates.acceptedTermsVersion) dbUpdates.accepted_terms_version = updates.acceptedTermsVersion;
 
@@ -386,7 +389,10 @@ function mapRowToBot(row: any): EmailBot {
             lastUsedTemplate: undefined
         },
         acceptedTermsAt: row.accepted_terms_at ? new Date(row.accepted_terms_at) : undefined,
-        acceptedTermsVersion: row.accepted_terms_version
+        acceptedTermsVersion: row.accepted_terms_version,
+        followUpConfig: row.follow_up_config || undefined,
+        policyConfig: row.policy_config || undefined,
+        alertConfig: row.alert_config || undefined,
     };
 }
 
@@ -411,6 +417,9 @@ function mapBotToRow(bot: EmailBot): any {
         actions: bot.actions,
         safety: bot.safety,
         stats: bot.stats,
+        follow_up_config: (bot as any).followUpConfig || null,
+        policy_config: (bot as any).policyConfig || null,
+        alert_config: (bot as any).alertConfig || null,
         accepted_terms_at: bot.acceptedTermsAt,
         accepted_terms_version: bot.acceptedTermsVersion
     };

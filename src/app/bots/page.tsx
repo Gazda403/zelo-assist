@@ -17,6 +17,7 @@ import { STARTUP_BOT_PRESET } from '@/ai/bots/startup-bot';
 import { ECOMMERCE_BOT_PRESET } from '@/ai/bots/ecommerce-bot';
 import { GENERIC_REPLY_BOT_PRESET } from '@/ai/bots/generic-reply-bot';
 import { FOLLOW_UP_BOT_PRESET } from '@/ai/bots/follow-up-bot';
+import { ALERT_BOT_PRESET } from '@/ai/bots/alert-bot';
 import { createBotAction } from '@/app/actions/bots';
 import { toast } from 'sonner';
 
@@ -158,6 +159,26 @@ export default function BotsPage() {
                 toast.success("Follow-Up Bot added successfully!");
             } catch (error: any) {
                 console.error("Failed to add follow-up bot:", error);
+                toast.error(error.message || "Failed to add bot");
+            }
+        } else if (presetId === 'preset_alert_bot') {
+            try {
+                const newBot: EmailBot = {
+                    ...structuredClone(ALERT_BOT_PRESET),
+                    id: crypto.randomUUID(),
+                    userId: 'current-user',
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                };
+
+                const savedBot = await createBotAction(newBot);
+
+                setBots(prev => [...prev, savedBot]);
+                setSelectedBotId(savedBot.id);
+
+                toast.success("🔔 Alert Bot added! Configure your alert rules to get started.");
+            } catch (error: any) {
+                console.error("Failed to add alert bot:", error);
                 toast.error(error.message || "Failed to add bot");
             }
         }

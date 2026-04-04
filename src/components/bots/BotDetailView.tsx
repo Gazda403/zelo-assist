@@ -20,6 +20,7 @@ import { FoundersBotDashboard } from './FoundersBotDashboard';
 import { EcommerceBotDashboard } from './EcommerceBotDashboard';
 import { GenericReplyBotDashboard } from './GenericReplyBotDashboard';
 import { FollowUpBotDashboard } from './FollowUpBotDashboard';
+import { AlertBotDashboard } from './AlertBotDashboard';
 import { updateBotAction } from '@/app/actions/bots';
 import { Clock, Book, Brain } from 'lucide-react';
 import { AcknowledgmentTemplateEditor } from './AcknowledgmentTemplateEditor';
@@ -117,6 +118,10 @@ export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDe
     const isFollowUpBot = bot.id === 'preset_follow_up_bot' ||
         bot.name.includes('Follow-Up') ||
         bot.name.includes('Follow Up');
+
+    const isAlertBot = bot.id === 'preset_alert_bot' ||
+        bot.name.includes('Alert Bot') ||
+        bot.name.toLowerCase().includes('trip wire');
 
     const tabs = [
         { id: 'overview' as Tab, label: 'Overview', icon: Info },
@@ -231,6 +236,13 @@ export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDe
                             <GenericReplyBotDashboard bot={bot} onBotUpdated={onBotUpdated} />
                         ) : (bot.id === 'preset_follow_up_bot' || bot.name.includes('Follow-Up') || bot.name.includes('Follow Up')) ? (
                             <FollowUpBotDashboard
+                                bot={bot}
+                                onBotUpdated={onBotUpdated}
+                                onDelete={handleDelete}
+                                isDeleting={isDeleting}
+                            />
+                        ) : isAlertBot ? (
+                            <AlertBotDashboard
                                 bot={bot}
                                 onBotUpdated={onBotUpdated}
                                 onDelete={handleDelete}
