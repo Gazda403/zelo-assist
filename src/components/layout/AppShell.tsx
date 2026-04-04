@@ -1,6 +1,5 @@
 import { AppHeader } from "./AppHeader";
 import { AIChatbot } from "../chat/AIChatbot";
-import { SubscriptionBanner } from "../dashboard/SubscriptionBanner";
 
 export function AppShell({
     children,
@@ -32,9 +31,6 @@ export function AppShell({
 
             {/* AI Chatbot */}
             <AIChatbot />
-
-            {/* Floating Subscription Status */}
-            <SubscriptionBanner />
         </div>
     );
 }

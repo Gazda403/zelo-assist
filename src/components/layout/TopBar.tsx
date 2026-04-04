@@ -277,9 +277,14 @@ export function TopBar() {
                                         exit={{ opacity: 0, scale: 0.95, y: 10 }}
                                         className="absolute top-full right-0 mt-2 w-64 bg-card border border-border rounded-xl shadow-xl overflow-hidden z-50 origin-top-right"
                                     >
-                                        <div className="p-4 border-b border-border bg-muted/30">
-                                            <p className="font-semibold text-sm truncate">{session?.user?.name || "User"}</p>
-                                            <p className="text-xs text-muted-foreground truncate">{session?.user?.email}</p>
+                                        <div className="p-4 border-b border-border bg-muted/30 flex items-center justify-between gap-2 overflow-hidden">
+                                            <div className="min-w-0 flex-1">
+                                                <p className="font-semibold text-sm truncate">{session?.user?.name || "User"}</p>
+                                                <p className="text-xs text-muted-foreground truncate">{session?.user?.email}</p>
+                                            </div>
+                                            <div className="px-2 py-0.5 rounded-full bg-gradient-to-tr from-accent/20 to-accent/10 border border-accent/20 flex-shrink-0">
+                                                <span className="text-[10px] font-bold text-accent tracking-wider uppercase">Free Tier</span>
+                                            </div>
                                         </div>
                                         <div className="p-1">
                                             <button className="w-full text-left flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent/10 rounded-lg transition-colors">
