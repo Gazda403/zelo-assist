@@ -27,7 +27,7 @@ export async function getLastEmails(
     try {
         // 1. List messages
         let url = `${GMAIL_API_BASE}/messages?maxResults=${limit}`;
-        if (pageToken) url += `&pageToken=${pageToken}`;
+        if (pageToken) url += `&pageToken=${encodeURIComponent(pageToken)}`;
         if (query) url += `&q=${encodeURIComponent(query)}`;
 
         const listRes = await fetch(url, {

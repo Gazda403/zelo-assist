@@ -12,6 +12,7 @@ import { LandingPage } from "@/components/landing/LandingPage";
 import { EmailDetailPanel } from "@/components/email/EmailDetailPanel";
 import { WelcomeBriefing } from "@/components/dashboard/WelcomeBriefing";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 // Using strict types locally if not exported, or just infer
 interface Email {
@@ -50,25 +51,36 @@ export default function HomePage() {
         try {
             const data = await fetchEmailsAction(token, filter);
             if (data) {
-                if ('error' in data && data.error === 'Unauthorized') {
-                    console.error("Authentication error:", data.message);
-                    router.push('/');
-                    return;
-                }
-
-                if (reset) {
-                    setEmails(data.emails as Email[]);
+                if ('error' in data) {
+                    if (data.error === 'Unauthorized') {
+                        console.error("Authentication error:", data.message);
+                        router.push('/');
+                        return;
+                    } else {
+                        console.error("Server API Error:", data.message);
+                        toast.error(`Failed to load emails: ${data.message}`);
+                    }
                 } else {
-                    setEmails(prev => [...prev, ...data.emails as Email[]]);
-                }
-                setNextPageToken(data.nextPageToken);
-                if (data.unreadCount !== undefined) {
-                    setUnreadCount(data.unreadCount);
+                    if (reset) {
+                        setEmails(data.emails as Email[]);
+                    } else {
+                        setEmails(prev => {
+                            // Filter duplicates by tracking existing IDs
+                            const existingIds = new Set(prev.map(e => e.id));
+                            const uniqueNew = (data.emails as Email[]).filter(e => !existingIds.has(e.id));
+                            return [...prev, ...uniqueNew];
+                        });
+                    }
+                    setNextPageToken(data.nextPageToken);
+                    if (data.unreadCount !== undefined) {
+                        setUnreadCount(data.unreadCount);
+                    }
                 }
                 // Enriched emails are set to state
             }
         } catch (error: any) {
             console.error("Failed to load emails:", error);
+            toast.error(error.message || "Failed to load emails");
         } finally {
             if (reset) setLoading(false);
             else setLoadingMore(false);
