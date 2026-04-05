@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Calendar, User, Loader2, Sparkles, Send, ArrowLeft } from 'lucide-react';
+import { Loader2, Sparkles, Send, ArrowLeft } from 'lucide-react';
 import { fetchEmailBodyAction } from '@/app/actions/gmail';
 import { useRouter } from 'next/navigation';
 
@@ -77,88 +77,106 @@ export function EmailDetailPanel({ emailId, sender, subject, date, snippet, onCl
         router.push(`/send?to=${encodeURIComponent(sender.email)}`);
     };
 
+    const brandInfo = getServiceBrand(sender.email, sender.name);
+    const initials = getCleanName(sender.name).split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
     return (
-        <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="h-full flex flex-col bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 shadow-2xl overflow-hidden"
-        >
-            {/* Header */}
-            <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/10 bg-gradient-to-br from-accent/5 to-transparent dark:bg-zinc-900/40">
-                <div className="flex items-center gap-3 mb-4">
-                    <button
-                        onClick={onClose}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-700/50 rounded-lg transition-colors"
-                        aria-label="Close email detail"
-                    >
-                        <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-                    </button>
-                    <h2 className="text-2xl font-serif font-bold flex-1 dark:text-white">{getCleanName(sender.name)}</h2>
-                </div>
-
-                <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2 text-muted-foreground dark:text-gray-400">
-                        <User className="w-4 h-4" />
-                        <span className="font-medium text-foreground dark:text-white">{getCleanName(sender.name)}</span>
-                        <span className="text-xs">({sender.email})</span>
+        <>
+            {/* Mobile: slide-up full-screen */}
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+                className="h-full flex flex-col bg-white dark:bg-zinc-900 overflow-hidden"
+            >
+                {/* Mobile header – sticky so it stays visible while scrolling the body */}
+                <div className="sticky top-0 z-10 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-b border-gray-100 dark:border-white/10 px-4 pt-4 pb-3 safe-area-top">
+                    {/* Back row */}
+                    <div className="flex items-center gap-3 mb-3">
+                        <button
+                            onClick={onClose}
+                            className="flex items-center gap-1.5 text-violet-600 dark:text-violet-400 font-medium text-sm p-1 -ml-1 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-500/10 transition-colors"
+                            aria-label="Back to inbox"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                            <span>Inbox</span>
+                        </button>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground dark:text-gray-400">
-                        <Calendar className="w-4 h-4" />
-                        <span>{new Date(date).toLocaleString()}</span>
-                    </div>
-                </div>
-            </div>
 
-            {/* Body — snippet shown immediately, full body swaps in silently */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-                {loading ? (
-                    <div className="prose prose-sm max-w-none">
-                        <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-700 dark:text-gray-300 p-4 bg-gray-50 dark:bg-zinc-900 rounded-xl mt-2">
-                            {snippet}
-                        </pre>
-                        <div className="flex items-center gap-2 mt-3 text-xs text-gray-400">
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                            Loading full email...
+                    {/* Subject */}
+                    <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-tight mb-3 pr-2">
+                        {subject}
+                    </h1>
+
+                    {/* Sender row */}
+                    <div className="flex items-center gap-3">
+                        {/* Avatar */}
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold text-sm ${brandInfo ? `${brandInfo.color} ${brandInfo.text}` : 'bg-violet-100 dark:bg-violet-500/20 text-violet-700 dark:text-violet-300'}`}>
+                            {brandInfo ? brandInfo.icon : initials}
                         </div>
+                        <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-gray-900 dark:text-white text-sm truncate">{getCleanName(sender.name)}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{sender.email}</p>
+                        </div>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 shrink-0">
+                            {new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        </p>
                     </div>
-                ) : (
-                    <div className="prose prose-sm max-w-none h-full relative">
-                        {fullBody && /<html|<body|<div|<p|<br/i.test(fullBody) ? (
-                            <iframe
-                                srcDoc={`<base target="_blank" />${fullBody}`}
-                                className="w-full h-[60vh] bg-white rounded-xl border border-gray-100"
-                                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin"
-                                title="Email Content"
-                            />
-                        ) : (
-                            <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-700 dark:text-gray-300 p-4 bg-gray-50 dark:bg-zinc-900 rounded-xl mt-2">
-                                {fullBody}
-                            </pre>
-                        )}
-                    </div>
-                )}
-            </div>
+                </div>
 
-            <div className="p-4 sm:p-5 border-t border-white/40 dark:border-white/10 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-sm flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleAiDraftReply}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-br from-[#A182EE] via-[#A182EE] to-[#8B5CF6] text-white rounded-2xl font-bold transition-all shadow-[0_10px_20px_-5px_rgba(161,130,238,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(161,130,238,0.6)] hover:brightness-110 group"
-                >
-                    <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
-                    AI Draft Reply
-                </motion.button>
-                <motion.button
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleCreateNew}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-br from-[#FF7F11] via-[#FF7F11] to-[#F97316] text-white rounded-2xl font-bold transition-all shadow-[0_10px_20px_-5px_rgba(255,127,17,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(255,127,17,0.6)] hover:brightness-110 group"
-                >
-                    <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    Create New with AI
-                </motion.button>
-            </div>
-        </motion.div>
+                {/* Body */}
+                <div className="flex-1 overflow-y-auto">
+                    {loading ? (
+                        <div className="px-4 py-5">
+                            <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-700 dark:text-gray-300 p-4 bg-gray-50 dark:bg-zinc-800 rounded-xl">
+                                {snippet}
+                            </pre>
+                            <div className="flex items-center gap-2 mt-3 text-xs text-gray-400 px-1">
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                                Loading full email...
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="px-0 py-0">
+                            {fullBody && /<html|<body|<div|<p|<br/i.test(fullBody) ? (
+                                <iframe
+                                    srcDoc={`<base target="_blank" />${fullBody}`}
+                                    className="w-full bg-white dark:bg-zinc-900"
+                                    style={{ height: 'calc(100dvh - 220px)', minHeight: '400px', border: 'none' }}
+                                    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+                                    title="Email Content"
+                                />
+                            ) : (
+                                <div className="px-4 py-4">
+                                    <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-700 dark:text-gray-300 p-4 bg-gray-50 dark:bg-zinc-800 rounded-xl">
+                                        {fullBody}
+                                    </pre>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                {/* Action buttons — fixed at bottom on mobile */}
+                <div className="safe-area-bottom px-4 py-4 border-t border-gray-100 dark:border-white/10 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md flex flex-col sm:flex-row gap-3">
+                    <motion.button
+                        whileTap={{ scale: 0.97 }}
+                        onClick={handleAiDraftReply}
+                        className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-br from-[#A182EE] to-[#8B5CF6] text-white rounded-2xl font-bold shadow-[0_10px_20px_-5px_rgba(161,130,238,0.4)] active:brightness-90 group"
+                    >
+                        <Sparkles className="w-5 h-5" />
+                        AI Draft Reply
+                    </motion.button>
+                    <motion.button
+                        whileTap={{ scale: 0.97 }}
+                        onClick={handleCreateNew}
+                        className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-br from-[#FF7F11] to-[#F97316] text-white rounded-2xl font-bold shadow-[0_10px_20px_-5px_rgba(255,127,17,0.4)] active:brightness-90 group"
+                    >
+                        <Send className="w-4 h-4" />
+                        Create New with AI
+                    </motion.button>
+                </div>
+            </motion.div>
+        </>
     );
 }

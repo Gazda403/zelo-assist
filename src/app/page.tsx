@@ -466,21 +466,35 @@ export default function HomePage() {
                     </div>
                 </div>
 
-                {/* Right Column: Email Detail */}
+                {/* Right Column / Mobile Full-Screen: Email Detail */}
                 {selectedEmailId && (() => {
                     const selectedEmail = emails.find(e => e.id === selectedEmailId);
                     if (!selectedEmail) return null;
                     return (
-                        <div className="w-full lg:w-1/2 h-full overflow-y-auto hide-scrollbar border-l border-black/5 dark:border-white/5 pl-0 lg:pl-6 transition-all duration-300 pb-20">
-                            <EmailDetailPanel
-                                emailId={selectedEmail.id}
-                                sender={selectedEmail.sender}
-                                subject={selectedEmail.subject}
-                                date={selectedEmail.date}
-                                snippet={selectedEmail.snippet}
-                                onClose={() => setSelectedEmailId(null)}
-                            />
-                        </div>
+                        <>
+                            {/* Mobile full-screen overlay */}
+                            <div className="fixed inset-0 z-50 bg-white dark:bg-zinc-900 flex flex-col lg:hidden overflow-hidden">
+                                <EmailDetailPanel
+                                    emailId={selectedEmail.id}
+                                    sender={selectedEmail.sender}
+                                    subject={selectedEmail.subject}
+                                    date={selectedEmail.date}
+                                    snippet={selectedEmail.snippet}
+                                    onClose={() => setSelectedEmailId(null)}
+                                />
+                            </div>
+                            {/* Desktop side-by-side pane */}
+                            <div className="hidden lg:block lg:w-1/2 h-full overflow-y-auto hide-scrollbar border-l border-black/5 dark:border-white/5 pl-6 transition-all duration-300 pb-20">
+                                <EmailDetailPanel
+                                    emailId={selectedEmail.id}
+                                    sender={selectedEmail.sender}
+                                    subject={selectedEmail.subject}
+                                    date={selectedEmail.date}
+                                    snippet={selectedEmail.snippet}
+                                    onClose={() => setSelectedEmailId(null)}
+                                />
+                            </div>
+                        </>
                     );
                 })()}
             </div>
