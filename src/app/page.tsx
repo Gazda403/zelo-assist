@@ -466,12 +466,12 @@ export default function HomePage() {
                     </div>
                 </div>
 
-                {/* Right Column: Email Detail (Sticky so it follows scroll) */}
+                {/* Right Column: Email Detail */}
                 {selectedEmailId && (() => {
                     const selectedEmail = emails.find(e => e.id === selectedEmailId);
                     if (!selectedEmail) return null;
                     return (
-                        <div className="w-full lg:w-1/2 sticky top-0 self-start h-[calc(100vh-80px)] border-l border-black/5 dark:border-white/5 pl-0 lg:pl-6 transition-all duration-300">
+                        <div className="w-full lg:w-1/2 h-[calc(100vh-140px)] sticky top-0 border-l border-black/5 dark:border-white/5 pl-0 lg:pl-6 transition-all duration-300">
                             <EmailDetailPanel
                                 emailId={selectedEmail.id}
                                 sender={selectedEmail.sender}
@@ -487,4 +487,3 @@ export default function HomePage() {
         </AppShell>
     );
 }
-
