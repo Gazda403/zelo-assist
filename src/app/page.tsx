@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { createPortal } from "react-dom";
+import Link from "next/link";
 import { EmailCard } from "@/components/email/EmailCard";
 import { AppShell } from "@/components/layout/AppShell";
 import { motion } from "framer-motion";
@@ -237,6 +239,24 @@ export default function HomePage() {
 
     const handleEmailSelect = useCallback(async (id: string) => {
         setSelectedEmailId(id);
+        
+        // Optimistically mark as read in local state
+        setEmails(prev => prev.map(e => e.id === id ? { ...e, read: true } : e));
+        
+        // Update unread count locally if it was unread
+        setUnreadCount(prev => {
+            const email = emails.find(e => e.id === id);
+            return (email && !email.read) ? Math.max(0, prev - 1) : prev;
+        });
+
+        // Sync with server
+        try {
+            const { markAsReadAction } = await import("@/app/actions/gmail");
+            markAsReadAction(id).catch(err => console.error("Failed to sync read status:", err));
+        } catch (err) {
+            console.error("Failed to load markAsReadAction:", err);
+        }
+
         if (bodyCache.current[id]) {
             setCurrentBody(bodyCache.current[id]);
             setBodyLoading(false);
@@ -255,7 +275,7 @@ export default function HomePage() {
                 setBodyLoading(false);
             }
         }
-    }, []);
+    }, [emails]); // Added emails to dependencies for unread count logic
 
     const handleLoadMore = () => {
         if (nextPageToken) {
@@ -536,18 +556,21 @@ export default function HomePage() {
                     return (
                         <>
                             {/* Mobile full-screen overlay */}
-                            <div className="fixed inset-0 z-50 bg-white dark:bg-zinc-900 flex flex-col lg:hidden overflow-hidden">
-                                <EmailDetailPanel
-                                    emailId={selectedEmail.id}
-                                    sender={selectedEmail.sender}
-                                    subject={selectedEmail.subject}
-                                    date={selectedEmail.date}
-                                    snippet={selectedEmail.snippet}
-                                    initialBody={currentBody}
-                                    loadingBody={bodyLoading}
-                                    onClose={() => setSelectedEmailId(null)}
-                                />
-                            </div>
+                            {typeof document !== 'undefined' ? createPortal(
+                                <div className="fixed inset-0 z-[100] bg-white dark:bg-zinc-900 flex flex-col lg:hidden overflow-hidden">
+                                    <EmailDetailPanel
+                                        emailId={selectedEmail.id}
+                                        sender={selectedEmail.sender}
+                                        subject={selectedEmail.subject}
+                                        date={selectedEmail.date}
+                                        snippet={selectedEmail.snippet}
+                                        initialBody={currentBody}
+                                        loadingBody={bodyLoading}
+                                        onClose={() => setSelectedEmailId(null)}
+                                    />
+                                </div>,
+                                document.body
+                            ) : null}
                             {/* Desktop side-by-side pane */}
                             <div className="hidden lg:block lg:w-1/2 h-full overflow-y-auto hide-scrollbar border-l border-black/5 dark:border-white/5 pl-6 transition-all duration-300 pb-20">
                                 <EmailDetailPanel

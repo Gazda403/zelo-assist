@@ -124,9 +124,8 @@ export const EmailCard = memo(function EmailCard({ email, onClick, onMouseEnter,
             className={cn(
                 "p-4 rounded-2xl cursor-pointer transition-all duration-300 relative overflow-hidden group border flex gap-4 items-start select-none",
                 isSelected
-                    ? "bg-orange-50/60 dark:bg-zinc-800/80 backdrop-blur-md border-primary/20 dark:border-primary/40 shadow-md ring-1 ring-primary/20 dark:ring-primary/40"
-                    : "bg-white/70 dark:bg-zinc-900/60 backdrop-blur-sm border-white/60 dark:border-white/10 shadow-sm hover:shadow-xl hover:-translate-y-0.5 hover:bg-white/90 dark:hover:bg-zinc-800/80",
-                email.read ? "opacity-80 hover:opacity-100" : ""
+                    ? "bg-violet-50/60 dark:bg-zinc-800/80 backdrop-blur-md border-violet-500/20 dark:border-violet-400/40 shadow-md ring-1 ring-violet-500/20 dark:ring-violet-400/40"
+                    : "bg-white/70 dark:bg-zinc-900/60 backdrop-blur-sm border-white/60 dark:border-white/10 shadow-sm hover:shadow-xl hover:-translate-y-0.5 hover:bg-white/90 dark:hover:bg-zinc-800/80"
             )}
         >
             {/* Avatar */}
@@ -155,13 +154,13 @@ export const EmailCard = memo(function EmailCard({ email, onClick, onMouseEnter,
                 <div className="flex justify-between items-baseline mb-1">
                     <h3 className={cn(
                         "text-sm truncate pr-2",
-                        email.read ? "font-semibold text-gray-900 dark:text-white" : "font-bold text-gray-900 dark:text-white"
+                        email.read ? "font-medium text-gray-600 dark:text-zinc-400" : "font-bold text-gray-900 dark:text-white"
                     )}>
                         {cleanName}
                     </h3>
                     <span className={cn(
                         "text-xs whitespace-nowrap flex-shrink-0",
-                        email.read ? "text-gray-400" : "text-violet-600 font-medium"
+                        email.read ? "text-gray-500" : "text-violet-600 font-bold"
                     )}>
                         {timeDisplay}
                     </span>
@@ -170,7 +169,7 @@ export const EmailCard = memo(function EmailCard({ email, onClick, onMouseEnter,
                 {/* Subject */}
                 <h4 className={cn(
                     "text-[15px] leading-snug mb-2 truncate",
-                    email.read ? "font-medium text-gray-700" : "font-bold text-gray-900"
+                    email.read ? "font-medium text-gray-600 dark:text-zinc-400" : "font-bold text-gray-900"
                 )}>
                     {email.subject}
                 </h4>
@@ -178,8 +177,9 @@ export const EmailCard = memo(function EmailCard({ email, onClick, onMouseEnter,
                 {/* Badge Row (if high urgency) */}
                 <div className="flex flex-wrap gap-2 mb-2 items-center">
                     <span className={cn(
-                        "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider border",
-                        getBadgeStyle(email.urgencyScore)
+                        "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider border transition-colors",
+                        getBadgeStyle(email.urgencyScore),
+                        email.read && "opacity-60"
                     )}>
                         {email.urgencyScore >= 8 ? 'Urgent' : email.urgencyScore >= 5 ? 'Priority' : 'Normal'} • {email.urgencyScore}
                     </span>
@@ -197,11 +197,6 @@ export const EmailCard = memo(function EmailCard({ email, onClick, onMouseEnter,
                     {email.snippet}
                 </p>
             </div>
-
-            {/* Unread Indicator Dot (absolute positioning for clean layout) */}
-            {!email.read && (
-                <div className="absolute top-5 right-4 w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(255,127,17,0.5)] ring-2 ring-white" />
-            )}
         </motion.div>
     );
 });
