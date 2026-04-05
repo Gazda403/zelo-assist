@@ -23,14 +23,18 @@ function DraftsPageContent() {
     const [emails, setEmails] = useState<Email[]>([]);
     const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [nextPageToken, setNextPageToken] = useState<string | undefined>(undefined);
     const searchParams = useSearchParams();
 
     useEffect(() => {
         async function loadEmails() {
             try {
-                const fetchedEmails = await fetchEmailsAction();
+                // Fetch 15 emails initially without time limit ('all')
+                const fetchedEmails = await fetchEmailsAction(undefined, 'all', 15);
                 if (fetchedEmails && fetchedEmails.emails) {
                     setEmails(fetchedEmails.emails as any);
+                    setNextPageToken(fetchedEmails.nextPageToken);
                 } else {
                     setEmails([]);
                 }
@@ -43,6 +47,27 @@ function DraftsPageContent() {
 
         loadEmails();
     }, []);
+
+    const handleLoadMore = async () => {
+        if (!nextPageToken || isLoadingMore) return;
+        setIsLoadingMore(true);
+        try {
+            // Fetch 10 more emails using the token and 'all' filter
+            const fetchedEmails = await fetchEmailsAction(nextPageToken, 'all', 10);
+            if (fetchedEmails && fetchedEmails.emails) {
+                setEmails(prev => {
+                    const existingIds = new Set(prev.map(e => e.id));
+                    const uniqueNew = (fetchedEmails.emails as any[]).filter(e => !existingIds.has(e.id));
+                    return [...prev, ...uniqueNew];
+                });
+                setNextPageToken(fetchedEmails.nextPageToken);
+            }
+        } catch (error) {
+            console.error("Failed to load more emails:", error);
+        } finally {
+            setIsLoadingMore(false);
+        }
+    };
 
     // Set selected email from URL parameter
     useEffect(() => {
@@ -72,6 +97,9 @@ function DraftsPageContent() {
                             emails={emails}
                             selectedEmailId={selectedEmailId}
                             onSelectEmail={setSelectedEmailId}
+                            onLoadMore={handleLoadMore}
+                            hasNextPage={!!nextPageToken}
+                            isLoadingMore={isLoadingMore}
                         />
                     )}
                 </div>

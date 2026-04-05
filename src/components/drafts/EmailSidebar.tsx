@@ -18,9 +18,12 @@ interface EmailSidebarProps {
     emails: Email[];
     selectedEmailId: string | null;
     onSelectEmail: (id: string) => void;
+    onLoadMore?: () => void;
+    hasNextPage?: boolean;
+    isLoadingMore?: boolean;
 }
 
-export default function EmailSidebar({ emails, selectedEmailId, onSelectEmail }: EmailSidebarProps) {
+export default function EmailSidebar({ emails, selectedEmailId, onSelectEmail, onLoadMore, hasNextPage, isLoadingMore }: EmailSidebarProps) {
     return (
         <div id="tour-draft-list" className="h-full flex flex-col bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border-r border-violet-100/50 dark:border-white/5">
             <div className="p-4 border-b border-violet-100/50 dark:border-white/5">
@@ -76,6 +79,25 @@ export default function EmailSidebar({ emails, selectedEmailId, onSelectEmail }:
                         </p>
                     </motion.div>
                 ))}
+                
+                {hasNextPage && onLoadMore && (
+                    <div className="py-4 flex justify-center">
+                        <button
+                            onClick={onLoadMore}
+                            disabled={isLoadingMore}
+                            className="text-sm font-medium text-violet-600 hover:text-violet-700 bg-violet-50 hover:bg-violet-100 px-4 py-2 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        >
+                            {isLoadingMore ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-violet-600 border-t-transparent rounded-full animate-spin" />
+                                    Loading...
+                                </>
+                            ) : (
+                                'Load More'
+                            )}
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

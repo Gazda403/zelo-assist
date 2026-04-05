@@ -24,7 +24,8 @@ import { getEmailRatings, saveEmailRating, getGeneratedDraft, saveGeneratedDraft
 
 export async function fetchEmailsAction(
     pageToken?: string,
-    filter: '1d' | '7d' | '30d' | 'all' = '7d'
+    filter: '1d' | '7d' | '30d' | 'all' = '7d',
+    limit: number = 10
 ) {
     const session = await auth() as any;
     if (!session || !session.accessToken || session.error === 'RefreshAccessTokenError') {
@@ -40,7 +41,7 @@ export async function fetchEmailsAction(
         const client = getClient(session.provider);
         // Fetch emails and unread count in parallel — saves one extra round-trip
         const [{ emails, nextPageToken }, unreadCount] = await Promise.all([
-            client.getLastEmails(session.accessToken, 10, pageToken, query),
+            client.getLastEmails(session.accessToken, limit, pageToken, query),
             client.getUnreadCount(session.accessToken, query).catch(() => 0),
         ]);
 
