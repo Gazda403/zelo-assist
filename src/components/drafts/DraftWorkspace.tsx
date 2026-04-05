@@ -242,7 +242,7 @@ export default function DraftWorkspace({ selectedEmail }: DraftWorkspaceProps) {
             </div>
 
             {/* AI Chat / Command Bar (Floating Pill Design) */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-20">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl pl-4 pr-20 sm:px-6 z-20">
                 <motion.div
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
