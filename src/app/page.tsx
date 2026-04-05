@@ -287,9 +287,9 @@ export default function HomePage() {
 
                 {/* Main Content Column (Email List & Stats) */}
                 <div className={cn(
-                    "space-y-6 transition-all duration-300 h-full overflow-y-auto hide-scrollbar pb-20",
+                    "space-y-6 transition-all duration-300 pb-20",
                     selectedEmailId 
-                        ? "hidden lg:block lg:w-1/2 pr-4 lg:pr-6" 
+                        ? "w-full lg:w-1/2 pr-4 lg:pr-6" 
                         : "w-full max-w-4xl mx-auto"
                 )}>
                     
@@ -466,12 +466,12 @@ export default function HomePage() {
                     </div>
                 </div>
 
-                {/* Right Column: Email Detail */}
+                {/* Right Column: Email Detail (Sticky so it follows scroll) */}
                 {selectedEmailId && (() => {
                     const selectedEmail = emails.find(e => e.id === selectedEmailId);
                     if (!selectedEmail) return null;
                     return (
-                        <div className="w-full lg:w-1/2 h-full border-l border-black/5 dark:border-white/5 pl-0 lg:pl-6 transition-all duration-300">
+                        <div className="w-full lg:w-1/2 sticky top-6 lg:h-[calc(100vh-140px)] flex flex-col border-l border-black/5 dark:border-white/5 pl-0 lg:pl-6 transition-all duration-300">
                             <EmailDetailPanel
                                 emailId={selectedEmail.id}
                                 sender={selectedEmail.sender}
