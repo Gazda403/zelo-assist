@@ -268,7 +268,7 @@ export default function HomePage() {
             title="Inbox"
             onSelectEmail={setSelectedEmailId}
         >
-            <div className="flex relative max-w-6xl mx-auto h-full px-4 sm:px-0">
+            <div className="flex-1 w-full flex relative max-w-6xl mx-auto min-h-0 px-4 sm:px-0">
                 
                 {/* Bot Sidebar (Desktop - Absolute Position to keep content centered) */}
                 {!selectedEmailId && (
@@ -471,7 +471,7 @@ export default function HomePage() {
                     const selectedEmail = emails.find(e => e.id === selectedEmailId);
                     if (!selectedEmail) return null;
                     return (
-                        <div className="w-full lg:w-1/2 lg:sticky lg:top-6 lg:h-[calc(100vh-3rem)] border-l border-black/5 dark:border-white/5 pl-0 lg:pl-6 transition-all duration-300">
+                        <div className="w-full lg:w-1/2 h-full overflow-y-auto hide-scrollbar border-l border-black/5 dark:border-white/5 pl-0 lg:pl-6 transition-all duration-300 pb-20">
                             <EmailDetailPanel
                                 emailId={selectedEmail.id}
                                 sender={selectedEmail.sender}
