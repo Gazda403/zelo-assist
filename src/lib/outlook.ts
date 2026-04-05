@@ -7,7 +7,9 @@ export async function getLastEmails(
     query: string = ''
 ) {
     try {
-        let url = `${GRAPH_API_BASE}/messages?$top=${limit}`;
+        // $select limits the fields returned — much smaller payload
+        const SELECT = '$select=id,conversationId,subject,sender,bodyPreview,receivedDateTime,isRead,labelIds';
+        let url = `${GRAPH_API_BASE}/messages?${SELECT}&$top=${limit}`;
         
         // If pageToken is provided, it's usually the full nextLink URL or base64 encoded
         // But for simplicity, we'll try to handle it. Graph API pagination uses full URLs.
@@ -122,7 +124,8 @@ export async function sendEmail(accessToken: string, to: string, subject: string
 
 export async function getSentEmails(accessToken: string, limit: number = 20) {
     try {
-        const url = `${GRAPH_API_BASE}/mailFolders/sentitems/messages?$top=${limit}`;
+        const SELECT = '$select=id,conversationId,subject,toRecipients,bodyPreview,sentDateTime,createdDateTime';
+        const url = `${GRAPH_API_BASE}/mailFolders/sentitems/messages?${SELECT}&$top=${limit}`;
         const res = await fetch(url, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -156,7 +159,8 @@ export async function getSentEmails(accessToken: string, limit: number = 20) {
 
 export async function getTrashEmails(accessToken: string, limit: number = 20) {
     try {
-        const url = `${GRAPH_API_BASE}/mailFolders/deleteditems/messages?$top=${limit}`;
+        const SELECT = '$select=id,conversationId,subject,sender,toRecipients,bodyPreview,receivedDateTime,isRead';
+        const url = `${GRAPH_API_BASE}/mailFolders/deleteditems/messages?${SELECT}&$top=${limit}`;
         const res = await fetch(url, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -192,7 +196,8 @@ export async function getTrashEmails(accessToken: string, limit: number = 20) {
 
 export async function searchEmails(accessToken: string, query: string, limit: number = 10) {
     try {
-        const url = `${GRAPH_API_BASE}/messages?$search=${encodeURIComponent(`"${query}"`)}&$top=${limit}`;
+        const SELECT = '$select=id,conversationId,subject,sender,bodyPreview,receivedDateTime,isRead';
+        const url = `${GRAPH_API_BASE}/messages?$search=${encodeURIComponent(`"${query}"`)}&${SELECT}&$top=${limit}`;
         const res = await fetch(url, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });

@@ -43,12 +43,14 @@ export async function getLastEmails(
         const messages = listData.messages || [];
         const nextPageToken = listData.nextPageToken;
 
-        // 2. Fetch details for each message
+        // 2. Fetch metadata only (Subject, From, LabelIds) — ~90% smaller than full format
+        const METADATA_FIELDS = 'format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date';
         const detailedMessages = await Promise.all(
             messages.map(async (msg: { id: string }) => {
-                const detailRes = await fetch(`${GMAIL_API_BASE}/messages/${msg.id}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
+                const detailRes = await fetch(
+                    `${GMAIL_API_BASE}/messages/${msg.id}?${METADATA_FIELDS}`,
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                );
                 return detailRes.json();
             })
         );
@@ -67,7 +69,8 @@ export async function getLastEmails(
                 sender: { name: from.split('<')[0].trim(), email: from },
                 snippet: msg.snippet,
                 date,
-                read: !msg.payload?.headers?.find(h => h.name === 'LabelIds')?.value?.includes('UNREAD'),
+                // labelIds is a top-level array on the message object, not a header
+                read: !(msg as any).labelIds?.includes('UNREAD'),
                 urgencyScore: 5,
                 urgencyReason: "Pending Analysis"
             };
@@ -158,11 +161,13 @@ export async function getSentEmails(accessToken: string, limit: number = 20) {
         const listData = await listRes.json();
         const messages = listData.messages || [];
 
+        const METADATA_FIELDS = 'format=metadata&metadataHeaders=Subject&metadataHeaders=To&metadataHeaders=Date';
         const detailedMessages = await Promise.all(
             messages.map(async (msg: { id: string }) => {
-                const detailRes = await fetch(`${GMAIL_API_BASE}/messages/${msg.id}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
+                const detailRes = await fetch(
+                    `${GMAIL_API_BASE}/messages/${msg.id}?${METADATA_FIELDS}`,
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                );
                 return detailRes.json();
             })
         );
@@ -205,11 +210,13 @@ export async function getTrashEmails(accessToken: string, limit: number = 20) {
         const listData = await listRes.json();
         const messages = listData.messages || [];
 
+        const METADATA_FIELDS = 'format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=To&metadataHeaders=Date';
         const detailedMessages = await Promise.all(
             messages.map(async (msg: { id: string }) => {
-                const detailRes = await fetch(`${GMAIL_API_BASE}/messages/${msg.id}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
+                const detailRes = await fetch(
+                    `${GMAIL_API_BASE}/messages/${msg.id}?${METADATA_FIELDS}`,
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                );
                 return detailRes.json();
             })
         );
@@ -252,11 +259,13 @@ export async function searchEmails(accessToken: string, query: string, limit: nu
         const listData = await listRes.json();
         const messages = listData.messages || [];
 
+        const METADATA_FIELDS = 'format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date';
         const detailedMessages = await Promise.all(
             messages.map(async (msg: { id: string }) => {
-                const detailRes = await fetch(`${GMAIL_API_BASE}/messages/${msg.id}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
+                const detailRes = await fetch(
+                    `${GMAIL_API_BASE}/messages/${msg.id}?${METADATA_FIELDS}`,
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                );
                 return detailRes.json();
             })
         );
@@ -274,7 +283,7 @@ export async function searchEmails(accessToken: string, query: string, limit: nu
                 sender: { name: from.split('<')[0].trim(), email: from },
                 snippet: msg.snippet,
                 date,
-                read: !msg.payload?.headers?.find(h => h.name === 'LabelIds')?.value?.includes('UNREAD'),
+                read: !(msg as any).labelIds?.includes('UNREAD'),
             };
         });
     } catch (error) {
