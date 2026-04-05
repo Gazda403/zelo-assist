@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { fetchTrashEmailsAction } from '@/app/actions/gmail';
 import { AppShell } from '@/components/layout/AppShell';
 import { motion } from 'framer-motion';
@@ -14,6 +14,10 @@ export default function TrashPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null);
     const router = useRouter();
+
+    const toggleEmail = useCallback((id: string) => {
+        setSelectedEmailId(prev => prev === id ? null : id);
+    }, []);
 
     useEffect(() => {
         async function loadTrash() {
@@ -74,7 +78,7 @@ export default function TrashPage() {
                                     >
                                         <EmailCard
                                             email={{ ...email, read: true }} // Trash items are usually read
-                                            onClick={() => setSelectedEmailId(selectedEmailId === email.id ? null : email.id)}
+                                            onClick={toggleEmail}
                                             isSelected={selectedEmailId === email.id}
                                         />
                                     </motion.div>

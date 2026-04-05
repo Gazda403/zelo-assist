@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { EmailCard } from "@/components/email/EmailCard";
 import { AppShell } from "@/components/layout/AppShell";
 import { motion } from "framer-motion";
@@ -41,6 +41,10 @@ export default function HomePage() {
     // Filtering & Pagination
     const [filter, setFilter] = useState<'1d' | '7d' | '30d' | 'all'>('7d');
     const [nextPageToken, setNextPageToken] = useState<string | undefined>(undefined);
+
+    const toggleEmail = useCallback((id: string) => {
+        setSelectedEmailId(prev => prev === id ? null : id);
+    }, []);
 
     async function loadData(reset = false, token?: string) {
         if (reset) {
@@ -222,9 +226,9 @@ export default function HomePage() {
     };
 
     // const unreadCount = emails.filter((e) => !e.read).length;
-    const avgUrgency = emails.length > 0 ? (emails.reduce((sum, e) => sum + e.urgencyScore, 0) / emails.length).toFixed(1) : "0.0";
+    const avgUrgency = useMemo(() => emails.length > 0 ? (emails.reduce((sum, e) => sum + e.urgencyScore, 0) / emails.length).toFixed(1) : "0.0", [emails]);
 
-    const sortedEmails = [...emails].sort((a, b) => {
+    const sortedEmails = useMemo(() => [...emails].sort((a, b) => {
         if (sortBy === 'urgency') {
             return b.urgencyScore - a.urgencyScore;
         } else if (sortBy === 'date') {
@@ -232,15 +236,15 @@ export default function HomePage() {
         } else {
             return a.sender.name.localeCompare(b.sender.name);
         }
-    });
+    }), [emails, sortBy]);
 
     // Move selected email to the top when one is selected
-    const displayEmails = selectedEmailId
+    const displayEmails = useMemo(() => selectedEmailId
         ? [
             ...sortedEmails.filter(e => e.id === selectedEmailId),
             ...sortedEmails.filter(e => e.id !== selectedEmailId)
         ]
-        : sortedEmails;
+        : sortedEmails, [sortedEmails, selectedEmailId]);
 
     // If checking auth or fetching initial data (only block on true first load, not filter changes)
     if (status === "loading" || (status === "authenticated" && loading && emails.length === 0)) {
@@ -442,7 +446,7 @@ export default function HomePage() {
                                     >
                                         <EmailCard
                                             email={email as any}
-                                            onClick={() => setSelectedEmailId(selectedEmailId === email.id ? null : email.id)}
+                                            onClick={toggleEmail}
                                             isSelected={selectedEmailId === email.id}
                                         />
                                     </motion.div>

@@ -19,7 +19,7 @@ interface EmailCardProps {
         urgencyReason: string;
         aiConfidence?: 'low' | 'medium' | 'high';
     };
-    onClick: () => void;
+    onClick: (id: string) => void;
     isSelected?: boolean;
 }
 
@@ -117,7 +117,7 @@ export const EmailCard = memo(function EmailCard({ email, onClick, isSelected }:
 
     return (
         <div
-            onClick={onClick}
+            onClick={() => onClick(email.id)}
             className={cn(
                 "p-4 rounded-2xl cursor-pointer transition-all duration-300 relative overflow-hidden group border flex gap-4 items-start select-none",
                 isSelected
