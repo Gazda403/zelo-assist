@@ -438,7 +438,7 @@ export default function HomePage() {
                                         key={email.id}
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.05 * index }}
+                                        transition={{ delay: Math.min(0.03 * index, 0.15) }}
                                     >
                                         <EmailCard
                                             email={email as any}

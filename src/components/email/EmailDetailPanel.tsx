@@ -50,8 +50,11 @@ export function EmailDetailPanel({ emailId, sender, subject, date, snippet, onCl
     const router = useRouter();
 
     useEffect(() => {
+        // Reset to blank so snippet shows for new email immediately
+        setFullBody('');
+        setLoading(true);
+
         async function loadEmailBody() {
-            setLoading(true);
             try {
                 const body = await fetchEmailBodyAction(emailId);
                 setFullBody(body);
@@ -106,11 +109,17 @@ export function EmailDetailPanel({ emailId, sender, subject, date, snippet, onCl
                 </div>
             </div>
 
-            {/* Body */}
+            {/* Body — snippet shown immediately, full body swaps in silently */}
             <div className="flex-1 overflow-y-auto p-4 sm:p-6">
                 {loading ? (
-                    <div className="flex items-center justify-center h-full">
-                        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+                    <div className="prose prose-sm max-w-none">
+                        <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-700 dark:text-gray-300 p-4 bg-gray-50 dark:bg-zinc-900 rounded-xl mt-2">
+                            {snippet}
+                        </pre>
+                        <div className="flex items-center gap-2 mt-3 text-xs text-gray-400">
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            Loading full email...
+                        </div>
                     </div>
                 ) : (
                     <div className="prose prose-sm max-w-none h-full relative">

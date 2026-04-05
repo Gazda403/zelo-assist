@@ -38,7 +38,11 @@ export async function fetchEmailsAction(
         }
 
         const client = getClient(session.provider);
-        const { emails, nextPageToken } = await client.getLastEmails(session.accessToken, 10, pageToken, query);
+        // Fetch emails and unread count in parallel — saves one extra round-trip
+        const [{ emails, nextPageToken }, unreadCount] = await Promise.all([
+            client.getLastEmails(session.accessToken, 10, pageToken, query),
+            client.getUnreadCount(session.accessToken, query).catch(() => 0),
+        ]);
 
         // 1. Fetch ratings from Supabase DB
         const emailIds = emails.map((e: any) => e.id);
@@ -51,12 +55,11 @@ export async function fetchEmailsAction(
         const batchToRate = unratedEmails.slice(0, EMAIL_AI_LIMIT);
 
         if (batchToRate.length > 0) {
-            console.log(`[AI] Rating ${batchToRate.length} new emails...`);
-            await Promise.all(batchToRate.map(async (email: any) => {
+            console.log(`[AI] Rating ${batchToRate.length} new emails in background...`);
+            // Fire-and-forget: don't await — inbox returns immediately with cached data.
+            // Ratings will be saved to Supabase and available on the next refresh.
+            Promise.all(batchToRate.map(async (email: any) => {
                 try {
-                    // Start timestamp
-                    const start = Date.now();
-
                     const rating = await rateEmailFlow({
                         subject: email.subject,
                         snippet: email.snippet,
@@ -64,23 +67,15 @@ export async function fetchEmailsAction(
                     });
 
                     if (rating) {
-                        // Save to Supabase using dedicated storage service
                         const saved = await saveEmailRating(email.id, session.user.id!, rating);
-                        if (saved) {
-                            // Update local variable for immediate return
-                            cachedRatings[email.id] = rating;
-                        } else {
+                        if (!saved) {
                             console.warn(`[AI] Failed to save rating for ${email.id}`);
                         }
-
-                        // Optionally track performance stats
-                        // const duration = Date.now() - start;
-                        // trackEvent({ name: 'ai_rating_latency', properties: { duration } });
                     }
                 } catch (err) {
                     console.error(`[AI] Failed to rate email ${email.id}:`, err);
                 }
-            }));
+            })).catch(err => console.error('[AI] Background rating batch failed:', err));
         }
 
         // Merge ratings into response
@@ -98,46 +93,34 @@ export async function fetchEmailsAction(
             return email;
         });
 
-        // Trigger bots for new emails (non-blocking) - Only trigger on first page recent fetch
-        // to avoid re-triggering on old emails when scrolling?
-        // Actually, trigger logic should probably be separate or idempotent.
-        // For now, we only trigger if we are fetching recent (no pageToken usually means top).
-        // Let's keep it simply triggering for everything for now, or maybe only if filter is conservative.
-        // Optimization: checking if 'read' status matters?
+        // Only trigger bots on the first page load (not pagination scroll).
+        // This avoids re-firing bots against emails the user is just browsing historically.
+        if (!pageToken) {
+            try {
+                const { executeBots } = await import('@/lib/bots/engine/orchestrator');
 
-        try {
-            const { executeBots } = await import('@/lib/bots/engine/orchestrator');
+                for (const email of enrichedEmails) {
+                    const emailEvent = {
+                        type: 'new_email' as const,
+                        emailId: email.id,
+                        sender: email.sender,
+                        subject: email.subject,
+                        body: email.snippet,
+                        snippet: email.snippet,
+                        date: email.date,
+                        read: email.read,
+                        urgencyScore: cachedRatings[email.id]?.urgencyScore,
+                        threadId: email.threadId,
+                    };
 
-            // Execute bots for each email in the background
-            for (const email of enrichedEmails) {
-                // Skip bots for old emails if user is just scrolling history?
-                // Just robustly sending events. Bots should check duplication if needed (handled by idempotency usually).
-
-                const emailEvent = {
-                    type: 'new_email' as const,
-                    emailId: email.id,
-                    sender: email.sender,
-                    subject: email.subject,
-                    body: email.snippet, // Using snippet as body proxy
-                    snippet: email.snippet,
-                    date: email.date,
-                    read: email.read,
-                    urgencyScore: cachedRatings[email.id]?.urgencyScore,
-                    threadId: email.threadId,
-                };
-
-                // Fire and forget - don't await to avoid blocking inbox
-                executeBots(emailEvent, session.user.email!).catch(err => {
-                    console.error('[Bots] Background execution failed:', err);
-                });
+                    executeBots(emailEvent, session.user.email!).catch(err => {
+                        console.error('[Bots] Background execution failed:', err);
+                    });
+                }
+            } catch (error) {
+                console.error('[Bots] Failed to trigger bots:', error);
             }
-        } catch (error) {
-            // Bot execution failure should never block inbox
-            console.error('[Bots] Failed to trigger bots:', error);
         }
-
-        // Fetch unread count matching the timeframe filter
-        const unreadCount = await client.getUnreadCount(session.accessToken, query);
 
         return { emails: enrichedEmails, nextPageToken, unreadCount };
 

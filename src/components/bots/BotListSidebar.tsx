@@ -178,7 +178,7 @@ export function BotListSidebar({
                         >
                             <div className="flex justify-between items-start mb-1.5">
                                 <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm group-hover:text-violet-700 dark:group-hover:text-violet-400 transition-colors">Alert Bot</h3>
-                                <span className="text-[10px] bg-gray-100/80 dark:bg-zinc-700/80 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider group-hover:bg-violet-100 dark:group-hover:bg-violet-500/20 group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">Free</span>
+                                <span className="text-[10px] bg-gray-100/80 dark:bg-zinc-700/80 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider group-hover:bg-violet-100 dark:group-hover:bg-violet-500/20 group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">WATCH</span>
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
                                 Trip wire for your inbox. AI-powered rule detection.

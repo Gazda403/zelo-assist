@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import { motion } from "framer-motion";
 import { Mail, Clock, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -98,7 +100,7 @@ function getServiceBrand(email: string, name: string) {
     return null;
 }
 
-export function EmailCard({ email, onClick, isSelected }: EmailCardProps) {
+export const EmailCard = memo(function EmailCard({ email, onClick, isSelected }: EmailCardProps) {
     const cleanName = getCleanName(email.sender.name || email.sender.email);
     const initials = getInitials(cleanName);
     const avatarColor = getAvatarColor(cleanName);
@@ -199,4 +201,4 @@ export function EmailCard({ email, onClick, isSelected }: EmailCardProps) {
             )}
         </div>
     );
-}
+});
