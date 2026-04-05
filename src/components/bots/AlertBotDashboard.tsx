@@ -93,7 +93,7 @@ export function AlertBotDashboard({ bot, onBotUpdated, onDelete, isDeleting }: A
         try {
             const updated = await toggleBotAction(bot.id, !bot.enabled);
             onBotUpdated(updated);
-            toast.success(updated.enabled ? '🔔 Alert Bot is now watching your inbox!' : 'Alert Bot paused.');
+            toast.success(updated.enabled ? 'Alert Bot is now watching your inbox!' : 'Alert Bot paused.');
         } catch {
             toast.error('Failed to toggle bot.');
         } finally {
@@ -133,7 +133,7 @@ export function AlertBotDashboard({ bot, onBotUpdated, onDelete, isDeleting }: A
                 animate={{ opacity: 1, y: 0 }}
                 className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${bot.enabled
                     ? 'bg-green-50/80 dark:bg-green-950/30 border-green-200 dark:border-green-800'
-                    : 'bg-amber-50/80 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800'
+                    : 'bg-zinc-50/80 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-800'
                     }`}
             >
                 <div className="flex items-center gap-3">
@@ -143,10 +143,10 @@ export function AlertBotDashboard({ bot, onBotUpdated, onDelete, isDeleting }: A
                             <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white dark:ring-zinc-900 animate-pulse" />
                         </div>
                     ) : (
-                        <Bell className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                        <Bell className="w-6 h-6 text-zinc-400 dark:text-zinc-500" />
                     )}
                     <div>
-                        <p className={`font-semibold text-sm ${bot.enabled ? 'text-green-700 dark:text-green-300' : 'text-amber-700 dark:text-amber-300'}`}>
+                        <p className={`font-semibold text-sm ${bot.enabled ? 'text-green-700 dark:text-green-300' : 'text-zinc-700 dark:text-zinc-300'}`}>
                             {bot.enabled ? 'Actively watching your inbox' : 'Bot is paused'}
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -162,7 +162,7 @@ export function AlertBotDashboard({ bot, onBotUpdated, onDelete, isDeleting }: A
                     title={!hasRules ? 'Save rules first' : ''}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${bot.enabled
                         ? 'bg-green-600 hover:bg-green-700 text-white'
-                        : 'bg-amber-500 hover:bg-amber-600 text-white'
+                        : 'bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-500/20'
                         }`}
                 >
                     {isToggling ? <Loader2 className="w-4 h-4 animate-spin" /> : <Power className="w-4 h-4" />}
@@ -290,7 +290,7 @@ export function AlertBotDashboard({ bot, onBotUpdated, onDelete, isDeleting }: A
                             </label>
                             <div className="flex flex-wrap gap-2 mb-3">
                                 {localConfig.keywords.map(k => (
-                                    <span key={k} className="flex items-center gap-1.5 px-3 py-1 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800 rounded-full text-xs font-medium">
+                                    <span key={k} className="flex items-center gap-1.5 px-3 py-1 bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 rounded-full text-xs font-medium">
                                         <Search className="w-3 h-3 shrink-0" />
                                         {k}
                                         <button onClick={() => removeKeyword(k)} className="hover:text-red-500 transition-colors ml-0.5">
@@ -309,9 +309,9 @@ export function AlertBotDashboard({ bot, onBotUpdated, onDelete, isDeleting }: A
                                     onChange={e => setNewKeyword(e.target.value)}
                                     onKeyDown={e => e.key === 'Enter' && addKeyword()}
                                     placeholder="invoice, payment, urgent..."
-                                    className="flex-1 px-3 py-2 bg-gray-50 dark:bg-zinc-900/60 border border-gray-200 dark:border-white/10 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-400 transition-all placeholder:text-gray-400"
+                                    className="flex-1 px-3 py-2 bg-gray-50 dark:bg-zinc-900/60 border border-gray-200 dark:border-white/10 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400 transition-all placeholder:text-gray-400"
                                 />
-                                <button onClick={addKeyword} className="p-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl transition-all">
+                                <button onClick={addKeyword} className="p-2 bg-violet-500 hover:bg-violet-600 text-white rounded-xl transition-all">
                                     <Plus className="w-4 h-4" />
                                 </button>
                             </div>
@@ -342,10 +342,10 @@ export function AlertBotDashboard({ bot, onBotUpdated, onDelete, isDeleting }: A
                 className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl border border-violet-100/50 dark:border-white/5 shadow-[0_4px_20px_rgb(0,0,0,0.04)] p-6"
             >
                 <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-                    <AlertTriangle className="w-4 h-4 text-amber-500" />
+                    <AlertTriangle className="w-4 h-4 text-violet-500" />
                     Recent Alerts
                     {recentAlerts.length > 0 && (
-                        <span className="ml-auto text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full font-semibold">
+                        <span className="ml-auto text-xs bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 px-2 py-0.5 rounded-full font-semibold">
                             {recentAlerts.length}
                         </span>
                     )}
@@ -367,9 +367,9 @@ export function AlertBotDashboard({ bot, onBotUpdated, onDelete, isDeleting }: A
                                 initial={{ opacity: 0, x: -8 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: i * 0.04 }}
-                                className="flex items-start gap-3 p-3 bg-amber-50/60 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-xl group"
+                                className="flex items-start gap-3 p-3 bg-violet-50/60 dark:bg-violet-950/20 border border-violet-100 dark:border-violet-900/30 rounded-xl group"
                             >
-                                <BellRing className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
+                                <BellRing className="w-4 h-4 text-violet-500 mt-0.5 shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                                         {alert.subject}
@@ -379,7 +379,7 @@ export function AlertBotDashboard({ bot, onBotUpdated, onDelete, isDeleting }: A
                                             {alert.sender}
                                         </span>
                                         {alert.matchedKeyword && (
-                                            <span className="text-[10px] bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 px-1.5 py-0.5 rounded-full font-bold">
+                                            <span className="text-[10px] bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 px-1.5 py-0.5 rounded-full font-bold">
                                                 keyword: {alert.matchedKeyword}
                                             </span>
                                         )}
@@ -408,7 +408,7 @@ export function AlertBotDashboard({ bot, onBotUpdated, onDelete, isDeleting }: A
                         const d = new Date(a.detectedAt);
                         const now = new Date();
                         return (now.getTime() - d.getTime()) < 7 * 24 * 60 * 60 * 1000;
-                    }).length, color: 'amber' },
+                    }).length, color: 'violet' },
                     { label: 'Rules Active', value: localConfig.senderFilters.length + localConfig.keywords.length, color: 'blue' },
                 ].map(stat => (
                     <motion.div
