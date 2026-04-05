@@ -18,12 +18,13 @@ interface EmailSidebarProps {
     emails: Email[];
     selectedEmailId: string | null;
     onSelectEmail: (id: string) => void;
+    onMouseEnter?: (id: string) => void;
     onLoadMore?: () => void;
     hasNextPage?: boolean;
     isLoadingMore?: boolean;
 }
 
-export default function EmailSidebar({ emails, selectedEmailId, onSelectEmail, onLoadMore, hasNextPage, isLoadingMore }: EmailSidebarProps) {
+export default function EmailSidebar({ emails, selectedEmailId, onSelectEmail, onMouseEnter, onLoadMore, hasNextPage, isLoadingMore }: EmailSidebarProps) {
     return (
         <div id="tour-draft-list" className="h-full flex flex-col bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border-r border-violet-100/50 dark:border-white/5">
             <div className="p-4 border-b border-violet-100/50 dark:border-white/5">
@@ -45,6 +46,7 @@ export default function EmailSidebar({ emails, selectedEmailId, onSelectEmail, o
                         whileHover={{ scale: 1.02, x: 4, transition: { type: "spring", stiffness: 300 } }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => onSelectEmail(email.id)}
+                        onMouseEnter={() => onMouseEnter?.(email.id)}
                         className={cn(
                             "cursor-pointer p-4 rounded-xl transition-all duration-300 relative group overflow-hidden",
                             selectedEmailId === email.id

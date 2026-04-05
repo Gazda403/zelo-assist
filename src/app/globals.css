@@ -159,6 +159,15 @@ body {
   }
 }
 
+@keyframes progress-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@utility animate-progress-slide {
+  animation: progress-slide 1.5s infinite linear;
+}
+
 @utility animate-gradient-brand {
   background: linear-gradient(-45deg, #FF7F11, #A182EE, #FF9F45, #B8A0F2);
   background-size: 400% 400%;

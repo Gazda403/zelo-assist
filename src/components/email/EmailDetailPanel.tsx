@@ -41,18 +41,29 @@ interface EmailDetailPanelProps {
     subject: string;
     date: string;
     snippet: string;
+    initialBody?: string;
+    loadingBody?: boolean;
     onClose: () => void;
 }
 
-export function EmailDetailPanel({ emailId, sender, subject, date, snippet, onClose }: EmailDetailPanelProps) {
-    const [fullBody, setFullBody] = useState<string>('');
-    const [loading, setLoading] = useState(true);
+export function EmailDetailPanel({ emailId, sender, subject, date, snippet, initialBody, loadingBody, onClose }: EmailDetailPanelProps) {
+    const [fullBody, setFullBody] = useState<string>(initialBody || '');
+    const [loading, setLoading] = useState(loadingBody ?? !initialBody);
     const router = useRouter();
 
     useEffect(() => {
-        // Reset to blank so snippet shows for new email immediately
-        setFullBody('');
-        setLoading(true);
+        // If we have an initial body and aren't told we're still loading it, don't fetch.
+        if (initialBody && !loadingBody) {
+            setFullBody(initialBody);
+            setLoading(false);
+            return;
+        }
+
+        // If we don't have initial body but we have a snippet, show snippet first
+        if (!initialBody) {
+            setFullBody('');
+            setLoading(true);
+        }
 
         async function loadEmailBody() {
             try {
@@ -67,7 +78,7 @@ export function EmailDetailPanel({ emailId, sender, subject, date, snippet, onCl
         }
 
         loadEmailBody();
-    }, [emailId, snippet]);
+    }, [emailId, snippet, initialBody, loadingBody]);
 
     const handleAiDraftReply = () => {
         router.push(`/drafts?emailId=${emailId}`);

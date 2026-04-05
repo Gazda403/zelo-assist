@@ -20,6 +20,7 @@ interface EmailCardProps {
         aiConfidence?: 'low' | 'medium' | 'high';
     };
     onClick: (id: string) => void;
+    onMouseEnter?: (id: string) => void;
     isSelected?: boolean;
 }
 
@@ -100,7 +101,7 @@ function getServiceBrand(email: string, name: string) {
     return null;
 }
 
-export const EmailCard = memo(function EmailCard({ email, onClick, isSelected }: EmailCardProps) {
+export const EmailCard = memo(function EmailCard({ email, onClick, onMouseEnter, isSelected }: EmailCardProps) {
     const cleanName = getCleanName(email.sender.name || email.sender.email);
     const initials = getInitials(cleanName);
     const avatarColor = getAvatarColor(cleanName);
@@ -116,8 +117,10 @@ export const EmailCard = memo(function EmailCard({ email, onClick, isSelected }:
     };
 
     return (
-        <div
+        <motion.div
+            layoutId={`email-card-${email.id}`}
             onClick={() => onClick(email.id)}
+            onMouseEnter={() => onMouseEnter?.(email.id)}
             className={cn(
                 "p-4 rounded-2xl cursor-pointer transition-all duration-300 relative overflow-hidden group border flex gap-4 items-start select-none",
                 isSelected
@@ -199,6 +202,6 @@ export const EmailCard = memo(function EmailCard({ email, onClick, isSelected }:
             {!email.read && (
                 <div className="absolute top-5 right-4 w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(255,127,17,0.5)] ring-2 ring-white" />
             )}
-        </div>
+        </motion.div>
     );
 });

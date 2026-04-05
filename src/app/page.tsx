@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { EmailCard } from "@/components/email/EmailCard";
 import { AppShell } from "@/components/layout/AppShell";
 import { motion } from "framer-motion";
 import { Sparkles, TrendingUp, Mail, LogIn, Loader2, ChevronDown } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { fetchEmailsAction } from "@/app/actions/gmail";
+import { fetchEmailsAction, fetchEmailBodyAction } from "@/app/actions/gmail";
 import { getBotsAction, updateBotAction } from "@/app/actions/bots";
 import { LandingPage } from "@/components/landing/LandingPage";
 import { EmailDetailPanel } from "@/components/email/EmailDetailPanel";
 import { WelcomeBriefing } from "@/components/dashboard/WelcomeBriefing";
+import { EmailListSkeleton } from "@/components/email/EmailCardSkeleton";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -37,6 +38,11 @@ export default function HomePage() {
     const router = useRouter();
     const [unreadCount, setUnreadCount] = useState<number>(0);
     const [sortBy, setSortBy] = useState<'urgency' | 'date' | 'alphabetical'>('urgency');
+
+    // Performance: Cache for email bodies to prevent re-fetching
+    const bodyCache = useRef<Record<string, string>>({});
+    const [currentBody, setCurrentBody] = useState<string>('');
+    const [bodyLoading, setBodyLoading] = useState(false);
 
     // Filtering & Pagination
     const [filter, setFilter] = useState<'1d' | '7d' | '30d' | 'all'>('7d');
@@ -216,8 +222,40 @@ export default function HomePage() {
         // Run check after a short delay so it doesn't compete with render
         const timer = setTimeout(runAlertCheck, 2000);
         return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [emails, status]);
+
+    const prefetchEmailBody = useCallback(async (id: string) => {
+        if (bodyCache.current[id]) return;
+        try {
+            const body = await fetchEmailBodyAction(id);
+            if (body) bodyCache.current[id] = body;
+        } catch (err) {
+            console.warn('Prefetch failed for:', id);
+        }
+    }, []);
+
+    const handleEmailSelect = useCallback(async (id: string) => {
+        setSelectedEmailId(id);
+        if (bodyCache.current[id]) {
+            setCurrentBody(bodyCache.current[id]);
+            setBodyLoading(false);
+        } else {
+            setBodyLoading(true);
+            setCurrentBody(''); // Clear while loading
+            try {
+                const body = await fetchEmailBodyAction(id);
+                if (body) {
+                    bodyCache.current[id] = body;
+                    setCurrentBody(body);
+                }
+            } catch (err) {
+                toast.error("Failed to load email content");
+            } finally {
+                setBodyLoading(false);
+            }
+        }
+    }, []);
 
     const handleLoadMore = () => {
         if (nextPageToken) {
@@ -246,13 +284,33 @@ export default function HomePage() {
         ]
         : sortedEmails, [sortedEmails, selectedEmailId]);
 
-    // If checking auth or fetching initial data (only block on true first load, not filter changes)
-    if (status === "loading" || (status === "authenticated" && loading && emails.length === 0)) {
+    // If checking auth
+    if (status === "loading") {
         return (
-            <div className="flex h-screen w-full items-center justify-center bg-[#FAFAF9]">
+            <div className="flex h-screen w-full items-center justify-center bg-[#FAFAF9] dark:bg-black">
                 <div className="flex flex-col items-center gap-4">
                     <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                    <p className="text-gray-500 font-medium animate-pulse">Loading Inbox...</p>
+                    <p className="text-gray-500 font-medium animate-pulse">Initializing Zelo...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // If starting initial fetch
+    if (status === "authenticated" && loading && emails.length === 0) {
+        return (
+            <div className="flex h-screen w-full overflow-hidden bg-[#FAFAF9] dark:bg-black">
+                <div className="w-[400px] border-r border-gray-100 dark:border-zinc-800 flex flex-col h-full">
+                    <div className="p-4 h-16 border-b border-gray-100 dark:border-zinc-800 flex items-center justify-between">
+                        <div className="h-6 w-32 bg-gray-200 dark:bg-zinc-800 rounded animate-pulse" />
+                    </div>
+                    <EmailListSkeleton count={10} />
+                </div>
+                <div className="flex-1 hidden md:flex items-center justify-center bg-white dark:bg-zinc-950">
+                    <div className="flex flex-col items-center gap-2 opacity-20">
+                        <Sparkles className="w-12 h-12" />
+                        <p className="text-sm">Select an email to view details</p>
+                    </div>
                 </div>
             </div>
         );
@@ -446,7 +504,8 @@ export default function HomePage() {
                                     >
                                         <EmailCard
                                             email={email as any}
-                                            onClick={toggleEmail}
+                                            onClick={handleEmailSelect}
+                                            onMouseEnter={prefetchEmailBody}
                                             isSelected={selectedEmailId === email.id}
                                         />
                                     </motion.div>
@@ -484,6 +543,8 @@ export default function HomePage() {
                                     subject={selectedEmail.subject}
                                     date={selectedEmail.date}
                                     snippet={selectedEmail.snippet}
+                                    initialBody={currentBody}
+                                    loadingBody={bodyLoading}
                                     onClose={() => setSelectedEmailId(null)}
                                 />
                             </div>

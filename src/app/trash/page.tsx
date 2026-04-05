@@ -1,13 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { fetchTrashEmailsAction } from '@/app/actions/gmail';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { motion } from 'framer-motion';
-import { Trash2, Loader2, ArrowLeft } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { EmailDetailPanel } from '@/components/email/EmailDetailPanel';
 import { EmailCard } from '@/components/email/EmailCard';
+import { EmailListSkeleton } from '@/components/email/EmailCardSkeleton';
+import { fetchEmailBodyAction, fetchTrashEmailsAction } from '@/app/actions/gmail';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function TrashPage() {
     const [emails, setEmails] = useState<any[]>([]);
@@ -15,8 +17,39 @@ export default function TrashPage() {
     const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null);
     const router = useRouter();
 
-    const toggleEmail = useCallback((id: string) => {
-        setSelectedEmailId(prev => prev === id ? null : id);
+    // Performance Caching
+    const bodyCache = useRef<Record<string, string>>({});
+    const [currentBody, setCurrentBody] = useState<string>('');
+    const [bodyLoading, setBodyLoading] = useState(false);
+
+    const prefetchEmailBody = useCallback(async (id: string) => {
+        if (bodyCache.current[id]) return;
+        try {
+            const body = await fetchEmailBodyAction(id);
+            if (body) bodyCache.current[id] = body;
+        } catch (err) { /* ignore */ }
+    }, []);
+
+    const handleEmailSelect = useCallback(async (id: string) => {
+        setSelectedEmailId(id);
+        if (bodyCache.current[id]) {
+            setCurrentBody(bodyCache.current[id]);
+            setBodyLoading(false);
+        } else {
+            setBodyLoading(true);
+            setCurrentBody('');
+            try {
+                const body = await fetchEmailBodyAction(id);
+                if (body) {
+                    bodyCache.current[id] = body;
+                    setCurrentBody(body);
+                }
+            } catch (err) {
+                toast.error("Failed to load email content");
+            } finally {
+                setBodyLoading(false);
+            }
+        }
     }, []);
 
     useEffect(() => {
@@ -55,11 +88,8 @@ export default function TrashPage() {
                     </div>
 
                     <div className="bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden">
-                        {isLoading ? (
-                            <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-                                <Loader2 className="w-8 h-8 animate-spin mb-4 text-red-400" />
-                                <p>Loading deleted emails...</p>
-                            </div>
+                        {isLoading && emails.length === 0 ? (
+                            <EmailListSkeleton count={6} />
                         ) : emails.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-20 text-gray-400">
                                 <Trash2 className="w-12 h-12 mb-4 opacity-20" />
@@ -78,7 +108,8 @@ export default function TrashPage() {
                                     >
                                         <EmailCard
                                             email={{ ...email, read: true }} // Trash items are usually read
-                                            onClick={toggleEmail}
+                                            onClick={handleEmailSelect}
+                                            onMouseEnter={prefetchEmailBody}
                                             isSelected={selectedEmailId === email.id}
                                         />
                                     </motion.div>
@@ -97,6 +128,8 @@ export default function TrashPage() {
                             subject={selectedEmail.subject}
                             date={selectedEmail.date}
                             snippet={selectedEmail.snippet}
+                            initialBody={currentBody}
+                            loadingBody={bodyLoading}
                             onClose={() => setSelectedEmailId(null)}
                         />
                     </div>

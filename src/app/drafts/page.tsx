@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { fetchEmailsAction } from '@/app/actions/gmail';
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
+import { fetchEmailsAction, fetchEmailBodyAction } from '@/app/actions/gmail';
 import EmailSidebar from '@/components/drafts/EmailSidebar';
 import DraftWorkspace from '@/components/drafts/DraftWorkspace';
 import StatsSidebar from '@/components/drafts/StatsSidebar';
 import { AppShell } from '@/components/layout/AppShell';
+import { EmailListSkeleton } from '@/components/email/EmailCardSkeleton';
 import { useSearchParams } from 'next/navigation';
 
 interface Email {
@@ -23,29 +24,52 @@ function DraftsPageContent() {
     const [emails, setEmails] = useState<Email[]>([]);
     const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [nextPageToken, setNextPageToken] = useState<string | undefined>(undefined);
     const searchParams = useSearchParams();
+    const bodyCache = useRef<Record<string, string>>({});
+    const prefetchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const loadEmails = useCallback(async (isSilent = false) => {
+        if (!isSilent) setIsLoading(true);
+        else setIsRefreshing(true);
+
+        try {
+            const fetchedEmails = await fetchEmailsAction(undefined, 'all', 15);
+            if (fetchedEmails && fetchedEmails.emails) {
+                setEmails(fetchedEmails.emails as any);
+                setNextPageToken(fetchedEmails.nextPageToken);
+            } else {
+                setEmails([]);
+            }
+        } catch (error) {
+            console.error("Failed to load emails:", error);
+        } finally {
+            setIsLoading(false);
+            setIsRefreshing(false);
+        }
+    }, []);
 
     useEffect(() => {
-        async function loadEmails() {
-            try {
-                // Fetch 15 emails initially without time limit ('all')
-                const fetchedEmails = await fetchEmailsAction(undefined, 'all', 15);
-                if (fetchedEmails && fetchedEmails.emails) {
-                    setEmails(fetchedEmails.emails as any);
-                    setNextPageToken(fetchedEmails.nextPageToken);
-                } else {
-                    setEmails([]);
-                }
-            } catch (error) {
-                console.error("Failed to load emails:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
         loadEmails();
+    }, [loadEmails]);
+
+    const prefetchEmailBody = useCallback(async (id: string) => {
+        if (bodyCache.current[id]) return;
+
+        if (prefetchTimeoutRef.current) clearTimeout(prefetchTimeoutRef.current);
+
+        prefetchTimeoutRef.current = setTimeout(async () => {
+            try {
+                const body = await fetchEmailBodyAction(id);
+                if (body) {
+                    bodyCache.current[id] = body;
+                }
+            } catch (e) {
+                // Ignore prefetch errors
+            }
+        }, 80); // Slight delay to ensure we only prefetch if hover is intentional
     }, []);
 
     const handleLoadMore = async () => {
@@ -89,14 +113,15 @@ function DraftsPageContent() {
                 {/* Left Sidebar: Email List — hidden on mobile when email is selected */}
                 <div className={`lg:w-1/4 lg:min-w-[300px] h-full ${selectedEmailId ? 'hidden lg:block' : 'block w-full'}`}>
                     {isLoading ? (
-                        <div className="h-full flex items-center justify-center text-gray-400">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
+                        <div className="p-3">
+                            <EmailListSkeleton count={8} />
                         </div>
                     ) : (
                         <EmailSidebar
                             emails={emails}
                             selectedEmailId={selectedEmailId}
                             onSelectEmail={setSelectedEmailId}
+                            onMouseEnter={prefetchEmailBody}
                             onLoadMore={handleLoadMore}
                             hasNextPage={!!nextPageToken}
                             isLoadingMore={isLoadingMore}
