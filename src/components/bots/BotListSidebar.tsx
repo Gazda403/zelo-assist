@@ -93,11 +93,11 @@ export function BotListSidebar({
                 />
             </div>
 
-            {/* Scrollable List Container */}
-            <div id="tour-bot-grid" className="flex-1 overflow-y-auto space-y-6 pr-2 -mr-2 custom-scrollbar pb-4">
+            {/* Scrollable List Container — Swapped order on mobile (My Bots first) */}
+            <div id="tour-bot-grid" className="flex-1 overflow-y-auto flex flex-col gap-6 pr-2 -mr-2 custom-scrollbar pb-4">
                 {/* Preset Bots */}
                 {!searchQuery && (
-                    <div className="mb-4 space-y-2">
+                    <div className="order-2 md:order-1 space-y-2">
                         <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Presets</h3>
 
                         {/* Founders Bot */}
@@ -188,7 +188,7 @@ export function BotListSidebar({
                 )}
 
                 {/* User Bot List */}
-                <div className="space-y-2">
+                <div className="order-1 md:order-2 space-y-2">
                     <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">My Bots</h3>
                     {filteredBots.length === 0 ? (
                         <div className="text-center py-10 text-gray-400">
