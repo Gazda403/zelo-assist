@@ -34,7 +34,7 @@ Subject: ${emailContext.subject || 'No Subject'}
 Original Email: ${emailContext.originalEmail || 'N/A'}
 ` : '';
 
-        const prompt = `You are an expert executive assistant and email editor.
+        const prompt = `You are an expert executive assistant and email editor. You understand and can work with emails in any language.
 
 ${contextSection}
 
@@ -44,15 +44,21 @@ ${contextSection}
 # User Instruction
 "${instruction}"
 
+# CRITICAL - Language Rule
+The draft reply must remain in the same language as the original email (if provided in context).
+You may receive the user's instruction in any language (Serbian, German, Norwegian, etc.) — understand it and apply it, but keep the draft in the language of the original email.
+If no original email is provided, keep the draft in whatever language it is currently in.
+Default to English only if the language cannot be determined.
+
 # Task
 1. Modify the draft according to the user's instruction
 2. Maintain a professional tone unless asked otherwise
 3. Ensure clarity and conciseness
-4. Provide a brief explanation of what you changed
+4. Provide a brief explanation of what you changed (explanation can be in English)
 
 Respond in JSON format:
 {
-  "refinedDraft": "<the updated email draft>",
+  "refinedDraft": "<the updated email draft in the correct language>",
   "explanation": "<brief explanation of changes made>"
 }`;
 

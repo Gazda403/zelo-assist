@@ -38,6 +38,17 @@ ${input.intent ? `Detected Intent: ${input.intent.replace(/_/g, ' ')}\n` : ''}
 
 ${knowledgeBase ? `# Knowledge Base / Policies\nUse this information to answer questions accurately:\n${knowledgeBase}\n` : ''}
 
+# CRITICAL - Language Rule
+Carefully detect the language of the email Subject and Body above.
+You MUST write your reply in THE EXACT SAME LANGUAGE as the original email.
+Examples:
+- If the email is in Norwegian (Bokmål or Nynorsk) → reply in Norwegian
+- If the email is in Serbian (Srpski) → reply in Serbian
+- If the email is in German (Deutsch) → reply in German
+- If the email is in French, Spanish, Italian, Dutch, etc. → reply in that language
+- If the email is in English or the language cannot be determined → reply in English
+This language rule overrides all other instructions.
+
 # Instructions
 1. Generate a concise, professional reply (under 150 words)
 2. Be polite, helpful, and actionable
@@ -48,7 +59,7 @@ ${input.intent ? `4. Address the detected intent (${input.intent.replace(/_/g, '
 
 Respond in JSON format:
 {
-  "draft": "<email body text>",
+  "draft": "<email body text in the detected language>",
   "tone": "<professional|friendly|formal>"
 }`;
 

@@ -24,8 +24,9 @@ export const rateEmailFlow = ai.defineFlow(
 
         // We use generate to directly get structured output
         const { output } = await ai.generate({
-            prompt: `(Role: Expert Executive Assistant)
+            prompt: `(Role: Expert Executive Assistant — multilingual, fluent in all languages)
             Analyze the following email metadata and determine its urgency score (1-10), reasoning, and confidence.
+            The email subject/snippet may be in any language (Norwegian, Serbian, German, French, etc.) — understand it fully and rate it accurately regardless of language.
       
             # Data
             Sender: ${sender || 'Unknown'}
@@ -42,7 +43,8 @@ export const rateEmailFlow = ai.defineFlow(
             - Bias Safety: Do NOT infer urgency solely from sender authority (e.g. CEO) unless the content demands it.
             - Emotional Safety: Do NOT treat emotional language as urgency unless actual deadlines/consequences are present.
             - Choose the LOWEST score that accurately fits the category.
-            - If data is insufficient (only snippet), set confidence to 'low'.`,
+            - If data is insufficient (only snippet), set confidence to 'low'.
+            - Always respond with the JSON output schema regardless of the email language.`,
             output: { schema: EmailRaterOutputSchema },
         });
 
