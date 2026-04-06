@@ -42,7 +42,7 @@ Determine the following:
 3. Topic Changed: If previous context is provided, has the main topic shifted significantly? (true/false)
 4. Confidence: 0.0 to 1.0 score of your analysis.
 
-Return a JSON object matching the schema exactly.`;
+Return a JSON object matching exactly these keys: "sentiment" (string), "topics" (array of strings), "isTopicChanged" (boolean, optional), "confidence" (number).`;
 
     try {
         const { object } = await generateObjectWithFallback<ContextAnalyzerOutput>({

@@ -44,7 +44,7 @@ Snippet: ${snippet}
 - Emotional Safety: Do NOT treat emotional language as urgency unless actual deadlines/consequences are present.
 - Choose the LOWEST score that accurately fits the category.
 - If data is insufficient (only snippet), set confidence to 'low'.
-- Always respond with the JSON output schema regardless of the email language.`;
+- Always return a JSON object with EXACTLY these keys: "urgencyScore" (number), "reasoning" (string), "confidence" (string 'low' | 'medium' | 'high').`;
 
     const { object } = await generateObjectWithFallback<EmailRaterOutput>({
         modelPrimary,
