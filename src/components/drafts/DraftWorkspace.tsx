@@ -261,21 +261,21 @@ export default function DraftWorkspace({ selectedEmail }: DraftWorkspaceProps) {
             <AnimatePresence>
                 {showFullEmail && (
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl flex flex-col"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="fixed sm:absolute inset-0 z-[100] sm:z-50 bg-white/95 dark:bg-zinc-900/95 sm:bg-white/80 sm:dark:bg-zinc-900/80 md:backdrop-blur-xl flex flex-col shadow-2xl sm:shadow-none"
                     >
-                        <div className="p-6 border-b border-violet-100 dark:border-white/5 flex items-center justify-between bg-white/60 dark:bg-zinc-900/60">
-                            <h2 className="font-bold text-gray-900 dark:text-gray-100">Original Email Content</h2>
+                        <div className="p-4 sm:p-6 border-b border-violet-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-zinc-900 sm:bg-white/60 sm:dark:bg-zinc-900/60 sticky top-0 z-10 w-full pt-safe">
+                            <h2 className="font-bold text-gray-900 dark:text-gray-100 text-lg sm:text-base">Original Email Content</h2>
                             <button
                                 onClick={() => setShowFullEmail(false)}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full text-gray-500 transition-colors"
+                                className="p-2 bg-gray-100 hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-full text-gray-600 dark:text-gray-400 transition-colors"
                             >
                                 <LucideX className="w-5 h-5" />
                             </button>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto p-0 sm:p-8 custom-scrollbar bg-gray-50 dark:bg-zinc-950 sm:bg-transparent">
                             {isLoadingBody ? (
                                 <div className="h-full flex flex-col items-center justify-center space-y-4">
                                     <div className="w-8 h-8 border-4 border-violet-100 dark:border-zinc-800 border-t-violet-600 dark:border-t-violet-500 rounded-full animate-spin" />
