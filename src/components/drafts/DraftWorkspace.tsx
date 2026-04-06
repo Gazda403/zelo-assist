@@ -282,10 +282,20 @@ export default function DraftWorkspace({ selectedEmail }: DraftWorkspaceProps) {
                                     <p className="text-sm text-gray-500 animate-pulse">Fetching full content...</p>
                                 </div>
                             ) : (
-                                <div className="max-w-3xl mx-auto">
-                                    <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-300 leading-relaxed text-base font-sans">
-                                        {fullEmailBody}
-                                    </p>
+                                <div className="max-w-3xl mx-auto w-full h-full">
+                                    {fullEmailBody && /<html|<body|<div|<p|<br/i.test(fullEmailBody) ? (
+                                        <iframe
+                                            srcDoc={`<base target="_blank" />${fullEmailBody}`}
+                                            className="w-full bg-white dark:bg-zinc-900"
+                                            style={{ height: 'calc(100dvh - 180px)', minHeight: '400px', border: 'none' }}
+                                            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+                                            title="Email Content"
+                                        />
+                                    ) : (
+                                        <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-300 leading-relaxed text-base font-sans px-8 pb-8">
+                                            {fullEmailBody}
+                                        </p>
+                                    )}
                                 </div>
                             )}
                         </div>

@@ -202,11 +202,20 @@ export async function generateDraftAction(
     try {
         console.log('[Generate Draft Action] Generating draft for:', subject);
 
-        // 1. Check cache first
-        const existingDraft = await getGeneratedDraft(emailId);
-        if (existingDraft) {
-            console.log('[Generate Draft Action] Cache hit for:', emailId);
-            return existingDraft;
+        // Detect if email is non-English (contains non-Latin/Cyrillic/etc. characters).
+        // If so, skip the cache — old cached drafts may be in English (pre-multilingual update).
+        const nonLatinPattern = /[\u0400-\u04FF\u0600-\u06FF\u4E00-\u9FFF\u3040-\u309F\u30A0-\u30FF\u0590-\u05FF\u0900-\u097F]/;
+        const isNonLatinEmail = nonLatinPattern.test(subject) || nonLatinPattern.test(emailBody);
+
+        // 1. Check cache first (skip for non-Latin emails — avoids stale English drafts)
+        if (!isNonLatinEmail) {
+            const existingDraft = await getGeneratedDraft(emailId);
+            if (existingDraft) {
+                console.log('[Generate Draft Action] Cache hit for:', emailId);
+                return existingDraft;
+            }
+        } else {
+            console.log('[Generate Draft Action] Non-Latin email detected — bypassing cache to ensure correct language draft.');
         }
 
         console.log('[Generate Draft Action] Cache miss for:', emailId);
@@ -247,10 +256,12 @@ export async function generateDraftAction(
             instructions: botInstructions
         });
 
-        // 3. Save to cache (non-blocking)
-        saveGeneratedDraft(emailId, session.user.id!, result).catch(err => {
-            console.error('[Generate Draft Action] Failed to save draft to cache:', err);
-        });
+        // 3. Save to cache (non-blocking) — only cache Latin-script emails
+        if (!isNonLatinEmail) {
+            saveGeneratedDraft(emailId, session.user.id!, result).catch(err => {
+                console.error('[Generate Draft Action] Failed to save draft to cache:', err);
+            });
+        }
 
         console.log('[Generate Draft Action] Draft generated successfully');
         return result;
