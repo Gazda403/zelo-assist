@@ -92,6 +92,7 @@ export function OnboardingGuide({ open, onClose }: OnboardingGuideProps) {
 
     async function handleFinish() {
         setClosing(true);
+        localStorage.setItem("onboarding_complete", "true");
         await markOnboardingCompleteAction();
         onClose();
     }

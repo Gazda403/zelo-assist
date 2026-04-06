@@ -293,6 +293,7 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
             closingRef.current = true;
             sessionStorage.removeItem("tour_step");
             localStorage.removeItem("tour_force");
+            localStorage.setItem("onboarding_complete", "true");
             await markOnboardingCompleteAction();
             onClose();
         } else {
@@ -314,6 +315,7 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
         closingRef.current = true;
         sessionStorage.removeItem("tour_step");
         localStorage.removeItem("tour_force");
+        localStorage.setItem("onboarding_complete", "true");
         await markOnboardingCompleteAction();
         onClose();
     }, [onClose]);
