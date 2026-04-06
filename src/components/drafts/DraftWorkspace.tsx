@@ -215,29 +215,7 @@ export default function DraftWorkspace({ selectedEmail }: DraftWorkspaceProps) {
                         disabled={isGeneratingDraft}
                     />
 
-                    {/* Action Buttons in bottom corner */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="absolute bottom-5 right-5 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300"
-                    >
-                        <button
-                            onClick={handleCopy}
-                            className="p-2.5 bg-white/90 dark:bg-zinc-800/90 backdrop-blur-xl border border-gray-100 dark:border-zinc-700 rounded-xl text-gray-600 dark:text-gray-300 hover:text-violet-600 hover:border-violet-200 dark:hover:border-violet-500/50 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-2 text-xs font-semibold hover:scale-105 active:scale-95"
-                            title="Copy to clipboard"
-                        >
-                            {isCopied ? <LucideCheck className="w-4 h-4 text-green-500" /> : <LucideCopy className="w-4 h-4" />}
-                            {isCopied ? 'Copied' : 'Copy'}
-                        </button>
-                        <button
-                            onClick={handleSend}
-                            disabled={isSending || !draft.trim() || isGeneratingDraft}
-                            className="p-2.5 bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition-all shadow-[0_8px_20px_rgba(139,92,246,0.3)] hover:shadow-[0_8px_25px_rgba(139,92,246,0.5)] flex items-center gap-2 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-                        >
-                            {isSending ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <LucideSend className="w-4 h-4" />}
-                            {isSending ? 'Sending...' : 'Send Draft'}
-                        </button>
-                    </motion.div>
+
                 </div>
             </div>
 
