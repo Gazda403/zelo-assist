@@ -1,4 +1,5 @@
 import { google } from "@ai-sdk/google";
+import { groq } from "@ai-sdk/groq";
 import { generateWithFallback } from "@/ai/utils/generate-with-fallback";
 
 export interface DraftRefinerInput {
@@ -25,7 +26,8 @@ export async function refineDraftFlow(input: DraftRefinerInput): Promise<DraftRe
 
     try {
         const modelPrimary = google("gemini-2.5-flash");
-        const modelFallback = google("gemini-1.5-flash");
+        // Fallback to Groq for generous free tier if Gemini hits quota
+        const modelFallback = groq("llama-3.3-70b-versatile");
 
         const contextSection = emailContext ? `
 # Email Context

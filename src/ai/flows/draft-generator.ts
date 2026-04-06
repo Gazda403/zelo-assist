@@ -1,4 +1,5 @@
 import { google } from "@ai-sdk/google";
+import { groq } from "@ai-sdk/groq";
 import { generateWithFallback } from "@/ai/utils/generate-with-fallback";
 
 export interface DraftGeneratorInput {
@@ -25,7 +26,8 @@ export async function generateDraftFlow(input: DraftGeneratorInput): Promise<Dra
 
     try {
         const modelPrimary = google("gemini-2.5-flash");
-        const modelFallback = google("gemini-1.5-flash");
+        // Fallback to Groq for generous free tier if Gemini hits quota
+        const modelFallback = groq("llama-3.3-70b-versatile");
 
         const prompt = `You are an AI email assistant. Generate a professional draft reply to the following email.
 ${input.instructions ? `\n# Custom Instructions / Bot Persona\nFollow these specific rules for your response:\n${input.instructions}\n` : ''}

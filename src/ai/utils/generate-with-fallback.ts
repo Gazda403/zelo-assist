@@ -1,16 +1,16 @@
-import { generateText, LanguageModel } from "ai";
+import { generateText, generateObject } from "ai";
 
 interface GenerateWithFallbackOptions {
-    modelPrimary: LanguageModel;
-    modelFallback: LanguageModel;
-    [key: string]: any; // Allow any other properties supported by generateText
+    modelPrimary: any;
+    modelFallback: any;
+    [key: string]: any; // Allow any other properties supported by generateText or generateObject
 }
 
 /**
  * Attempts to generate text using a primary model.
  * If a quota limit (429 or 'quota exceeded') is hit, it falls back to a secondary model.
  */
-export async function generateWithFallback(options: GenerateWithFallbackOptions) {
+export async function generateWithFallback(options: GenerateWithFallbackOptions): Promise<any> {
     const { modelPrimary, modelFallback, ...generateOptions } = options;
 
     try {
@@ -49,4 +49,41 @@ export async function generateWithFallback(options: GenerateWithFallbackOptions)
     }
 }
 
+/**
+ * Attempts to generate a structured object using a primary model.
+ * If a quota limit (429 or 'quota exceeded') is hit, it falls back to a secondary model.
+ */
+export async function generateObjectWithFallback<T>(options: GenerateWithFallbackOptions & { schema?: any }) {
+    const { modelPrimary, modelFallback, ...generateOptions } = options;
 
+    try {
+        const result = await generateObject<T>({
+            model: modelPrimary,
+            ...generateOptions,
+        } as any);
+        return result;
+    } catch (error: any) {
+        const errorMessage = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+        const isQuotaError =
+            errorMessage.includes("quota exceeded") ||
+            errorMessage.includes("429") ||
+            errorMessage.includes("resource has been exhausted");
+
+        if (isQuotaError) {
+            console.warn(`[AI Fallback] Primary model failed with quota error. Switching to fallback model...`);
+            console.warn(`[AI Fallback] Error details: ${errorMessage}`);
+
+            try {
+                const result = await generateObject<T>({
+                    model: modelFallback,
+                    ...generateOptions,
+                } as any);
+                return result;
+            } catch (fallbackError) {
+                console.error(`[AI Fallback] Fallback model also failed:`, fallbackError);
+                throw error;
+            }
+        }
+        throw error;
+    }
+}
