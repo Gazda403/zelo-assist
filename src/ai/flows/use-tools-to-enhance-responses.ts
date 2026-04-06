@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview Gmail-aware AI chatbot flow using real inbox data as tools.
  */
