@@ -1,72 +1,50 @@
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { google } from "@ai-sdk/google";
+import { groq } from "@ai-sdk/groq";
+import { generateWithFallback } from "@/ai/utils/generate-with-fallback";
 
-export const ChatbotInputSchema = z.object({
-    query: z.string().describe('The user query.'),
-    history: z.array(z.object({
-        role: z.enum(['user', 'assistant'] as const), // Fix: use readonly array for enum
-        content: z.string(),
-    })).optional().describe("Conversation history")
-});
+export interface ChatbotInput {
+    query: string;
+    history?: Array<{ role: "user" | "assistant"; content: string }>;
+}
 
-export const ChatbotOutputSchema = z.object({
-    response: z.string().describe('The chatbot response.'),
-});
+export interface ChatbotOutput {
+    response: string;
+}
 
-// Example Tool: Get Weather (as per reference, good for testing tools)
-const GetCurrentWeatherInputSchema = z.object({
-    location: z.string().describe('The city and state, e.g. San Francisco, CA'),
-});
+/**
+ * Chatbot flow using Vercel AI SDK.
+ * Tries Gemini first and falls back to Groq if Gemini hits rate limits.
+ */
+export async function chatbotFlow(input: ChatbotInput): Promise<ChatbotOutput> {
+    const { query, history } = input;
 
-const getCurrentWeather = ai.defineTool(
-    {
-        name: 'getCurrentWeather',
-        description: 'Gets the current weather for a location',
-        inputSchema: GetCurrentWeatherInputSchema,
-        outputSchema: z.object({
-            temperature: z.number(),
-            condition: z.string(),
-        }),
-    },
-    async (input) => {
-        // Mock response
+    const modelPrimary = google("gemini-2.5-flash");
+    const modelFallback = groq("llama-3.3-70b-versatile");
+
+    // Build conversation as a prompt string (history + current query)
+    const historyText = history && history.length > 0
+        ? history.map(m => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`).join("\n") + "\n"
+        : "";
+
+    const prompt = `You are Gmail Secretary, a helpful AI assistant integrated into a Gmail-like email app.
+You help users understand their emails, draft responses, and manage their inbox.
+Be concise, professional, and helpful.
+
+${historyText ? `Previous conversation:\n${historyText}\n` : ""}User: ${query}
+Assistant:`;
+
+    try {
+        const { text } = await generateWithFallback({
+            modelPrimary,
+            modelFallback,
+            prompt,
+        });
+
+        return { response: text.trim() };
+    } catch (error) {
+        console.error("[Chatbot] Both primary and fallback models failed:", error);
         return {
-            temperature: 72,
-            condition: 'Sunny',
+            response: "I'm sorry, I'm having trouble connecting to the AI service right now. Please try again in a moment.",
         };
     }
-);
-
-const chatbotPrompt = ai.definePrompt({
-    name: 'chatbotPrompt',
-    input: { schema: ChatbotInputSchema },
-    tools: [getCurrentWeather],
-    // Simple text prompt for now to ensure compatibility. 
-    // Ideally we would loop over history, but for this 'enhanced response' snippet we'll just context dump or use basic concatenation.
-    // Genkit 0.9+ templates support {{#each history}}...{{/each}} if using dotprompt, but standard template string is safer here.
-    prompt: `You are Gmail Secretary, a helpful AI assistant.
-  
-  {{#if history}}
-  Previous conversation:
-  {{#each history}}
-  {{role}}: {{content}}
-  {{/each}}
-  {{/if}}
-
-  Current Query: {{query}}`
-});
-
-export const chatbotFlow = ai.defineFlow(
-    {
-        name: 'chatbotFlow',
-        inputSchema: ChatbotInputSchema,
-        // Schema must match definePrompt output logic if structured, but here prompt returns text generation
-        // Actually definePrompt returns a 'GenerateResponse'.
-        outputSchema: ChatbotOutputSchema,
-    },
-    async (input) => {
-        // The prompt execution returns the generate result
-        const result = await chatbotPrompt(input);
-        return { response: result.text };
-    }
-);
+}

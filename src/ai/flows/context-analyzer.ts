@@ -1,59 +1,66 @@
-import { ai } from '../genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
+import { google } from '@ai-sdk/google';
+import { groq } from '@ai-sdk/groq';
+import { generateObjectWithFallback } from '@/ai/utils/generate-with-fallback';
 
-export const analyzeEmailContext = ai.defineFlow(
-    {
-        name: 'analyzeEmailContext',
-        inputSchema: z.object({
-            subject: z.string(),
-            body: z.string(),
-            previousContext: z.string().optional(), // For topic change detection
-        }),
-        outputSchema: z.object({
-            sentiment: z.enum(['positive', 'negative', 'neutral', 'frustrated', 'urgent']),
-            topics: z.array(z.string()),
-            isTopicChanged: z.boolean().optional(),
-            confidence: z.number(),
-        }),
-    },
-    async (input) => {
-        const { subject, body, previousContext } = input;
+const ContextAnalyzerOutputSchema = z.object({
+    sentiment: z.enum(['positive', 'negative', 'neutral', 'frustrated', 'urgent']),
+    topics: z.array(z.string()),
+    isTopicChanged: z.boolean().optional(),
+    confidence: z.number(),
+});
 
-        const prompt = `
-            Analyze the following email content.
-            
-            Subject: ${subject}
-            Body: ${body}
-            ${previousContext ? `Previous Context/Thread Summary: ${previousContext}` : ''}
+type ContextAnalyzerInput = {
+    subject: string;
+    body: string;
+    previousContext?: string;
+};
 
-            Determine the following:
-            1. Sentiment: strictly one of 'positive', 'negative', 'neutral', 'frustrated', 'urgent'.
-               - 'frustrated' should be used if the user seems angry, annoyed, or complaining.
-               - 'urgent' should be used if the user is demanding immediate action.
-            2. Main Topics: List up to 3 key topics discussed.
-            3. Topic Changed: If previous context is provided, has the main topic shifted significantly? (true/false)
-            4. Confidence: 0.0 to 1.0 score of your analysis.
+type ContextAnalyzerOutput = z.infer<typeof ContextAnalyzerOutputSchema>;
 
-            Return JSON.
-        `;
+/**
+ * Analyzes email context: sentiment, topics, and topic-change detection.
+ * Uses Vercel AI SDK with Gemini primary and Groq fallback.
+ */
+export async function analyzeEmailContext(input: ContextAnalyzerInput): Promise<ContextAnalyzerOutput> {
+    const { subject, body, previousContext } = input;
 
-        const { output } = await ai.generate({
+    const modelPrimary = google('gemini-2.5-flash');
+    const modelFallback = groq('llama-3.3-70b-versatile');
+
+    const prompt = `Analyze the following email content.
+
+Subject: ${subject}
+Body: ${body}
+${previousContext ? `Previous Context/Thread Summary: ${previousContext}` : ''}
+
+Determine the following:
+1. Sentiment: strictly one of 'positive', 'negative', 'neutral', 'frustrated', 'urgent'.
+   - 'frustrated' should be used if the user seems angry, annoyed, or complaining.
+   - 'urgent' should be used if the user is demanding immediate action.
+2. Main Topics: List up to 3 key topics discussed.
+3. Topic Changed: If previous context is provided, has the main topic shifted significantly? (true/false)
+4. Confidence: 0.0 to 1.0 score of your analysis.
+
+Return a JSON object matching the schema exactly.`;
+
+    try {
+        const { object } = await generateObjectWithFallback<ContextAnalyzerOutput>({
+            modelPrimary,
+            modelFallback,
+            schema: ContextAnalyzerOutputSchema,
             prompt,
-            output: {
-                format: 'json',
-                schema: z.object({
-                    sentiment: z.enum(['positive', 'negative', 'neutral', 'frustrated', 'urgent']),
-                    topics: z.array(z.string()),
-                    isTopicChanged: z.boolean().optional(),
-                    confidence: z.number(),
-                })
-            }
         });
 
-        if (!output) {
-            throw new Error('Failed to generate analysis');
-        }
-
-        return output;
+        return object as ContextAnalyzerOutput;
+    } catch (error) {
+        console.error('[Context Analyzer] Both models failed:', error);
+        // Return a safe default so the bot engine doesn't crash
+        return {
+            sentiment: 'neutral',
+            topics: [],
+            isTopicChanged: false,
+            confidence: 0,
+        };
     }
-);
+}

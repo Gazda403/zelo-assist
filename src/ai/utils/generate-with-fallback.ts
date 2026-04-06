@@ -3,87 +3,76 @@ import { generateText, generateObject } from "ai";
 interface GenerateWithFallbackOptions {
     modelPrimary: any;
     modelFallback: any;
-    [key: string]: any; // Allow any other properties supported by generateText or generateObject
+    [key: string]: any;
 }
 
 /**
- * Attempts to generate text using a primary model.
- * If a quota limit (429 or 'quota exceeded') is hit, it falls back to a secondary model.
+ * Attempts to generate text using a primary model (Gemini).
+ * If Gemini fails for ANY reason, automatically falls back to Groq.
+ * Only throws if both models fail.
  */
 export async function generateWithFallback(options: GenerateWithFallbackOptions): Promise<any> {
     const { modelPrimary, modelFallback, ...generateOptions } = options;
 
     try {
-        // Try primary model
-        return await generateText({
+        const result = await generateText({
             model: modelPrimary,
             ...generateOptions,
         } as any);
-    } catch (error: any) {
-        // Check for specific quota/rate limit errors
-        const errorMessage = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
-        const isQuotaError =
-            errorMessage.includes("quota exceeded") ||
-            errorMessage.includes("429") ||
-            errorMessage.includes("resource has been exhausted");
+        return result;
+    } catch (primaryError: any) {
+        const primaryMsg = primaryError?.message ?? String(primaryError);
+        console.warn(`[AI Fallback] Gemini failed: "${primaryMsg}". Switching to Groq...`);
 
-        if (isQuotaError) {
-            console.warn(`[AI Fallback] Primary model failed with quota error. Switching to fallback model...`);
-            console.warn(`[AI Fallback] Error details: ${errorMessage}`);
-
-            // Try fallback model
-            try {
-                return await generateText({
-                    model: modelFallback,
-                    ...generateOptions,
-                } as any);
-            } catch (fallbackError) {
-                console.error(`[AI Fallback] Fallback model also failed:`, fallbackError);
-                // Throw the original error to keep the context that the primary failed + fallback failed
-                throw error;
-            }
+        try {
+            const result = await generateText({
+                model: modelFallback,
+                ...generateOptions,
+            } as any);
+            console.log(`[AI Fallback] Groq responded successfully.`);
+            return result;
+        } catch (fallbackError: any) {
+            const fallbackMsg = fallbackError?.message ?? String(fallbackError);
+            console.error(`[AI Fallback] Groq also failed: "${fallbackMsg}"`);
+            // Throw original error for context
+            throw new Error(
+                `Both AI models failed.\nGemini: ${primaryMsg}\nGroq: ${fallbackMsg}`
+            );
         }
-
-        // If it's not a quota error (e.g. invalid prompt, server error), rethrow immediately
-        throw error;
     }
 }
 
 /**
- * Attempts to generate a structured object using a primary model.
- * If a quota limit (429 or 'quota exceeded') is hit, it falls back to a secondary model.
+ * Attempts to generate a structured object using a primary model (Gemini).
+ * If Gemini fails for ANY reason, automatically falls back to Groq.
+ * Only throws if both models fail.
  */
 export async function generateObjectWithFallback<T>(options: GenerateWithFallbackOptions & { schema?: any }) {
     const { modelPrimary, modelFallback, ...generateOptions } = options;
 
     try {
-        const result = await generateObject<T>({
+        const result = await generateObject({
             model: modelPrimary,
             ...generateOptions,
         } as any);
         return result;
-    } catch (error: any) {
-        const errorMessage = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
-        const isQuotaError =
-            errorMessage.includes("quota exceeded") ||
-            errorMessage.includes("429") ||
-            errorMessage.includes("resource has been exhausted");
+    } catch (primaryError: any) {
+        const primaryMsg = primaryError?.message ?? String(primaryError);
+        console.warn(`[AI Fallback] Gemini failed: "${primaryMsg}". Switching to Groq...`);
 
-        if (isQuotaError) {
-            console.warn(`[AI Fallback] Primary model failed with quota error. Switching to fallback model...`);
-            console.warn(`[AI Fallback] Error details: ${errorMessage}`);
-
-            try {
-                const result = await generateObject<T>({
-                    model: modelFallback,
-                    ...generateOptions,
-                } as any);
-                return result;
-            } catch (fallbackError) {
-                console.error(`[AI Fallback] Fallback model also failed:`, fallbackError);
-                throw error;
-            }
+        try {
+            const result = await generateObject({
+                model: modelFallback,
+                ...generateOptions,
+            } as any);
+            console.log(`[AI Fallback] Groq responded successfully.`);
+            return result;
+        } catch (fallbackError: any) {
+            const fallbackMsg = fallbackError?.message ?? String(fallbackError);
+            console.error(`[AI Fallback] Groq also failed: "${fallbackMsg}"`);
+            throw new Error(
+                `Both AI models failed.\nGemini: ${primaryMsg}\nGroq: ${fallbackMsg}`
+            );
         }
-        throw error;
     }
 }

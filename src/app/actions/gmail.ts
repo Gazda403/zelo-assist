@@ -68,7 +68,7 @@ export async function fetchEmailsAction(
                     });
 
                     if (rating) {
-                        const saved = await saveEmailRating(email.id, session.user.id!, rating);
+                        const saved = await saveEmailRating(email.id, session.user.id!, rating as any);
                         if (!saved) {
                             console.warn(`[AI] Failed to save rating for ${email.id}`);
                         }

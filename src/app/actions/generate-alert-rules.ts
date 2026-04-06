@@ -1,12 +1,13 @@
 'use server';
 
 import { auth } from '@/auth';
-import { generateText } from 'ai';
 import { google } from '@ai-sdk/google';
+import { groq } from '@ai-sdk/groq';
+import { generateWithFallback } from '@/ai/utils/generate-with-fallback';
 import type { AlertBotConfig } from '@/lib/bots/types';
 
 /**
- * Uses Gemini to convert a plain-English alert description into structured detection rules.
+ * Uses Gemini/Groq to convert a plain-English alert description into structured detection rules.
  * Returns sender filters and keywords the Alert Bot will scan against.
  */
 export async function generateAlertRulesAction(description: string): Promise<AlertBotConfig> {
@@ -43,10 +44,10 @@ Examples:
 
 Only return the JSON object. Nothing else.`;
 
-    const { text } = await generateText({
-        model: google('gemini-2.0-flash'),
+    const { text } = await generateWithFallback({
+        modelPrimary: google('gemini-2.5-flash'),
+        modelFallback: groq('llama-3.3-70b-versatile'),
         prompt,
-        maxTokens: 500,
     });
 
     try {

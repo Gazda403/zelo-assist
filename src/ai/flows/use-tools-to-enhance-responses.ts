@@ -69,11 +69,11 @@ Guidelines:
         maxSteps: 5, // allows tools to be run automatically
         tools: {
             getRecentEmails: tool({
-                description: 'Fetches the user\'s most recent inbox emails. Returns subject, sender, snippet, and date for the last 10 emails. Use this when the user asks to summarize, prioritize, or describe their recent emails.',
+                description: 'Fetches the user\'s most recent inbox emails. Returns subject, sender, snippet, and date for the last 10 emails.',
                 parameters: z.object({
                     limit: z.number().optional().describe('Number of emails to fetch, default 10'),
                 }),
-                execute: async ({ limit }) => {
+                execute: async ({ limit }: any) => {
                     try {
                         const client = await getClient(provider);
                         const { emails } = await client.getLastEmails(accessToken, limit ?? 10);
@@ -88,14 +88,14 @@ Guidelines:
                         return [];
                     }
                 }
-            }),
+            } as any),
             searchEmails: tool({
-                description: 'Searches the user\'s Gmail inbox using a keyword, sender name, or subject phrase. Use this when the user asks to find specific emails (e.g., "find emails from John", "show emails about invoice").',
+                description: 'Searches the user\'s Gmail inbox using a keyword, sender name, or subject phrase.',
                 parameters: z.object({
                     query: z.string().describe('Gmail search query string (e.g. "from:koyeb.com", "subject:invoice", "urgent")'),
                     limit: z.number().optional().describe('Max results to return, default 5'),
                 }),
-                execute: async ({ query, limit }) => {
+                execute: async ({ query, limit }: any) => {
                     try {
                         const client = await getClient(provider);
                         const emails = await client.searchEmails(accessToken, query, limit ?? 5);
@@ -110,7 +110,7 @@ Guidelines:
                         return [];
                     }
                 }
-            }),
+            } as any),
             getUnreadCount: tool({
                 description: 'Returns the number of unread emails in the user\'s inbox. Use this when the user asks how many unread emails they have.',
                 parameters: z.object({}),
@@ -124,7 +124,7 @@ Guidelines:
                         return { unreadCount: 0 };
                     }
                 }
-            })
+            } as any)
         }
     });
 

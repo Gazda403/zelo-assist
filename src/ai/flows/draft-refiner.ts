@@ -93,16 +93,12 @@ Respond in JSON format:
         };
 
     } catch (error) {
-        console.error('[Draft Refiner] Error:', error);
+        console.error('[Draft Refiner] Both models failed:', error);
 
-        // Detailed error logging
-        if (error instanceof Error) {
-            console.error('[Draft Refiner] Error name:', error.name);
-            console.error('[Draft Refiner] Error message:', error.message);
-            console.error('[Draft Refiner] Error stack:', error.stack);
-        }
-
-        // Return original draft on error
-        throw new Error(`Failed to refine draft: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        // Return the original draft unchanged so the user isn't left with nothing
+        return {
+            refinedDraft: draft,
+            explanation: "Sorry, the AI service is temporarily unavailable. Your original draft has been kept.",
+        };
     }
 }
