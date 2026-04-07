@@ -29,7 +29,7 @@ export async function GET() {
     // Fetch profile (subscription status & plan type)
     const { data: profile, error: profileError } = await supabaseAdmin
         .from("profiles")
-        .select("subscription_status, plan_type, current_period_end")
+        .select("subscription_status, plan_type, current_period_end, first_login_at")
         .eq("id", userId)
         .single();
 
@@ -40,13 +40,23 @@ export async function GET() {
     let planType = profile?.plan_type ?? "free";
     let subscriptionStatus = profile?.subscription_status ?? "inactive";
 
+    const createdAt = profile?.first_login_at || new Date().toISOString();
+    const trialDays = 7;
+    const msSinceCreation = Date.now() - new Date(createdAt).getTime();
+    const daysSinceCreation = msSinceCreation / (1000 * 60 * 60 * 24);
+    const isTrialExpired = planType === "free" && daysSinceCreation > trialDays;
+    const trialDaysLeft = Math.max(0, Math.ceil(trialDays - daysSinceCreation));
+
     // Admin override
     if (session.user.email === ADMIN_EMAIL) {
         planType = "exclusive";
         subscriptionStatus = "active";
     }
 
-    const maxSlots = PLAN_LIMITS[planType] ?? 1;
+    let maxSlots = PLAN_LIMITS[planType] ?? 1;
+    if (planType === "free" && !isTrialExpired) {
+        maxSlots = Infinity;
+    }
 
     // Count connected emails (the primary account always counts as 1)
     const { count: connectedCount } = await supabaseAdmin
@@ -62,8 +72,10 @@ export async function GET() {
         subscriptionStatus,
         maxSlots,
         usedSlots,
-        remainingSlots: Math.max(0, maxSlots - usedSlots),
+        remainingSlots: maxSlots === Infinity ? Infinity : Math.max(0, maxSlots - usedSlots),
         currentPeriodEnd: profile?.current_period_end ?? null,
-        isActive: subscriptionStatus === "active" || planType === "free",
+        isActive: subscriptionStatus === "active" || (planType === "free" && !isTrialExpired),
+        isTrialExpired,
+        trialDaysLeft,
     });
 }

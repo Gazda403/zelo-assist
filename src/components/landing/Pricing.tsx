@@ -20,18 +20,17 @@ interface PricingTier {
 
 const pricingTiers: PricingTier[] = [
     {
-        name: "Free",
-        description: "Great for testing the waters.",
+        name: "Free Trial",
+        description: "Experience the full power of Zelo.",
         target: "Free",
         monthlyPrice: "$0",
-        billingText: "is just a trial 10 days of pro before lock out",
+        billingText: "7 days of full premium features, then locked.",
         features: [
-            "Up to 3 active bots",
-            "Startup, E-Commerce, Follow-Up, Generic bots",
-            "Auto-send safe emails",
-            "Basic workflows & analytics dashboard",
-            "Standard email support",
-            "Standard triggers + urgency & time-based"
+            "Unlimited active bots",
+            "Unlimited connected emails",
+            "All premium AI templates",
+            "Advanced workflows & automations",
+            "7 days of full unrestricted access"
         ],
         buttonText: "Get started",
         highlighted: false,

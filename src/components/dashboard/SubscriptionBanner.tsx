@@ -9,11 +9,13 @@ import { cn } from '@/lib/utils';
 interface SubscriptionStatus {
     planType: string;
     subscriptionStatus: string;
-    maxSlots: number;
+    maxSlots: number | null;
     usedSlots: number;
-    remainingSlots: number;
+    remainingSlots: number | null;
     currentPeriodEnd: string | null;
     isActive: boolean;
+    isTrialExpired?: boolean;
+    trialDaysLeft?: number;
 }
 
 export function SubscriptionBanner() {
@@ -71,9 +73,10 @@ export function SubscriptionBanner() {
         ? new Date(status.currentPeriodEnd) < new Date()
         : false;
     const isCanceled = status.subscriptionStatus === 'canceled';
-    const showWarning = isExpired || isCanceled || status.subscriptionStatus === 'inactive';
+    const showWarning = isExpired || isCanceled || (status.subscriptionStatus === 'inactive' && status.planType !== 'free') || status.isTrialExpired;
 
-    const usagePercentage = Math.min((status.usedSlots / status.maxSlots) * 100, 100);
+    const maxSlotsDisplay = status.maxSlots === null ? 'Unlimited' : status.maxSlots;
+    const usagePercentage = status.maxSlots === null ? 0 : Math.min((status.usedSlots / status.maxSlots) * 100, 100);
 
     return (
         <AnimatePresence>
@@ -143,7 +146,7 @@ export function SubscriptionBanner() {
                         <div className="space-y-2 mb-4 relative z-10">
                             <div className="flex justify-between text-[11px] font-medium">
                                 <span className="text-muted-foreground">Email Slots</span>
-                                <span className="text-foreground">{status.usedSlots} / {status.maxSlots}</span>
+                                <span className="text-foreground">{status.usedSlots} / {maxSlotsDisplay}</span>
                             </div>
                             <div className="h-1.5 w-full bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
                                 <motion.div 
@@ -163,11 +166,15 @@ export function SubscriptionBanner() {
                             <div>
                                 {showWarning ? (
                                     <p className="text-[10px] text-red-600 font-medium">
-                                        {isCanceled ? 'Subscription canceled' : 'Payment required'}
+                                        {status.isTrialExpired ? '7-Day trial expired' : isCanceled ? 'Subscription canceled' : 'Payment required'}
                                     </p>
                                 ) : status.planType === 'exclusive' ? (
                                     <p className="text-[10px] text-amber-600 font-bold italic">
                                         Unlimited Access Granted
+                                    </p>
+                                ) : status.planType === 'free' ? (
+                                    <p className="text-[10px] text-accent font-bold italic">
+                                        {status.trialDaysLeft} Days Left in Trial
                                     </p>
                                 ) : (
                                     <p className="text-[10px] text-muted-foreground italic">

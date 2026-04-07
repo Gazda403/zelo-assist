@@ -75,7 +75,7 @@ export async function createBotAction(
 
     const { data: profile } = await supabaseAdmin
         .from('profiles')
-        .select('plan_type')
+        .select('plan_type, first_login_at')
         .eq('id', userId)
         .single();
         
@@ -84,11 +84,25 @@ export async function createBotAction(
         planType = 'exclusive';
     }
     
-    const maxBots = (planType === 'pro' || planType === 'exclusive') ? Infinity : 3;
+    const createdAt = profile?.first_login_at || new Date().toISOString();
+    const trialDays = 7;
+    const msSinceCreation = Date.now() - new Date(createdAt).getTime();
+    const daysSinceCreation = msSinceCreation / (1000 * 60 * 60 * 24);
+    const isTrialExpired = planType === "free" && daysSinceCreation > trialDays;
+
+    if (isTrialExpired) {
+        throw new Error(`Your 7-day free trial has expired. Please upgrade your plan to create and use bots.`);
+    }
+
+    let maxBots = (planType === 'pro' || planType === 'exclusive') ? Infinity : 3;
+    if (planType === 'free' && !isTrialExpired) {
+        maxBots = Infinity;
+    }
+
     const existingBots = await getAllBots(userId);
     
     if (existingBots.length >= maxBots) {
-        throw new Error(`Bot limit reached. Your ${planType} plan allows up to ${maxBots} bots. Please upgrade your plan to create more bots.`);
+        throw new Error(`Bot limit reached. Your plan allows up to ${maxBots} bots. Please upgrade your plan to create more bots.`);
     }
     // -----------------------------------------
 

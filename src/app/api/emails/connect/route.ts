@@ -32,17 +32,31 @@ export async function POST(req: Request) {
     // Get the user's plan type
     const { data: profile } = await supabaseAdmin
         .from("profiles")
-        .select("plan_type, subscription_status")
+        .select("plan_type, subscription_status, first_login_at")
         .eq("id", userId)
         .single();
 
     let planType = profile?.plan_type ?? "free";
     let subscriptionStatus = profile?.subscription_status ?? "inactive";
 
+    const createdAt = profile?.first_login_at || new Date().toISOString();
+    
+    const trialDays = 7;
+    const msSinceCreation = Date.now() - new Date(createdAt).getTime();
+    const daysSinceCreation = msSinceCreation / (1000 * 60 * 60 * 24);
+    const isTrialExpired = planType === "free" && daysSinceCreation > trialDays;
+
     // Admin override
     if (session.user.email === "brankovicaleksandar2404@gmail.com") {
         planType = "exclusive";
         subscriptionStatus = "active";
+    }
+
+    if (isTrialExpired) {
+        return NextResponse.json(
+            { error: "Your 7-day free trial has expired. Please upgrade your plan to connect email accounts." },
+            { status: 403 }
+        );
     }
 
     // Free users without active subscription still get 1 slot (their own account)
@@ -54,7 +68,10 @@ export async function POST(req: Request) {
         );
     }
 
-    const maxSlots = PLAN_LIMITS[planType] ?? 1;
+    let maxSlots = PLAN_LIMITS[planType] ?? 1;
+    if (planType === "free" && !isTrialExpired) {
+        maxSlots = Infinity;
+    }
 
     // Count existing extra connections
     const { count: existingCount } = await supabaseAdmin

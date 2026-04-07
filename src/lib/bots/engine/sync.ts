@@ -14,7 +14,31 @@ export async function syncBotsForUser(userId: string): Promise<{ success: boolea
     try {
         console.log(`[Sync] Starting sync for user ${userId}`);
 
-        // 1. Get refresh token
+        // 1. Get user profile and check subscription/trial status
+        const supabaseAdmin = createAdminClient();
+        const { data: profile, error: profileError } = await supabaseAdmin
+            .from("profiles")
+            .select("plan_type, first_login_at")
+            .eq("id", userId)
+            .single();
+
+        if (profileError) {
+            console.error(`[Sync] Failed to fetch profile for ${userId}`, profileError);
+            return { success: false, error: 'Failed to fetch profile' };
+        }
+
+        const planType = profile?.plan_type ?? 'free';
+        if (planType === 'free') {
+            const createdAt = profile?.first_login_at || new Date().toISOString();
+            const msSinceCreation = Date.now() - new Date(createdAt).getTime();
+            const daysSinceCreation = msSinceCreation / (1000 * 60 * 60 * 24);
+            if (daysSinceCreation > 7) {
+                console.log(`[Sync] Free trial expired for user ${userId}, skipping`);
+                return { success: false, error: 'Trial expired' };
+            }
+        }
+
+        // 2. Get refresh token
         const refreshToken = await getUserRefreshToken(userId);
         if (!refreshToken) {
             console.log(`[Sync] No refresh token for user ${userId}, skipping`);
