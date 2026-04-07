@@ -1,7 +1,6 @@
 import { z } from 'zod';
-import { google } from "@ai-sdk/google";
 import { groq } from "@ai-sdk/groq";
-import { generateObjectWithFallback } from '@/ai/utils/generate-with-fallback';
+import { generateObject } from 'ai';
 
 export const EmailRaterInputSchema = z.object({
     subject: z.string(),
@@ -16,18 +15,14 @@ export const EmailRaterOutputSchema = z.object({
 });
 
 type EmailRaterInput = z.infer<typeof EmailRaterInputSchema>;
-type EmailRaterOutput = z.infer<typeof EmailRaterOutputSchema>;
 
 export async function rateEmailFlow(input: EmailRaterInput) {
     const { subject, snippet, sender } = input;
 
-    const modelPrimary = google("gemini-2.5-flash");
-    const modelFallback = groq("llama-3.3-70b-versatile");
-
     const prompt = `(Role: Expert Executive Assistant — multilingual, fluent in all languages)
 Analyze the following email metadata and determine its urgency score (1-10), reasoning, and confidence.
 The email subject/snippet may be in any language (Norwegian, Serbian, German, French, etc.) — understand it fully and rate it accurately regardless of language.
-  
+
 # Data
 Sender: ${sender || 'Unknown'}
 Subject: ${subject}
@@ -46,9 +41,8 @@ Snippet: ${snippet}
 - If data is insufficient (only snippet), set confidence to 'low'.
 - Always return a JSON object with EXACTLY these keys: "urgencyScore" (number), "reasoning" (string), "confidence" (string 'low' | 'medium' | 'high').`;
 
-    const { object } = await generateObjectWithFallback<EmailRaterOutput>({
-        modelPrimary,
-        modelFallback,
+    const { object } = await generateObject({
+        model: groq("llama-3.3-70b-versatile"),
         schema: EmailRaterOutputSchema,
         prompt,
     });
