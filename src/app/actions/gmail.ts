@@ -33,9 +33,13 @@ export async function fetchEmailsAction(
     }
 
     try {
-        let query = '';
+        const userEmail = session.user?.email;
+        let query = session.provider === 'microsoft-entra-id' 
+            ? (userEmail ? `NOT from:${userEmail}` : '') 
+            : '-from:me';
+            
         if (filter !== 'all') {
-            query = `newer_than:${filter}`;
+            query += query ? ` newer_than:${filter}` : `newer_than:${filter}`;
         }
 
         const client = getClient(session.provider);
