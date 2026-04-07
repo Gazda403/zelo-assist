@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { groq } from "@ai-sdk/groq";
-import { generateObject } from 'ai';
+import { generateText } from 'ai';
 
 export const EmailRaterInputSchema = z.object({
     subject: z.string(),
@@ -39,13 +39,36 @@ Snippet: ${snippet}
 - Emotional Safety: Do NOT treat emotional language as urgency unless actual deadlines/consequences are present.
 - Choose the LOWEST score that accurately fits the category.
 - If data is insufficient (only snippet), set confidence to 'low'.
-- Always return a JSON object with EXACTLY these keys: "urgencyScore" (number), "reasoning" (string), "confidence" (string 'low' | 'medium' | 'high').`;
 
-    const { object } = await generateObject({
+IMPORTANT: YOU MUST RETURN ONLY RAW, VALID JSON MATCHING THIS EXACT EXACT STRUCTURE:
+{
+  "urgencyScore": 5,
+  "reasoning": "Explanation here",
+  "confidence": "low" | "medium" | "high"
+}
+NO MARKDOWN FENCES, NO COMMENTS, NO EXTRA TEXT BEFORE OR AFTER THE JSON OBJECT.`;
+
+    const { text } = await generateText({
         model: groq("llama-3.3-70b-versatile"),
-        schema: EmailRaterOutputSchema,
         prompt,
     });
+
+    let object;
+    try {
+        let cleaned = text.trim();
+        if (cleaned.startsWith('```json')) cleaned = cleaned.slice(7);
+        else if (cleaned.startsWith('```')) cleaned = cleaned.slice(3);
+        if (cleaned.endsWith('```')) cleaned = cleaned.slice(0, -3);
+        cleaned = cleaned.trim();
+        
+        const match = cleaned.match(/\{[\s\S]*\}/);
+        const jsonStr = match ? match[0] : cleaned;
+        
+        object = JSON.parse(jsonStr);
+    } catch (e) {
+        console.error('[AI] Groq JSON parse failed, raw output:', text);
+        throw new Error('Failed to parse AI response as JSON');
+    }
 
     return object;
 }
