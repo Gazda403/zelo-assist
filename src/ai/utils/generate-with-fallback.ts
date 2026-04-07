@@ -43,6 +43,38 @@ export async function generateWithFallback(options: GenerateWithFallbackOptions)
 }
 
 /**
+ * Extracts a JSON object or array from a string that may contain extra text.
+ * Tries JSON.parse first, then uses regex to find embedded JSON.
+ */
+function extractJson(text: string): any {
+    // First strip common markdown fences
+    let cleaned = text.trim();
+    if (cleaned.startsWith('```json')) cleaned = cleaned.slice(7);
+    else if (cleaned.startsWith('```')) cleaned = cleaned.slice(3);
+    if (cleaned.endsWith('```')) cleaned = cleaned.slice(0, -3);
+    cleaned = cleaned.trim();
+
+    // Try direct parse first
+    try {
+        return JSON.parse(cleaned);
+    } catch {
+        // Fall through to regex extraction
+    }
+
+    // Use regex to find the first { ... } block in the response
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (match) {
+        try {
+            return JSON.parse(match[0]);
+        } catch (e) {
+            throw new Error(`Groq returned text but JSON was unparseable. Raw: "${cleaned.slice(0, 300)}"`);
+        }
+    }
+
+    throw new Error(`Groq returned no JSON object. Raw response: "${cleaned.slice(0, 300)}"`);
+}
+
+/**
  * Attempts to generate a structured object using a primary model (Gemini).
  * If Gemini fails for ANY reason, automatically falls back to Groq.
  * Only throws if both models fail.
@@ -60,26 +92,22 @@ export async function generateObjectWithFallback<T>(options: GenerateWithFallbac
         return result;
     } catch (primaryError: any) {
         const primaryMsg = primaryError?.message ?? String(primaryError);
-        console.warn(`[AI Fallback] Gemini failed: "${primaryMsg}". Switching to Groq...`);
+        console.warn(`[AI Fallback] Gemini failed (${primaryError?.status ?? 'unknown status'}): "${primaryMsg}". Switching to Groq...`);
 
         try {
-            const fallbackPrompt = `${prompt}\n\nIMPORTANT: YOU MUST RETURN ONLY RAW, VALID JSON MATCHING THE REQUESTED STRUCTURE. NO MARKDOWN FENCES, NO COMMENTS, NO EXTRA TEXT.`;
-            
+            const fallbackPrompt = `${prompt}\n\nIMPORTANT: YOU MUST RETURN ONLY RAW, VALID JSON MATCHING THE REQUESTED STRUCTURE. NO MARKDOWN FENCES, NO COMMENTS, NO EXTRA TEXT BEFORE OR AFTER THE JSON OBJECT.`;
+
             const result = await generateText({
                 model: modelFallback,
                 prompt: fallbackPrompt,
                 ...generateOptions,
             } as any);
-            
-            let text = result.text.trim();
-            if (text.startsWith('```json')) text = text.slice(7);
-            if (text.startsWith('```')) text = text.slice(3);
-            if (text.endsWith('```')) text = text.slice(0, -3);
-            text = text.trim();
 
-            const object = JSON.parse(text);
+            console.log(`[AI Fallback] Groq raw response: "${result.text.slice(0, 200)}"`);
 
-            console.log(`[AI Fallback] Groq responded successfully.`);
+            const object = extractJson(result.text);
+
+            console.log(`[AI Fallback] Groq responded successfully. Parsed object:`, object);
             return { object } as any;
         } catch (fallbackError: any) {
             const fallbackMsg = fallbackError?.message ?? String(fallbackError);

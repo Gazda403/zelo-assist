@@ -17,7 +17,7 @@ interface AIResult {
     confidence: 'low' | 'medium' | 'high';
 }
 
-const EMAIL_AI_LIMIT = 5;
+const EMAIL_AI_LIMIT = 3; // Keep small to avoid rate-limit bursts
 
 // import { getCachedEmailRatings, trackEmailRating } from '@/lib/analytics';
 import { getEmailRatings, saveEmailRating, getGeneratedDraft, saveGeneratedDraft } from '@/lib/db/email-storage';
@@ -56,27 +56,35 @@ export async function fetchEmailsAction(
         const batchToRate = unratedEmails.slice(0, EMAIL_AI_LIMIT);
 
         if (batchToRate.length > 0) {
-            console.log(`[AI] Rating ${batchToRate.length} new emails in background...`);
+            console.log(`[AI] Rating ${batchToRate.length} new emails sequentially in background...`);
             // Fire-and-forget: don't await — inbox returns immediately with cached data.
-            // Ratings will be saved to Supabase and available on the next refresh.
-            Promise.all(batchToRate.map(async (email: any) => {
-                try {
-                    const rating = await rateEmailFlow({
-                        subject: email.subject,
-                        snippet: email.snippet,
-                        sender: email.sender.name
-                    });
+            // Sequential processing (not Promise.all) to avoid bursting rate limits on
+            // both Gemini (5 req/min free tier) and Groq (tokens/min limit).
+            (async () => {
+                for (const email of batchToRate) {
+                    try {
+                        const rating = await rateEmailFlow({
+                            subject: email.subject,
+                            snippet: email.snippet,
+                            sender: email.sender.name
+                        });
 
-                    if (rating) {
-                        const saved = await saveEmailRating(email.id, session.user.id!, rating as any);
-                        if (!saved) {
-                            console.warn(`[AI] Failed to save rating for ${email.id}`);
+                        if (rating) {
+                            const saved = await saveEmailRating(email.id, session.user.id!, rating as any);
+                            if (!saved) {
+                                console.warn(`[AI] Failed to save rating for ${email.id}`);
+                            } else {
+                                console.log(`[AI] Rated email ${email.id}: score ${rating.urgencyScore}`);
+                            }
                         }
+                    } catch (err) {
+                        console.error(`[AI] Failed to rate email ${email.id}:`, err);
                     }
-                } catch (err) {
-                    console.error(`[AI] Failed to rate email ${email.id}:`, err);
+                    // Small delay between requests to stay within rate limits
+                    await new Promise(resolve => setTimeout(resolve, 300));
                 }
-            })).catch(err => console.error('[AI] Background rating batch failed:', err));
+                console.log(`[AI] Background rating batch complete.`);
+            })().catch(err => console.error('[AI] Background rating batch crashed:', err));
         }
 
         // Merge ratings into response
