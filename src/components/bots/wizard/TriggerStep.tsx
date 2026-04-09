@@ -52,7 +52,7 @@ export function TriggerStep({ trigger, onChange }: TriggerStepProps) {
             <h2 className="text-2xl font-bold mb-2 font-serif">When should this bot run?</h2>
             <p className="text-gray-600 mb-6">Choose what triggers your bot</p>
 
-            <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                 {TRIGGER_OPTIONS.map(option => (
                     <button
                         key={option.type}

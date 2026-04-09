@@ -71,7 +71,7 @@ export function ConditionsStep({ conditions, onChange }: ConditionsStepProps) {
             )}
 
             {/* Available Conditions */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {CONDITION_OPTIONS.map(option => (
                     <button
                         key={option.type}

@@ -60,7 +60,7 @@ export function TemplateSelector({ onTemplateSelected, onSkip }: TemplateSelecto
                 Select a template to get started quickly, or build from scratch
             </p>
 
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 max-h-[60vh] sm:max-h-none overflow-y-auto sm:overflow-visible pr-1 pb-4">
                 {templates.map((template, index) => (
                     <motion.button
                         key={template.id}
@@ -85,7 +85,7 @@ export function TemplateSelector({ onTemplateSelected, onSkip }: TemplateSelecto
 
             <button
                 onClick={onSkip}
-                className="w-full p-4 border-2 border-dashed border-gray-300 rounded-xl hover:border-violet-500 hover:bg-violet-50 transition-all text-gray-600 hover:text-violet-600 flex items-center justify-center gap-2"
+                className="w-full p-4 sm:p-4 border-2 border-dashed border-gray-300 rounded-xl hover:border-violet-500 hover:bg-violet-50 transition-all text-gray-600 hover:text-violet-600 flex items-center justify-center gap-2 mb-4 sm:mb-0"
             >
                 <Sparkles className="w-5 h-5" />
                 <span className="font-medium">Start from Scratch</span>
