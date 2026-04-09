@@ -28,7 +28,12 @@ export async function syncBotsForUser(userId: string): Promise<{ success: boolea
             return { success: false, error: 'Failed to fetch profile' };
         }
 
-        const planType = profile?.plan_type ?? 'free';
+        let planType = profile?.plan_type ?? 'free';
+        // Admin override
+        if (userId === 'brankovicaleksandar2404@gmail.com') {
+            planType = 'exclusive';
+        }
+
         if (planType === 'free') {
             const createdAt = profile?.first_login_at || new Date().toISOString();
             const msSinceCreation = Date.now() - new Date(createdAt).getTime();
