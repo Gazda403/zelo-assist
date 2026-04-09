@@ -124,106 +124,107 @@ export function BotWizard({ onBotCreated, onCancel }: BotWizardProps) {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-4 sm:p-6">
-            {/* Header */}
-            <div className="mb-6 sm:mb-8">
-                <div className="flex items-center justify-between mb-4 sm:mb-6">
-                    <h1 className="text-2xl sm:text-3xl font-bold font-serif">Create Email Bot</h1>
-                    <button
-                        onClick={onCancel}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                {/* Progress Steps — compact on mobile, full on desktop */}
-                {/* Mobile: simple step indicator */}
-                <div className="sm:hidden mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-semibold text-violet-600">
-                            Step {currentStep + 1} of {STEPS.length} &bull; {STEPS[currentStep].title}
-                        </span>
+        <div className="max-w-4xl mx-auto min-h-full flex flex-col">
+            <div className="flex-1 p-4 sm:p-6">
+                {/* Header */}
+                <div className="mb-6 sm:mb-8">
+                    <div className="flex items-center justify-between mb-4 sm:mb-6">
+                        <h1 className="text-2xl sm:text-3xl font-bold font-serif">Create Email Bot</h1>
+                        <button
+                            onClick={onCancel}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
-                    <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-violet-600 rounded-full transition-all duration-300"
-                            style={{ width: `${((currentStep + 1) / STEPS.length) * 100}%` }}
-                        />
-                    </div>
-                </div>
 
-                {/* Desktop: full step pills */}
-                <div className="hidden sm:flex items-center gap-2 mb-8">
-                    {STEPS.map((step, index) => (
-                        <div key={step.id} className="flex items-center flex-1">
-                            <div
-                                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${index === currentStep
-                                        ? 'bg-violet-600 text-white'
-                                        : index < currentStep
-                                            ? 'bg-violet-100 text-violet-700'
-                                            : 'bg-gray-100 text-gray-500'
-                                    }`}
-                            >
-                                <span className="text-sm font-medium">{step.title}</span>
-                            </div>
-                            {index < STEPS.length - 1 && (
-                                <div className="w-2 h-0.5 bg-gray-200 mx-1" />
-                            )}
+                    {/* Progress Steps — compact on mobile, full on desktop */}
+                    {/* Mobile: simple step indicator */}
+                    <div className="sm:hidden mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-semibold text-violet-600">
+                                Step {currentStep + 1} of {STEPS.length} &bull; {STEPS[currentStep].title}
+                            </span>
                         </div>
-                    ))}
+                        <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div
+                                className="h-full bg-violet-600 rounded-full transition-all duration-300"
+                                style={{ width: `${((currentStep + 1) / STEPS.length) * 100}%` }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Desktop: full step pills */}
+                    <div className="hidden sm:flex items-center gap-2 mb-8">
+                        {STEPS.map((step, index) => (
+                            <div key={step.id} className="flex items-center flex-1">
+                                <div
+                                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${index === currentStep
+                                            ? 'bg-violet-600 text-white'
+                                            : index < currentStep
+                                                ? 'bg-violet-100 text-violet-700'
+                                                : 'bg-gray-100 text-gray-500'
+                                        }`}
+                                >
+                                    <span className="text-sm font-medium">{step.title}</span>
+                                </div>
+                                {index < STEPS.length - 1 && (
+                                    <div className="w-2 h-0.5 bg-gray-200 mx-1" />
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
+
+                {/* Step Content */}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={currentStep}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {currentStep === 0 && (
+                            <TemplateSelector
+                                onTemplateSelected={handleTemplateSelected}
+                                onSkip={handleSkipTemplate}
+                            />
+                        )}
+                        {currentStep === 1 && (
+                            <TriggerStep trigger={trigger} onChange={setTrigger} />
+                        )}
+                        {currentStep === 2 && (
+                            <ConditionsStep conditions={conditions} onChange={setConditions} />
+                        )}
+                        {currentStep === 3 && (
+                            <ActionsStep actions={actions} onChange={setActions} />
+                        )}
+                        {currentStep === 4 && (
+                            <SafetyStep
+                                safety={safety}
+                                actions={actions}
+                                onChange={setSafety}
+                            />
+                        )}
+                        {currentStep === 5 && (
+                            <ReviewStep
+                                name={name}
+                                description={description}
+                                trigger={trigger}
+                                conditions={conditions}
+                                actions={actions}
+                                safety={safety}
+                                onNameChange={setName}
+                                onDescriptionChange={setDescription}
+                            />
+                        )}
+                    </motion.div>
+                </AnimatePresence>
             </div>
 
-            {/* Step Content */}
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={currentStep}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.2 }}
-                    className="mb-8"
-                >
-                    {currentStep === 0 && (
-                        <TemplateSelector
-                            onTemplateSelected={handleTemplateSelected}
-                            onSkip={handleSkipTemplate}
-                        />
-                    )}
-                    {currentStep === 1 && (
-                        <TriggerStep trigger={trigger} onChange={setTrigger} />
-                    )}
-                    {currentStep === 2 && (
-                        <ConditionsStep conditions={conditions} onChange={setConditions} />
-                    )}
-                    {currentStep === 3 && (
-                        <ActionsStep actions={actions} onChange={setActions} />
-                    )}
-                    {currentStep === 4 && (
-                        <SafetyStep
-                            safety={safety}
-                            actions={actions}
-                            onChange={setSafety}
-                        />
-                    )}
-                    {currentStep === 5 && (
-                        <ReviewStep
-                            name={name}
-                            description={description}
-                            trigger={trigger}
-                            conditions={conditions}
-                            actions={actions}
-                            safety={safety}
-                            onNameChange={setName}
-                            onDescriptionChange={setDescription}
-                        />
-                    )}
-                </motion.div>
-            </AnimatePresence>
-
-            {/* Navigation */}
-            <div className="flex items-center justify-between pt-6 border-t">
+            {/* Navigation - Sticky at bottom */}
+            <div className="sticky bottom-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md px-4 sm:px-6 py-4 border-t z-10 flex items-center justify-between mt-auto">
                 <button
                     onClick={currentStep === 0 ? onCancel : handleBack}
                     className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -237,7 +238,7 @@ export function BotWizard({ onBotCreated, onCancel }: BotWizardProps) {
                         <button
                             onClick={handleNext}
                             disabled={!canProceed()}
-                            className="flex items-center gap-2 px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center gap-2 px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transition-all"
                         >
                             Next
                             <ArrowRight className="w-4 h-4" />
@@ -246,7 +247,7 @@ export function BotWizard({ onBotCreated, onCancel }: BotWizardProps) {
                         <button
                             onClick={handleCreate}
                             disabled={!canProceed() || isCreating}
-                            className="flex items-center gap-2 px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center gap-2 px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transition-all"
                         >
                             {isCreating ? (
                                 <>Creating...</>
