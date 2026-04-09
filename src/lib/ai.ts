@@ -1,5 +1,6 @@
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
+import { trackAiUsage } from "@/lib/ai-budget";
 
 export interface UrgencyAnalysis {
     score: number;
@@ -17,7 +18,8 @@ export interface DraftResponse {
 export async function analyzeEmailUrgency(
     subject: string,
     body: string,
-    sender: string
+    sender: string,
+    userId?: string
 ): Promise<UrgencyAnalysis> {
     try {
         const model = google("gemini-2.5-flash");
@@ -45,13 +47,18 @@ Respond in JSON format:
   "reason": "<brief explanation>"
 }`;
 
-        const { text } = await generateText({
+        const result = await generateText({
             model,
             prompt,
         });
 
+        // Track token usage for billing
+        if (userId && result.usage) {
+            trackAiUsage(userId, result.usage.promptTokens ?? 0, result.usage.completionTokens ?? 0).catch(() => {});
+        }
+
         // Parse JSON response
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        const jsonMatch = result.text.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
             return {
@@ -75,7 +82,8 @@ export async function generateDraftReply(
     subject: string,
     body: string,
     sender: string,
-    context?: string
+    context?: string,
+    userId?: string
 ): Promise<DraftResponse> {
     try {
         const model = google("gemini-2.5-flash");
@@ -95,13 +103,18 @@ Respond in JSON format:
   "tone": "<professional|friendly|formal>"
 }`;
 
-        const { text } = await generateText({
+        const result = await generateText({
             model,
             prompt,
         });
 
+        // Track token usage for billing
+        if (userId && result.usage) {
+            trackAiUsage(userId, result.usage.promptTokens ?? 0, result.usage.completionTokens ?? 0).catch(() => {});
+        }
+
         // Parse JSON response
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        const jsonMatch = result.text.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
             return {
@@ -131,7 +144,8 @@ export async function generateFollowUpContent(
     originalSubject: string,
     originalBody: string,
     recipient: string,
-    baseTemplate: string = "Hi, just checking if you saw my last email. Let me know if you have any questions."
+    baseTemplate: string = "Hi, just checking if you saw my last email. Let me know if you have any questions.",
+    userId?: string
 ): Promise<string> {
     try {
         const model = google("gemini-2.5-flash");
@@ -157,13 +171,18 @@ Adjust the Base Template slightly to better fit the context of the Original Emai
 
 Return ONLY the body of the follow-up email. Do not include subject or signature placeholders like "[Your Name]".`;
 
-        const { text } = await generateText({
+        const result = await generateText({
             model,
             prompt,
         });
 
+        // Track token usage for billing
+        if (userId && result.usage) {
+            trackAiUsage(userId, result.usage.promptTokens ?? 0, result.usage.completionTokens ?? 0).catch(() => {});
+        }
+
         // Clean up response
-        return text.trim();
+        return result.text.trim();
 
     } catch (error) {
         console.error("Error generating follow-up:", error);

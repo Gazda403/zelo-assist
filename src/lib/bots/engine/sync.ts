@@ -3,6 +3,7 @@ import { getUserRefreshToken } from '@/lib/db/user-storage';
 import { executeBots } from './orchestrator';
 import { getLastEmails } from '@/lib/gmail';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { hasBudgetRemaining } from '@/lib/ai-budget';
 
 /**
  * Syncs bots for a specific user
@@ -36,6 +37,13 @@ export async function syncBotsForUser(userId: string): Promise<{ success: boolea
                 console.log(`[Sync] Free trial expired for user ${userId}, skipping`);
                 return { success: false, error: 'Trial expired' };
             }
+        }
+
+        // Check AI budget before processing any emails
+        const hasbudget = await hasBudgetRemaining(userId);
+        if (!hasbudget) {
+            console.log(`[Sync] AI budget exhausted for user ${userId}, skipping until monthly reset`);
+            return { success: false, error: 'AI budget exhausted for this billing period' };
         }
 
         // 2. Get refresh token
