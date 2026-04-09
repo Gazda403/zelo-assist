@@ -56,11 +56,15 @@ export function TemplateSelector({ onTemplateSelected, onSkip }: TemplateSelecto
     return (
         <div>
             <h2 className="text-2xl font-bold mb-2 font-serif">Choose a Starting Point</h2>
-            <p className="text-gray-600 mb-6">
-                Select a template to get started quickly, or build from scratch
-            </p>
+            <button
+                onClick={onSkip}
+                className="w-full p-4 mb-8 border-2 border-dashed border-violet-200 rounded-xl hover:border-violet-500 hover:bg-violet-50 transition-all text-gray-600 hover:text-violet-600 flex items-center justify-center gap-2 group"
+            >
+                <Sparkles className="w-5 h-5 text-violet-400 group-hover:text-violet-600 transition-colors" />
+                <span className="font-semibold">Start from Scratch</span>
+            </button>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 max-h-[40vh] sm:max-h-[500px] overflow-y-auto pr-1 pb-4 custom-scrollbar">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
                 {templates.map((template, index) => (
                     <motion.button
                         key={template.id}
@@ -83,13 +87,7 @@ export function TemplateSelector({ onTemplateSelected, onSkip }: TemplateSelecto
                 ))}
             </div>
 
-            <button
-                onClick={onSkip}
-                className="w-full p-4 border-2 border-dashed border-gray-300 rounded-xl hover:border-violet-500 hover:bg-violet-50 transition-all text-gray-600 hover:text-violet-600 flex items-center justify-center gap-2"
-            >
-                <Sparkles className="w-5 h-5" />
-                <span className="font-medium">Start from Scratch</span>
-            </button>
+
         </div>
     );
 }
