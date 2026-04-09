@@ -54,7 +54,7 @@ Respond in JSON format:
 
         // Track token usage for billing
         if (userId && result.usage) {
-            trackAiUsage(userId, result.usage.promptTokens ?? 0, result.usage.completionTokens ?? 0).catch(() => {});
+            trackAiUsage(userId, result.usage.inputTokens ?? 0, result.usage.outputTokens ?? 0).catch(() => {});
         }
 
         // Parse JSON response
@@ -110,7 +110,7 @@ Respond in JSON format:
 
         // Track token usage for billing
         if (userId && result.usage) {
-            trackAiUsage(userId, result.usage.promptTokens ?? 0, result.usage.completionTokens ?? 0).catch(() => {});
+            trackAiUsage(userId, result.usage.inputTokens ?? 0, result.usage.outputTokens ?? 0).catch(() => {});
         }
 
         // Parse JSON response
@@ -178,7 +178,7 @@ Return ONLY the body of the follow-up email. Do not include subject or signature
 
         // Track token usage for billing
         if (userId && result.usage) {
-            trackAiUsage(userId, result.usage.promptTokens ?? 0, result.usage.completionTokens ?? 0).catch(() => {});
+            trackAiUsage(userId, result.usage.inputTokens ?? 0, result.usage.outputTokens ?? 0).catch(() => {});
         }
 
         // Clean up response
