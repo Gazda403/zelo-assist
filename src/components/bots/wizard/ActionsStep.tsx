@@ -14,7 +14,7 @@ interface ActionsStepProps {
 
 const ACTION_OPTIONS: Array<{ type: ActionType; label: string; icon: any; isPremium?: boolean }> = [
     { type: 'create_draft', label: 'Create draft reply', icon: FileText },
-    { type: 'auto_send_email', label: 'Auto-send reply', icon: Send, isPremium: true },
+    { type: 'auto_send_email', label: 'Auto-send reply', icon: Send },
     { type: 'apply_label', label: 'Apply Gmail label', icon: Tag },
     { type: 'mark_as_read', label: 'Mark as read', icon: MailCheck },
     { type: 'notify_user', label: 'Send notification', icon: Bell },
@@ -67,11 +67,6 @@ export function ActionsStep({ actions, onChange }: ActionsStepProps) {
                                             <>
                                                 <Icon className="w-4 h-4 text-violet-500" />
                                                 <span className="text-sm font-semibold">{option?.label || action.type}</span>
-                                                {option?.isPremium && (
-                                                    <span className="text-[9px] font-bold uppercase tracking-tight bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded border border-amber-100">
-                                                        Premium
-                                                    </span>
-                                                )}
                                             </>
                                         );
                                     })()}
@@ -99,11 +94,6 @@ export function ActionsStep({ actions, onChange }: ActionsStepProps) {
                         <Plus className="w-4 h-4 text-violet-400 group-hover:text-violet-600 transition-colors" />
                         <option.icon className="w-4 h-4 text-gray-400 group-hover:text-violet-500 transition-colors" />
                         <span className="text-sm font-medium">{option.label}</span>
-                        {option.isPremium && (
-                            <span className="ml-auto text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full border border-amber-200">
-                                Premium
-                            </span>
-                        )}
                     </button>
                 ))}
             </div>
