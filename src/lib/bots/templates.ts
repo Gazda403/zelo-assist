@@ -251,7 +251,7 @@ export const BOT_TEMPLATES: Record<string, BotTemplate> = {
             {
                 type: 'notify_user',
                 config: {
-                    message: '🚨 High-urgency email from {{sender}}: {{subject}}',
+                    message: 'High-urgency email from {{sender}}: {{subject}}',
                     priority: 'high',
                 },
             },

@@ -4,7 +4,7 @@
 
 'use client';
 
-import { Plus, X } from 'lucide-react';
+import { Plus, X, FileText, Send, Tag, MailCheck, Bell } from 'lucide-react';
 import type { BotAction, ActionType } from '@/lib/bots/types';
 
 interface ActionsStepProps {
@@ -12,12 +12,12 @@ interface ActionsStepProps {
     onChange: (actions: BotAction[]) => void;
 }
 
-const ACTION_OPTIONS: Array<{ type: ActionType; label: string; isPremium?: boolean }> = [
-    { type: 'create_draft', label: '📝 Create draft reply' },
-    { type: 'auto_send_email', label: '✉️ Auto-send reply', isPremium: true },
-    { type: 'apply_label', label: '🏷️ Apply Gmail label' },
-    { type: 'mark_as_read', label: '✓ Mark as read' },
-    { type: 'notify_user', label: '🔔 Send notification' },
+const ACTION_OPTIONS: Array<{ type: ActionType; label: string; icon: any; isPremium?: boolean }> = [
+    { type: 'create_draft', label: 'Create draft reply', icon: FileText },
+    { type: 'auto_send_email', label: 'Auto-send reply', icon: Send, isPremium: true },
+    { type: 'apply_label', label: 'Apply Gmail label', icon: Tag },
+    { type: 'mark_as_read', label: 'Mark as read', icon: MailCheck },
+    { type: 'notify_user', label: 'Send notification', icon: Bell },
 ];
 
 export function ActionsStep({ actions, onChange }: ActionsStepProps) {
@@ -53,15 +53,33 @@ export function ActionsStep({ actions, onChange }: ActionsStepProps) {
                     {actions.map((action, index) => (
                         <div
                             key={index}
-                            className="flex items-center justify-between p-3 bg-violet-50 border border-violet-200 rounded-lg"
+                            className="flex items-center justify-between p-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl shadow-sm"
                         >
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs text-gray-500">#{index + 1}</span>
-                                <span className="text-sm font-medium">{action.type}</span>
+                            <div className="flex items-center gap-3">
+                                <span className="flex items-center justify-center w-5 h-5 text-[10px] font-bold bg-gray-100 dark:bg-zinc-800 text-gray-500 rounded-full">
+                                    {index + 1}
+                                </span>
+                                <div className="flex items-center gap-2">
+                                    {(() => {
+                                        const option = ACTION_OPTIONS.find(o => o.type === action.type);
+                                        const Icon = option?.icon || FileText;
+                                        return (
+                                            <>
+                                                <Icon className="w-4 h-4 text-violet-500" />
+                                                <span className="text-sm font-semibold">{option?.label || action.type}</span>
+                                                {option?.isPremium && (
+                                                    <span className="text-[9px] font-bold uppercase tracking-tight bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded border border-amber-100">
+                                                        Premium
+                                                    </span>
+                                                )}
+                                            </>
+                                        );
+                                    })()}
+                                </div>
                             </div>
                             <button
                                 onClick={() => removeAction(index)}
-                                className="p-1 hover:bg-violet-100 rounded"
+                                className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
                             >
                                 <X className="w-4 h-4" />
                             </button>
@@ -78,10 +96,11 @@ export function ActionsStep({ actions, onChange }: ActionsStepProps) {
                         onClick={() => addAction(option.type)}
                         className="flex items-center gap-2 p-3 text-left border border-gray-200 rounded-lg hover:border-violet-500 hover:bg-violet-50 transition-all"
                     >
-                        <Plus className="w-4 h-4 text-violet-600" />
-                        <span className="text-sm">{option.label}</span>
+                        <Plus className="w-4 h-4 text-violet-400 group-hover:text-violet-600 transition-colors" />
+                        <option.icon className="w-4 h-4 text-gray-400 group-hover:text-violet-500 transition-colors" />
+                        <span className="text-sm font-medium">{option.label}</span>
                         {option.isPremium && (
-                            <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded">
+                            <span className="ml-auto text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full border border-amber-200">
                                 Premium
                             </span>
                         )}

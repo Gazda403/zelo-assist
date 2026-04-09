@@ -7,7 +7,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check, Sparkles, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Sparkles, X, Zap, Target, Rocket, Shield } from 'lucide-react';
 import type { EmailBot, BotTrigger, BotCondition, BotAction, SafetyConfig } from '@/lib/bots/types';
 import { createBotAction } from '@/app/actions/bots';
 import { TemplateSelector } from './TemplateSelector';
@@ -24,10 +24,10 @@ interface BotWizardProps {
 
 const STEPS = [
     { id: 'template', title: 'Start with Template', icon: Sparkles },
-    { id: 'trigger', title: 'Choose Trigger', icon: '⚡' },
-    { id: 'conditions', title: 'Add Conditions', icon: '🎯' },
-    { id: 'actions', title: 'Set Actions', icon: '🚀' },
-    { id: 'safety', title: 'Safety Settings', icon: '🛡️' },
+    { id: 'trigger', title: 'Choose Trigger', icon: Zap },
+    { id: 'conditions', title: 'Add Conditions', icon: Target },
+    { id: 'actions', title: 'Set Actions', icon: Rocket },
+    { id: 'safety', title: 'Safety Settings', icon: Shield },
     { id: 'review', title: 'Review & Create', icon: Check },
 ];
 
