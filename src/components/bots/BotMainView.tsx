@@ -33,7 +33,7 @@ export function BotMainView({
     // Show wizard when creating
     if (isCreating) {
         return (
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 h-full overflow-hidden">
                 <BotWizard
                     onBotCreated={onBotCreated}
                     onCancel={onCancelCreate}
@@ -45,7 +45,7 @@ export function BotMainView({
     // Show detail view when bot is selected
     if (selectedBot) {
         return (
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 h-full overflow-y-auto">
                 <BotDetailView
                     bot={selectedBot}
                     onBotUpdated={onBotUpdated}
