@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowRight, Sparkles, BookOpen } from 'lucide-react';
 
 export default function BottomCTA({ onGetStarted }: { onGetStarted: () => void }) {
     return (
@@ -54,18 +55,31 @@ export default function BottomCTA({ onGetStarted }: { onGetStarted: () => void }
                             </motion.button>
                         </div>
 
-                        <div className="mt-12 flex items-center justify-center gap-4 text-sm text-slate-500">
-                            <div className="flex -space-x-3">
-                                {[1, 2, 3, 4].map((i) => (
-                                    <img
-                                        key={i}
-                                        src={`https://picsum.photos/100/100?random=${i + 10}`}
-                                        className="w-8 h-8 rounded-full border-2 border-slate-900"
-                                        alt="User"
-                                    />
-                                ))}
+                        <div className="mt-12 flex flex-col md:flex-row items-center justify-center gap-6">
+                            <div className="flex items-center gap-4 text-sm text-slate-500">
+                                <div className="flex -space-x-3">
+                                    {[1, 2, 3, 4].map((i) => (
+                                        <img
+                                            key={i}
+                                            src={`https://picsum.photos/100/100?random=${i + 10}`}
+                                            className="w-8 h-8 rounded-full border-2 border-slate-900"
+                                            alt="User"
+                                        />
+                                    ))}
+                                </div>
+                                <p>Already saving 10h/week for teams globally</p>
                             </div>
-                            <p>Already saving 10h/week for teams globally</p>
+
+                            <Link href="/blog">
+                                <motion.div
+                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    className="px-6 py-3 bg-gradient-to-b from-white to-gray-50 text-slate-600 font-medium rounded-full shadow-[0_10px_20px_-5px_rgba(255,255,255,0.1),0_5px_10px_-5px_rgba(0,0,0,0.1)] border border-white/20 flex items-center gap-2 cursor-pointer transition-all duration-300 hover:shadow-[0_15px_30px_-5px_rgba(255,255,255,0.15)] group"
+                                >
+                                    <BookOpen className="w-4 h-4 text-primary group-hover:rotate-6 transition-transform" />
+                                    <span>See Blogs</span>
+                                </motion.div>
+                            </Link>
                         </div>
                     </motion.div>
                 </div>

@@ -6,6 +6,9 @@ import { searchEmailsAction } from "@/app/actions/gmail";
 import { searchBotsAction } from "@/app/actions/bots";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
+import { ReferralModal } from "../marketing/ReferralModal";
+import { Gift } from "lucide-react";
+
 
 interface AppHeaderProps {
     title?: string;
@@ -17,7 +20,9 @@ export function AppHeader({ title = "Inbox", onSelectEmail }: AppHeaderProps) {
     const [results, setResults] = useState<any[]>([]);
     const [isSearching, setIsSearching] = useState(false);
     const [showResults, setShowResults] = useState(false);
+    const [isReferralModalOpen, setIsReferralModalOpen] = useState(false);
     const searchDropdownRef = useRef<HTMLDivElement>(null);
+
 
     const isBotSearch = title === "Bots";
 
@@ -145,7 +150,23 @@ export function AppHeader({ title = "Inbox", onSelectEmail }: AppHeaderProps) {
                         )}
                     </AnimatePresence>
                 </div>
+
+                {/* Referral Button */}
+                <button
+                    onClick={() => setIsReferralModalOpen(true)}
+                    className="flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 transition-all border border-orange-500/20 shrink-0 group relative"
+                    title="Gift Zelo to a friend"
+                >
+                    <Gift className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full animate-pulse border-2 border-white dark:border-zinc-900" />
+                </button>
+
+                <ReferralModal 
+                    isOpen={isReferralModalOpen} 
+                    onClose={() => setIsReferralModalOpen(false)} 
+                />
             </div>
         </header>
+
     );
 }

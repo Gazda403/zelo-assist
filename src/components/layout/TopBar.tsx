@@ -51,8 +51,8 @@ export function TopBar() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // Hide TopBar on Landing Page for unauthenticated users
-    if (status !== "authenticated" && pathname === "/") {
+    // Hide TopBar on blog pages unconditionally, and on the landing page for unauthenticated users
+    if (pathname?.startsWith("/blog") || (status !== "authenticated" && pathname === "/")) {
         return null;
     }
 
