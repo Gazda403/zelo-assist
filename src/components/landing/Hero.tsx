@@ -126,7 +126,7 @@ const Hero: React.FC<HeroProps> = ({ onGetStarted }) => {
                             transition={{ duration: 0.6, delay: 0.2 }}
                             className="mt-6 text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed"
                         >
-                            Turn chaotic inboxes into structured peace. XeloFlow writes your replies, prioritizes your day, and gives you back your time.
+                            Turn chaotic inboxes into structured peace. Xelo Flow writes your replies, prioritizes your day, and gives you back your time.
                         </motion.p>
 
                         <motion.div

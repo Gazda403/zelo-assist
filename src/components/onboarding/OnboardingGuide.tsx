@@ -27,9 +27,9 @@ const steps: Step[] = [
     {
         icon: <Sparkles className="w-8 h-8 text-white" />,
         iconBg: "from-orange-400 to-amber-500",
-        title: "Welcome to XeloFlow! 🎉",
+        title: "Welcome to Xelo Flow! 🎉",
         description:
-            "Your inbox just got a whole lot smarter. XeloFlow connects to your Gmail and uses AI to help you focus on what truly matters — so you spend less time triaging email and more time getting things done.",
+            "Your inbox just got a whole lot smarter. Xelo Flow connects to your Gmail and uses AI to help you focus on what truly matters — so you spend less time triaging email and more time getting things done.",
         tip: "Everything is private. Your emails are processed on-demand and never stored long-term.",
     },
     {

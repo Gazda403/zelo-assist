@@ -88,7 +88,7 @@ export default function BenefitsSection() {
                                 Rescue 10 hours a week from inbox triage.
                             </h3>
                             <p className="text-lg text-slate-600 leading-relaxed">
-                                Let XELOFLOW categorize, prioritize, and draft responses to your daily influx. Focus on the emails that actually move the needle, while AI handles the rest.
+                                Let Xelo Flow categorize, prioritize, and draft responses to your daily influx. Focus on the emails that actually move the needle, while AI handles the rest.
                             </p>
                         </div>
                         <div className="flex-shrink-0 w-full md:w-64 aspect-square rounded-3xl flex items-center justify-center relative shadow-sm hover:scale-105 transition-transform duration-500 bg-white">
@@ -126,7 +126,7 @@ export default function BenefitsSection() {
                                 Achieve Inbox Zero without the stress.
                             </h3>
                             <p className="text-slate-300/80 leading-relaxed">
-                                No more mental clutter. XELOFLOW learns your priorities so your inbox is always perfectly organized.
+                                No more mental clutter. Xelo Flow learns your priorities so your inbox is always perfectly organized.
                             </p>
                         </div>
                         <div className="flex justify-end z-10">
@@ -152,7 +152,7 @@ export default function BenefitsSection() {
                                 Reply faster,<br />sound smarter.
                             </h3>
                             <p className="text-slate-900/80 leading-relaxed">
-                                Draft the perfect reply before you even click. XELOFLOW generates context-aware responses instantly.
+                                Draft the perfect reply before you even click. Xelo Flow generates context-aware responses instantly.
                             </p>
                         </div>
                     </motion.div>
