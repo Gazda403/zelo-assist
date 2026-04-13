@@ -34,6 +34,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     className="relative w-full max-w-md bg-white rounded-3xl p-8 shadow-2xl border border-stone-100"
                 >
                     <div className="text-center mb-8">
+                        <div className="flex justify-center mb-4">
+                            <div className="size-16 rounded-2xl bg-white flex items-center justify-center shadow-lg border border-stone-100 overflow-hidden">
+                                <img src="/logo.png" alt="XeloFlow" className="w-full h-full object-contain" />
+                            </div>
+                        </div>
                         <h3 className="text-2xl font-bold text-gray-900 mb-2">Log In</h3>
                         <p className="text-gray-500">Choose your email provider</p>
                     </div>

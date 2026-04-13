@@ -53,8 +53,8 @@ export function InstallBanner() {
           className="fixed bottom-6 left-6 z-[110]"
         >
           <div className="flex items-center gap-3 p-2 pr-4 bg-background/80 dark:bg-black/80 backdrop-blur-xl border border-border shadow-2xl rounded-full">
-            <div className="size-10 rounded-full bg-accent flex items-center justify-center shadow-lg shadow-accent/20 shrink-0">
-               <Download className="w-4 h-4 text-accent-foreground" />
+            <div className="size-10 rounded-full bg-white flex items-center justify-center shadow-lg shadow-black/5 shrink-0 overflow-hidden border border-border/50">
+               <img src="/logo.png" alt="XeloFlow" className="w-full h-full object-contain" />
             </div>
             
             <div className="flex flex-col mr-2">
