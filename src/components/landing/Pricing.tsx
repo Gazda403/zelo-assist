@@ -21,7 +21,7 @@ interface PricingTier {
 const pricingTiers: PricingTier[] = [
     {
         name: "Free Trial",
-        description: "Experience the full power of Zelo.",
+        description: "Experience the full power of XeloFlow.",
         target: "Free",
         monthlyPrice: "$0",
         billingText: "7 days of full premium features, then locked.",

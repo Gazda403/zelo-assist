@@ -96,9 +96,9 @@ This mental model alone will change how you prioritize your entire day.
 
 The system above works beautifully — until you are slammed with a product launch, a hiring sprint, or a big deal closing. Suddenly you are back to tab-switching chaos.
 
-This is exactly why we built **Zelo Assist**.
+This is exactly why we built **XeloFlow**.
 
-Instead of manually sorting and scoring every email, Zelo's AI automatically reads your inbox and assigns an urgency score from 1–10 to every message. The most important emails rise to the top. Everything else stays organized below.
+Instead of manually sorting and scoring every email, XeloFlow's AI automatically reads your inbox and assigns an urgency score from 1–10 to every message. The most important emails rise to the top. Everything else stays organized below.
 
 You still make all the decisions. But you make them in 5 minutes instead of 50.
 
@@ -119,7 +119,7 @@ Your inbox is not just a communication tool. It is a reflection of how in contro
 
 Start with Step 1 today. Block your email hours in your calendar *right now*, before you read another article.
 
-And if you want the AI shortcut that makes Steps 3-5 automatic, [try Zelo Assist for free](/). 
+And if you want the AI shortcut that makes Steps 3-5 automatic, [try XeloFlow for free](/). 
 
 Your inbox will thank you.
         `.trim(),
@@ -211,7 +211,7 @@ The professionals winning in 2026 are not the ones working harder. They are the 
 
 ## Try It For Yourself
 
-**Zelo Assist** was built for exactly this use case. It connects to your Gmail, scores every email by urgency, and lets you generate smart drafts in one click.
+**XeloFlow** was built for exactly this use case. It connects to your Gmail, scores every email by urgency, and lets you generate smart drafts in one click.
 
 There is no complicated setup. No training required. You connect your Gmail account and your inbox is organized in under 60 seconds.
 

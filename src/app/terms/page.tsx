@@ -11,7 +11,7 @@ export default function TermsOfServicePage() {
                 <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors">
                         <ArrowLeft className="w-4 h-4" />
-                        <span className="text-sm font-medium">Back to Zelo Assist</span>
+                        <span className="text-sm font-medium">Back to XeloFlow</span>
                     </Link>
                     <div className="flex items-center gap-2">
                         <div className="bg-violet-100 p-1.5 rounded-lg">
@@ -38,16 +38,16 @@ export default function TermsOfServicePage() {
                 ">
                     <h2>1. Acceptance of Terms</h2>
                     <p>
-                        By accessing or using Zelo Assist (&quot;the Service&quot;), you agree to be bound by these Terms of Service
+                        By accessing or using XeloFlow (&quot;the Service&quot;), you agree to be bound by these Terms of Service
                         (&quot;Terms&quot;). If you do not agree to these Terms, you may not use the Service.
                     </p>
                     <p>
-                        These Terms constitute a legally binding agreement between you and Zelo Assist (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;).
+                        These Terms constitute a legally binding agreement between you and XeloFlow (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;).
                     </p>
 
                     <h2>2. Description of Service</h2>
                     <p>
-                        Zelo Assist is an AI-powered email productivity application that integrates with Gmail to provide:
+                        XeloFlow is an AI-powered email productivity application that integrates with Gmail to provide:
                     </p>
                     <ul>
                         <li>Email urgency scoring and prioritization</li>
@@ -65,7 +65,7 @@ export default function TermsOfServicePage() {
                     <h3>3.2 Account Responsibility</h3>
                     <p>
                         You are responsible for all activity that occurs under your account. You agree to notify us immediately
-                        at <a href="mailto:zelosupport@gmail.com">zelosupport@gmail.com</a> if you suspect unauthorized use of your account.
+                        at <a href="mailto:xeloflow.support@gmail.com">xeloflow.support@gmail.com</a> if you suspect unauthorized use of your account.
                     </p>
 
                     <h2>4. Acceptable Use</h2>
@@ -86,7 +86,7 @@ export default function TermsOfServicePage() {
                     <h2>5. Subscription & Payments</h2>
                     <h3>5.1 Free Tier</h3>
                     <p>
-                        Zelo Assist offers a free tier with limited features. No payment information is required to use the free tier.
+                        XeloFlow offers a free tier with limited features. No payment information is required to use the free tier.
                     </p>
                     <h3>5.2 Paid Plans</h3>
                     <p>
@@ -106,7 +106,7 @@ export default function TermsOfServicePage() {
 
                     <h2>6. AI-Generated Content</h2>
                     <p>
-                        Zelo Assist uses artificial intelligence to generate email drafts, urgency scores, and other content.
+                        XeloFlow uses artificial intelligence to generate email drafts, urgency scores, and other content.
                         You acknowledge that:
                     </p>
                     <ul>
@@ -127,14 +127,14 @@ export default function TermsOfServicePage() {
 
                     <h2>7. Intellectual Property</h2>
                     <p>
-                        The Service, including its design, features, and codebase, is owned by Zelo Assist. You retain
+                        The Service, including its design, features, and codebase, is owned by XeloFlow. You retain
                         ownership of your email content and bot configurations. By using the Service, you grant us a
                         limited license to process your data solely for the purpose of providing the Service.
                     </p>
 
                     <h2>8. Limitation of Liability</h2>
                     <p>
-                        To the maximum extent permitted by law, Zelo Assist shall not be liable for:
+                        To the maximum extent permitted by law, XeloFlow shall not be liable for:
                     </p>
                     <ul>
                         <li>Any indirect, incidental, special, consequential, or punitive damages</li>
@@ -162,7 +162,7 @@ export default function TermsOfServicePage() {
                     </p>
                     <p>
                         You may also terminate your account at any time by contacting us at{' '}
-                        <a href="mailto:zelosupport@gmail.com">zelosupport@gmail.com</a> and requesting account deletion.
+                        <a href="mailto:xeloflow.support@gmail.com">xeloflow.support@gmail.com</a> and requesting account deletion.
                     </p>
 
                     <h2>11. Changes to Terms</h2>
@@ -184,7 +184,7 @@ export default function TermsOfServicePage() {
                         If you have any questions about these Terms, please contact us at:
                     </p>
                     <ul>
-                        <li>Email: <a href="mailto:zelosupport@gmail.com">zelosupport@gmail.com</a></li>
+                        <li>Email: <a href="mailto:xeloflow.support@gmail.com">xeloflow.support@gmail.com</a></li>
                     </ul>
                 </div>
             </main>
@@ -192,7 +192,7 @@ export default function TermsOfServicePage() {
             {/* Mini Footer */}
             <footer className="border-t border-gray-100 py-8">
                 <div className="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <p className="text-sm text-gray-400">© 2026 Zelo Assist. All rights reserved.</p>
+                    <p className="text-sm text-gray-400">© 2026 XeloFlow. All rights reserved.</p>
                     <div className="flex gap-6 text-sm text-gray-400">
                         <Link href="/privacy" className="hover:text-gray-600 transition-colors">Privacy Policy</Link>
                         <Link href="/terms" className="text-violet-600 font-medium">Terms of Service</Link>

@@ -78,10 +78,10 @@ export function TopBar() {
                 {/* Logo Area */}
                 <div className="flex items-center gap-2 flex-shrink-0">
                     <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden flex items-center justify-center shadow-lg shadow-accent/20 bg-white p-0.5">
-                        <img src="/icons/icon-512x512.png" alt="Zelo logo" className="w-full h-full object-contain" />
+                        <img src="/icons/icon-512x512.png" alt="XeloFlow logo" className="w-full h-full object-contain" />
                     </div>
                     <div className="hidden md:block text-left">
-                        <h1 className="font-serif font-bold text-lg leading-none">Zelo Assist</h1>
+                        <h1 className="font-serif font-bold text-lg leading-none">XeloFlow</h1>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-widest leading-none mt-0.5">Gmail Assistant</p>
                     </div>
                 </div>
@@ -300,7 +300,7 @@ export function TopBar() {
                                                     className="w-full text-left flex items-center gap-2 px-3 py-2 text-sm text-accent font-bold hover:bg-accent/10 rounded-lg transition-colors"
                                                 >
                                                     <Download className="w-4 h-4" />
-                                                    Install Zelo Assist
+                                                    Install XeloFlow
                                                 </button>
                                             )}
                                             <button className="w-full text-left flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent/10 rounded-lg transition-colors">

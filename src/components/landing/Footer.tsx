@@ -13,16 +13,16 @@ const Footer: React.FC = () => {
                             <div className="bg-primary/10 p-2 rounded-lg text-primary">
                                 <Mail size={20} />
                             </div>
-                            <span className="font-sans font-bold text-lg text-gray-900">Zelo Assist</span>
+                            <span className="font-sans font-bold text-lg text-gray-900">XeloFlow</span>
                         </div>
                         <p className="text-gray-500 text-sm leading-relaxed mb-4">
                             Your intelligent companion for a calmer, more productive inbox.
                         </p>
                         <a
-                            href="mailto:zelosupport@gmail.com"
+                            href="mailto:xeloflow.support@gmail.com"
                             className="text-sm text-violet-600 hover:text-violet-700 transition-colors font-medium"
                         >
-                            zelosupport@gmail.com
+                            xeloflow.support@gmail.com
                         </a>
                     </div>
 
@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
                     <div>
                         <h4 className="font-bold text-gray-900 mb-4">Company</h4>
                         <ul className="space-y-2 text-sm text-gray-600">
-                            <li><a href="mailto:zelosupport@gmail.com" className="hover:text-primary transition-colors">Contact</a></li>
+                            <li><a href="mailto:xeloflow.support@gmail.com" className="hover:text-primary transition-colors">Contact</a></li>
                         </ul>
                     </div>
 
@@ -53,7 +53,7 @@ const Footer: React.FC = () => {
                 </div>
 
                 <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center">
-                    <p className="text-sm text-gray-400">© 2026 Zelo Assist. All rights reserved.</p>
+                    <p className="text-sm text-gray-400">© 2026 XeloFlow. All rights reserved.</p>
                     <div className="flex space-x-6 mt-4 md:mt-0">
                         <a href="#" className="text-gray-400 hover:text-primary transition-colors"><Twitter size={20} /></a>
                         <a href="#" className="text-gray-400 hover:text-primary transition-colors"><Github size={20} /></a>

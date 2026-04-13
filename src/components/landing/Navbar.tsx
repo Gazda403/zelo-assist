@@ -105,9 +105,9 @@ const Navbar: React.FC<NavbarProps> = ({ onGetStarted, onLogin, variant = 'full'
                 <nav className="pointer-events-auto h-12 md:h-14 px-4 md:px-8 flex items-center justify-between gap-4 bg-white/45 dark:bg-zinc-900/45 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-full shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] w-full max-w-4xl mx-auto transition-all duration-300 hover:bg-white/55 dark:hover:bg-zinc-900/55 hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.1)]">
                     <Link href="/" className="flex items-center space-x-2 group shrink-0">
                         <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg overflow-hidden flex items-center justify-center shadow-sm bg-white p-0.5 group-hover:scale-105 transition-transform">
-                            <img src="/icons/icon-512x512.png" alt="Zelo logo" className="w-full h-full object-contain" />
+                            <img src="/icons/icon-512x512.png" alt="XeloFlow logo" className="w-full h-full object-contain" />
                         </div>
-                        <span className="font-sans font-bold text-base md:text-lg text-gray-900 dark:text-white tracking-tight whitespace-nowrap">Zelo Assist</span>
+                        <span className="font-sans font-bold text-base md:text-lg text-gray-900 dark:text-white tracking-tight whitespace-nowrap">XeloFlow</span>
                     </Link>
 
                     {variant === 'full' && (

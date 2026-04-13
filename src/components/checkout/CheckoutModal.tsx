@@ -159,9 +159,9 @@ export function CheckoutModal({ isOpen, onClose, planName, planPrice, planId }: 
                                                 <p className="text-stone-500 mb-2 uppercase text-[10px] tracking-widest font-sans font-bold">Transfer Details</p>
                                                 <div className="space-y-1">
                                                     <p><span className="text-stone-500">Bank:</span> National Bank</p>
-                                                    <p><span className="text-stone-500">Holder:</span> Zelo Assist Ltd.</p>
+                                                    <p><span className="text-stone-500">Holder:</span> XeloFlow Ltd.</p>
                                                     <p><span className="text-stone-500">IBAN:</span> XS89 0000 0000 1234 5678</p>
-                                                    <p><span className="text-stone-500">SWIFT:</span> ZELOXXXX</p>
+                                                    <p><span className="text-stone-500">SWIFT:</span> XELOFLOWXXXX</p>
                                                 </div>
                                             </div>
                                             <button

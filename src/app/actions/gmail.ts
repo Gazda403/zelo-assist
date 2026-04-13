@@ -18,7 +18,7 @@ interface AIResult {
 }
 
 const EMAIL_AI_LIMIT = 3; // Keep small to avoid rate-limit bursts
-const ZELO_SIGNATURE = "\n\n---\nSent with Zelo Assist — Your AI Inbox Companion. Get it here: https://xelo.com";
+const XELOFLOW_SIGNATURE = "\n\n---\nSent with XeloFlow — Your AI Inbox Companion. Get it here: https://xelo.com";
 
 
 // import { getCachedEmailRatings, trackEmailRating } from '@/lib/analytics';
@@ -278,14 +278,14 @@ export async function generateDraftAction(
         }
 
         console.log('[Generate Draft Action] Draft generated successfully');
-        result.draft = result.draft + ZELO_SIGNATURE;
+        result.draft = result.draft + XELOFLOW_SIGNATURE;
         return result;
     } catch (error) {
         console.error("Generate Draft Action Error:", error);
 
         // Return fallback instead of throwing to prevent UI crashes
         return {
-            draft: `Dear ${sender},\n\nThank you for your email. I've received your message and will respond shortly.${ZELO_SIGNATURE}`,
+            draft: `Dear ${sender},\n\nThank you for your email. I've received your message and will respond shortly.${XELOFLOW_SIGNATURE}`,
             tone: "professional"
         };
     }
@@ -307,7 +307,7 @@ export async function sendEmailAction(to: string, subject: string, body: string)
 
     try {
         const client = getClient(session.provider);
-        const bodyWithSignature = body + ZELO_SIGNATURE;
+        const bodyWithSignature = body + XELOFLOW_SIGNATURE;
         const result = await client.sendEmail(session.accessToken, to, subject, bodyWithSignature);
         return result;
     } catch (error) {
@@ -450,7 +450,7 @@ Subject: ${subject}
 
 Subject: ${subject}
 
-${originalBody}${ZELO_SIGNATURE}
+${originalBody}${XELOFLOW_SIGNATURE}
 `;
 
         const result = await client.sendEmail(session.accessToken, to, forwardedSubject, forwardedBody);

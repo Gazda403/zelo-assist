@@ -15,13 +15,13 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Zelo Assist",
+  title: "XeloFlow",
   description: "AI Email Assistant - Reclaim your time.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Zelo Assist",
+    title: "XeloFlow",
   },
 };
 

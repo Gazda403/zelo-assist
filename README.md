@@ -1,6 +1,6 @@
-# Zelo Assist — AI-Powered Gmail Automation
+# XeloFlow — AI-Powered Gmail Automation
 
-> **Your intelligent inbox companion.** Zelo Assist connects to your Gmail account and lets you build smart bots that auto-reply, follow up, label, and organize emails — powered by Google Gemini AI.
+> **Your intelligent inbox companion.** XeloFlow connects to your Gmail account and lets you build smart bots that auto-reply, follow up, label, and organize emails — powered by Google Gemini AI.
 
 ---
 
@@ -37,8 +37,8 @@
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/zelo-assist.git
-cd zelo-assist
+git clone https://github.com/YOUR_USERNAME/xeloflow-assist.git
+cd xeloflow-assist
 ```
 
 ### 2. Install dependencies
@@ -107,7 +107,7 @@ See [`.env.example`](.env.example) for a full list of required variables. Key on
 
 - [Privacy Policy](/privacy)
 - [Terms of Service](/terms)
-- Contact: [zelosupport@gmail.com](mailto:zelosupport@gmail.com)
+- Contact: [xeloflow.support@gmail.com](mailto:xeloflow.support@gmail.com)
 
 ---
 

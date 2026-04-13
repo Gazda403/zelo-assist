@@ -25,7 +25,7 @@ const STEPS: TourStep[] = [
     {
         targetId: null,
         path: "/",
-        title: "Welcome to Zelo Assist! 👋",
+        title: "Welcome to XeloFlow! 👋",
         description: "Let's take a tour of your new AI email workspace. We'll explore Inbox, Drafts, Send, and Bots.",
         nextType: "button",
     },
@@ -145,7 +145,7 @@ const STEPS: TourStep[] = [
         targetId: null,
         path: "/bots",
         title: "You're All Set! 🚀",
-        description: "That's everything! You now know how to navigate the core features of Zelo Assist. Enjoy your empty inbox!",
+        description: "That's everything! You now know how to navigate the core features of XeloFlow. Enjoy your empty inbox!",
         nextType: "button",
     }
 ];

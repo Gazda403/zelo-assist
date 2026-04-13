@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 import BlogLayoutClient from './BlogLayoutClient';
 
 export const metadata: Metadata = {
-    title: 'Blog — Zelo Assist',
+    title: 'Blog — XeloFlow',
     description: 'Tips, guides, and insights on email productivity, AI tools, and inbox management for busy professionals.',
 };
 
@@ -21,7 +21,7 @@ export default function BlogPage() {
                             className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-primary transition-colors mb-8 group"
                         >
                             <span className="group-hover:-translate-x-1 transition-transform">←</span>
-                            Back to Zelo Assist
+                            Back to XeloFlow
                         </Link>
                         <div className="flex items-center gap-3 mb-4">
                             <div className="h-1 w-10 rounded-full bg-gradient-to-r from-orange-400 to-violet-500" />
@@ -91,13 +91,13 @@ export default function BlogPage() {
                             <p className="text-4xl mb-3">✉️</p>
                             <h3 className="text-2xl font-bold mb-2">Ready to take back your inbox?</h3>
                             <p className="text-violet-200 mb-6 text-sm">
-                                Zelo Assist connects to your Gmail and automatically organizes, scores and drafts replies for you.
+                                XeloFlow connects to your Gmail and automatically organizes, scores and drafts replies for you.
                             </p>
                             <Link
                                 href="/"
                                 className="inline-flex items-center gap-2 bg-white text-violet-700 font-semibold px-6 py-3 rounded-full hover:bg-violet-50 transition-colors shadow-lg"
                             >
-                                Try Zelo Assist Free →
+                                Try XeloFlow Free →
                             </Link>
                         </div>
                     </div>
@@ -105,9 +105,9 @@ export default function BlogPage() {
 
                 {/* Footer */}
                 <div className="border-t border-gray-100 dark:border-white/5 py-8 text-center text-sm text-gray-400">
-                    <Link href="/" className="hover:text-gray-600 dark:hover:text-gray-300 transition-colors">← Back to Zelo Assist</Link>
+                    <Link href="/" className="hover:text-gray-600 dark:hover:text-gray-300 transition-colors">← Back to XeloFlow</Link>
                     <span className="mx-3">·</span>
-                    <span>© 2026 Zelo Assist. All rights reserved.</span>
+                    <span>© 2026 XeloFlow. All rights reserved.</span>
                 </div>
             </div>
         </BlogLayoutClient>

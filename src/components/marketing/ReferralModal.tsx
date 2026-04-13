@@ -22,13 +22,13 @@ export function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
     };
 
     const shareOnTwitter = () => {
-        const text = encodeURIComponent("I'm using Zelo Assist to manage my Gmail inbox with AI. It's a game changer for productivity! Check it out:");
+        const text = encodeURIComponent("I'm using XeloFlow to manage my Gmail inbox with AI. It's a game changer for productivity! Check it out:");
         window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(referralLink)}`, '_blank');
     };
 
     const shareByEmail = () => {
-        const subject = encodeURIComponent("You have to try Zelo Assist");
-        const body = encodeURIComponent(`Hey,\n\nI've been using this AI email assistant called Zelo Assist and it's actually saving me hours every week. It sorts my inbox by urgency and drafts replies for me.\n\nYou should check it out here: ${referralLink}\n\nCheers!`);
+        const subject = encodeURIComponent("You have to try XeloFlow");
+        const body = encodeURIComponent(`Hey,\n\nI've been using this AI email assistant called XeloFlow and it's actually saving me hours every week. It sorts my inbox by urgency and drafts replies for me.\n\nYou should check it out here: ${referralLink}\n\nCheers!`);
         window.location.href = `mailto:?subject=${subject}&body=${body}`;
     };
 
@@ -65,9 +65,9 @@ export function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
 
                         <div className="p-8">
                             <div className="text-center mb-8">
-                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Gift Zelo to a friend</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Gift XeloFlow to a friend</h3>
                                 <p className="text-gray-500 dark:text-zinc-400">
-                                    Know someone drowning in emails? Share the magic of Zelo Assist and help them reclaim their time.
+                                    Know someone drowning in emails? Share the magic of XeloFlow and help them reclaim their time.
                                 </p>
                             </div>
 

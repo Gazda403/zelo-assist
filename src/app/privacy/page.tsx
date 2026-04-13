@@ -11,7 +11,7 @@ export default function PrivacyPolicyPage() {
                 <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors">
                         <ArrowLeft className="w-4 h-4" />
-                        <span className="text-sm font-medium">Back to Zelo Assist</span>
+                        <span className="text-sm font-medium">Back to XeloFlow</span>
                     </Link>
                     <div className="flex items-center gap-2">
                         <div className="bg-violet-100 p-1.5 rounded-lg">
@@ -38,12 +38,12 @@ export default function PrivacyPolicyPage() {
                 ">
                     <h2>1. Introduction</h2>
                     <p>
-                        Zelo Assist (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy.
+                        XeloFlow (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy.
                         This Privacy Policy explains how we collect, use, and safeguard your information when you use
                         our email productivity application (&quot;the Service&quot;).
                     </p>
                     <p>
-                        By using Zelo Assist, you agree to the collection and use of information in accordance with this policy.
+                        By using XeloFlow, you agree to the collection and use of information in accordance with this policy.
                         If you do not agree with this policy, please do not use our Service.
                     </p>
 
@@ -91,7 +91,7 @@ export default function PrivacyPolicyPage() {
                             Google API Services User Data Policy
                         </h3>
                         <p className="text-gray-700 leading-relaxed mb-4">
-                            Zelo Assist&apos;s use and transfer of information received from Google APIs adheres to the{' '}
+                            XeloFlow&apos;s use and transfer of information received from Google APIs adheres to the{' '}
                             <a
                                 href="https://developers.google.com/terms/api-services-user-data-policy"
                                 target="_blank"
@@ -103,7 +103,7 @@ export default function PrivacyPolicyPage() {
                             , including the Limited Use requirements.
                         </p>
                         <p className="text-gray-700 leading-relaxed mb-4">
-                            Specifically, Zelo Assist:
+                            Specifically, XeloFlow:
                         </p>
                         <ul className="list-disc pl-5 space-y-2 text-gray-700">
                             <li>Only uses Gmail data to provide and improve the email automation features you explicitly configure.</li>
@@ -148,7 +148,7 @@ export default function PrivacyPolicyPage() {
                     <p>
                         We retain your data only as long as your account is active. You may request deletion of your account
                         and all associated data at any time by contacting us at{' '}
-                        <a href="mailto:zelosupport@gmail.com">zelosupport@gmail.com</a>.
+                        <a href="mailto:xeloflow.support@gmail.com">xeloflow.support@gmail.com</a>.
                     </p>
                     <p>
                         Upon account deletion, we will remove all your personal data, bot configurations, and cached
@@ -162,7 +162,7 @@ export default function PrivacyPolicyPage() {
                         <li><strong>Rectification</strong> — request correction of inaccurate data</li>
                         <li><strong>Deletion</strong> — request deletion of your account and data</li>
                         <li><strong>Portability</strong> — receive your data in a structured format</li>
-                        <li><strong>Revoke Access</strong> — disconnect Zelo Assist from your Google account at any time via{' '}
+                        <li><strong>Revoke Access</strong> — disconnect XeloFlow from your Google account at any time via{' '}
                             <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">
                                 Google Account Permissions
                             </a>
@@ -171,7 +171,7 @@ export default function PrivacyPolicyPage() {
 
                     <h2>8. Children&apos;s Privacy</h2>
                     <p>
-                        Zelo Assist is not intended for use by children under the age of 13. We do not knowingly collect
+                        XeloFlow is not intended for use by children under the age of 13. We do not knowingly collect
                         personal information from children under 13.
                     </p>
 
@@ -186,7 +186,7 @@ export default function PrivacyPolicyPage() {
                         If you have any questions about this Privacy Policy, please contact us at:
                     </p>
                     <ul>
-                        <li>Email: <a href="mailto:zelosupport@gmail.com">zelosupport@gmail.com</a></li>
+                        <li>Email: <a href="mailto:xeloflow.support@gmail.com">xeloflow.support@gmail.com</a></li>
                     </ul>
                 </div>
             </main>
@@ -194,7 +194,7 @@ export default function PrivacyPolicyPage() {
             {/* Mini Footer */}
             <footer className="border-t border-gray-100 py-8">
                 <div className="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <p className="text-sm text-gray-400">© 2026 Zelo Assist. All rights reserved.</p>
+                    <p className="text-sm text-gray-400">© 2026 XeloFlow. All rights reserved.</p>
                     <div className="flex gap-6 text-sm text-gray-400">
                         <Link href="/privacy" className="text-violet-600 font-medium">Privacy Policy</Link>
                         <Link href="/terms" className="hover:text-gray-600 transition-colors">Terms of Service</Link>

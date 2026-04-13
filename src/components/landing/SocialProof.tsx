@@ -10,28 +10,28 @@ const testimonials: Testimonial[] = [
         id: 1,
         name: "Sarah Jenkins",
         role: "Product Manager at Acme",
-        content: "The mental load of answering emails is completely gone. ZELO captures my tone perfectly. I can't imagine working without it.",
+        content: "The mental load of answering emails is completely gone. XELOFLOW captures my tone perfectly. I can't imagine working without it.",
         avatar: "https://picsum.photos/100/100?random=1"
     },
     {
         id: 2,
         name: "David Chen",
         role: "Freelance Developer",
-        content: "Simple, clean, and blazing fast. ZELO's concise mode is a lifesaver for quick client updates. Saves me 2+ hours a day easily.",
+        content: "Simple, clean, and blazing fast. XELOFLOW's concise mode is a lifesaver for quick client updates. Saves me 2+ hours a day easily.",
         avatar: "https://picsum.photos/100/100?random=2"
     },
     {
         id: 3,
         name: "Elena Rodriguez",
         role: "Marketing Director",
-        content: "Finally, an AI tool that doesn't feel cluttered. ZELO actually makes email peaceful — inbox zero every single day.",
+        content: "Finally, an AI tool that doesn't feel cluttered. XELOFLOW actually makes email peaceful — inbox zero every single day.",
         avatar: "https://picsum.photos/100/100?random=3"
     },
     {
         id: 7,
         name: "Anika Patel",
         role: "Legal Operations Manager",
-        content: "ZELO drafts responses to complex contract follow-ups with the right tone every time. It's like having a senior paralegal on email duty 24/7.",
+        content: "XELOFLOW drafts responses to complex contract follow-ups with the right tone every time. It's like having a senior paralegal on email duty 24/7.",
         avatar: "https://picsum.photos/100/100?random=7"
     },
     {
@@ -45,7 +45,7 @@ const testimonials: Testimonial[] = [
         id: 5,
         name: "Priya Nair",
         role: "Startup CEO",
-        content: "ZELO's knowledge base sync is a game-changer. It answers investor questions using our actual deck data. Accuracy is incredible.",
+        content: "XELOFLOW's knowledge base sync is a game-changer. It answers investor questions using our actual deck data. Accuracy is incredible.",
         avatar: "https://picsum.photos/100/100?random=5"
     },
     {

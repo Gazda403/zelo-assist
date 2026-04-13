@@ -212,7 +212,7 @@ const VideoHero: React.FC<VideoHeroProps> = ({
                                 />
                             </div>
                             <p className="text-sm text-gray-600 text-center font-medium">
-                                Loading ZELO... {Math.round(loadProgress)}%
+                                Loading XELOFLOW... {Math.round(loadProgress)}%
                             </p>
                         </div>
                     </div>

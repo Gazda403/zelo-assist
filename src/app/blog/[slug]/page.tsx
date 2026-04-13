@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const post = getPostBySlug(slug);
     if (!post) return { title: 'Post Not Found' };
     return {
-        title: `${post.title} — Zelo Assist Blog`,
+        title: `${post.title} — XeloFlow Blog`,
         description: post.description,
     };
 }
@@ -174,7 +174,7 @@ export default async function BlogPostPage({ params }: Props) {
                                 Z
                             </div>
                             <div>
-                                <p className="text-white text-sm font-semibold">Zelo Assist Team</p>
+                                <p className="text-white text-sm font-semibold">XeloFlow Team</p>
                                 <p className="text-white/60 text-xs">{post.date}</p>
                             </div>
                         </div>
@@ -199,7 +199,7 @@ export default async function BlogPostPage({ params }: Props) {
                             <p className="text-4xl mb-2">⚡</p>
                             <h3 className="text-xl font-bold mb-2">Let AI do the heavy lifting</h3>
                             <p className="text-orange-100 text-sm mb-5">
-                                Zelo Assist automatically scores, sorts, and drafts replies for your Gmail inbox.
+                                XeloFlow automatically scores, sorts, and drafts replies for your Gmail inbox.
                             </p>
                             <Link
                                 href="/"
@@ -243,9 +243,9 @@ export default async function BlogPostPage({ params }: Props) {
                 <div className="border-t border-gray-100 dark:border-white/5 py-8 text-center text-sm text-gray-400">
                     <Link href="/blog" className="hover:text-gray-600 dark:hover:text-gray-300 transition-colors">← All Posts</Link>
                     <span className="mx-3">·</span>
-                    <Link href="/" className="hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Zelo Assist</Link>
+                    <Link href="/" className="hover:text-gray-600 dark:hover:text-gray-300 transition-colors">XeloFlow</Link>
                     <span className="mx-3">·</span>
-                    <span>© 2026 Zelo Assist</span>
+                    <span>© 2026 XeloFlow</span>
                 </div>
             </div>
         </BlogLayoutClient>
