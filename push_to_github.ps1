@@ -33,7 +33,7 @@ git add .
 Write-Host "✅ Files staged" -ForegroundColor Green
 
 # Commit
-git commit -m "🚀 Zelo Assist v1.0 — Full source push"
+git commit -m "🚀 XeloFlow v1.0 — Full source push"
 Write-Host "✅ Committed" -ForegroundColor Green
 
 # Push

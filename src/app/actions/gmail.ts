@@ -18,7 +18,7 @@ interface AIResult {
 }
 
 const EMAIL_AI_LIMIT = 3; // Keep small to avoid rate-limit bursts
-const XELOFLOW_SIGNATURE = "\n\n---\nSent with XeloFlow — Your AI Inbox Companion. Get it here: https://xelo.com";
+const XELOFLOW_SIGNATURE = "\n\n---\nSent with XeloFlow — Your AI Inbox Companion. Get it here: https://www.xeloflow.com";
 
 
 // import { getCachedEmailRatings, trackEmailRating } from '@/lib/analytics';
