@@ -77,7 +77,7 @@ export function TopBar() {
             <div className="mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2 max-w-7xl">
                 {/* Logo Area */}
                 <div className="flex items-center flex-shrink-0">
-                    <Link href="/" className="h-7 sm:h-9 w-auto overflow-hidden flex items-center justify-center transition-transform hover:scale-105">
+                    <Link href="/" className="h-7 sm:h-9 w-auto overflow-hidden rounded-xl flex items-center justify-center transition-transform hover:scale-105">
                         <img src="/logo.png" alt="XeloFlow logo" className="h-full w-auto object-contain" />
                     </Link>
                 </div>

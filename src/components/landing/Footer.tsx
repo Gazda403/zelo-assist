@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                     <div className="col-span-1 md:col-span-1">
                         <div className="flex items-center space-x-2 mb-4">
-                            <div className="bg-primary/10 p-2 rounded-lg text-primary">
+                            <div className="bg-primary/10 p-2 rounded-xl text-primary">
                                 <Mail size={20} />
                             </div>
                             <span className="font-sans font-bold text-lg text-gray-900">XeloFlow</span>
