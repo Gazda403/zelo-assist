@@ -1,6 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Redirect bare root domain to www — bypasses Hostinger redirect tool issues
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "xeloflow.com" }],
+        destination: "https://www.xeloflow.com/:path*",
+        permanent: true, // 301 redirect
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
