@@ -76,14 +76,10 @@ export function TopBar() {
         <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-xl supports-[backdrop-filter]:bg-card/50">
             <div className="mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2 max-w-7xl">
                 {/* Logo Area */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden flex items-center justify-center shadow-lg shadow-accent/20 bg-white p-0.5">
-                        <img src="/icons/icon-512x512.png" alt="XeloFlow logo" className="w-full h-full object-contain" />
-                    </div>
-                    <div className="hidden md:block text-left">
-                        <h1 className="font-serif font-bold text-lg leading-none">XeloFlow</h1>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest leading-none mt-0.5">Gmail Assistant</p>
-                    </div>
+                <div className="flex items-center flex-shrink-0">
+                    <Link href="/" className="h-7 sm:h-9 w-auto overflow-hidden flex items-center justify-center transition-transform hover:scale-105">
+                        <img src="/logo.png" alt="XeloFlow logo" className="h-full w-auto object-contain" />
+                    </Link>
                 </div>
 
                 {/* Navigation - Centered & Floating style */}
