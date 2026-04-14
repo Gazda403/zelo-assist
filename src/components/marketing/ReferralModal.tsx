@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Copy, Check, Twitter, Mail, Gift, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -119,12 +120,10 @@ export function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
     // Using a portal to ensure the modal stays centered and isn't affected by parent container styling
     if (typeof document === 'undefined') return null;
 
-    const { createPortal } = require('react-dom');
     return createPortal(
         <AnimatePresence>
             {modalContent}
         </AnimatePresence>,
         document.body
     );
-}
 }
