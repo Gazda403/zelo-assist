@@ -19,7 +19,7 @@ export async function saveUserTokens(
     const supabase = createAdminClient();
 
     const updates: any = {
-        id: email, // Use EMAIL as the ID to match bots.userId
+        id: userId, // Use UUID as the ID
         google_id: userId, // Keep the numerical ID just in case
         email: email,
         updated_at: new Date().toISOString(),

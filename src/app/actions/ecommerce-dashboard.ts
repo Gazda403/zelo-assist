@@ -10,11 +10,11 @@ import { differenceInMinutes } from 'date-fns';
  */
 export async function getEcommerceDashboardDataAction(botId: string) {
     const session = await auth();
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     // Guard against missing botId
     if (!botId) throw new Error('Bot ID is required');

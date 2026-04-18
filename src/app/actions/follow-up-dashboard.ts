@@ -8,11 +8,11 @@ import { getExecutionLogs, getBotById } from '@/lib/bots/storage';
  */
 export async function getFollowUpDashboardDataAction(botId: string) {
     const session = await auth();
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     // Verify access (with preset bypass)
     if (!botId.startsWith('preset_')) {

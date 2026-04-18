@@ -37,7 +37,7 @@ export async function getBotsAction(): Promise<EmailBot[]> {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email; // Use email as userId
+    const userId = session.user.id; // Use persistent UUID as userId
     return await getAllBots(userId);
 }
 
@@ -51,7 +51,7 @@ export async function getBotByIdAction(botId: string): Promise<EmailBot | null> 
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
     return await getBotById(botId, userId);
 }
 
@@ -67,7 +67,7 @@ export async function createBotAction(
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     // --- Subscription Limits Enforced Here ---
     const { createAdminClient } = await import('@/lib/supabase/admin');
@@ -80,7 +80,7 @@ export async function createBotAction(
         .single();
         
     let planType = profile?.plan_type ?? 'free';
-    if (userId === 'brankovicaleksandar2404@gmail.com') {
+    if (userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69') { // UUID for brankovicaleksandar2404@gmail.com
         planType = 'exclusive';
     }
     
@@ -115,7 +115,7 @@ export async function createBotAction(
     const newBot: EmailBot = {
         ...bot,
         id: crypto.randomUUID(),
-        userId: session.user.email,
+        userId: session.user.id,
         createdAt: new Date(),
         updatedAt: new Date(),
     };
@@ -136,7 +136,7 @@ export async function updateBotAction(
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     // Verify ownership
     const existing = await getBotById(botId, userId);
@@ -157,7 +157,7 @@ export async function deleteBotAction(botId: string): Promise<void> {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     // Verify ownership
     const existing = await getBotById(botId, userId);
@@ -216,7 +216,7 @@ export async function testBotAction(
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
     let bot;
     if (botId.startsWith('preset_')) {
         // Import templates/presets dynamically if needed, or check if we can get it from storage
@@ -268,7 +268,7 @@ export async function getBotExecutionLogsAction(
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     // Verify ownership for non-preset bots
     if (!botId.startsWith('preset_')) {
@@ -291,7 +291,7 @@ export async function getBotStatsAction(botId: string): Promise<BotStats | null>
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     // Verify ownership for non-preset bots
     if (!botId.startsWith('preset_')) {
@@ -328,7 +328,7 @@ export async function getTemplatesAction(): Promise<Array<{
 export async function cloneTemplateAction(templateId: string): Promise<EmailBot> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -351,7 +351,7 @@ export async function searchBotsAction(query: string): Promise<EmailBot[]> {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
     const allBots = await getAllBots(userId);
 
     const lowerQuery = query.toLowerCase();
@@ -379,7 +379,7 @@ export async function syncBotsAction(): Promise<{
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     try {
         const { syncBotsForUser } = await import('@/lib/bots/engine/sync');
@@ -414,7 +414,7 @@ export async function getKnowledgeBaseAction(botId: string) {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     // For preset bots (id starts with "preset_"), allow access without ownership check
     // For user bots, verify ownership
@@ -447,7 +447,7 @@ export async function createKBEntryAction(
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     // For preset bots, allow access without ownership check
     // For user bots, verify ownership

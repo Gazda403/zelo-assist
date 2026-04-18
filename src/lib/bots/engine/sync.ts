@@ -29,8 +29,8 @@ export async function syncBotsForUser(userId: string): Promise<{ success: boolea
         }
 
         let planType = profile?.plan_type ?? 'free';
-        // Admin override
-        if (userId === 'brankovicaleksandar2404@gmail.com') {
+        // Admin override (UUID for brankovicaleksandar2404@gmail.com)
+        if (userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69') {
             planType = 'exclusive';
         }
 

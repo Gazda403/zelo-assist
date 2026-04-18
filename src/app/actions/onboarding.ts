@@ -10,7 +10,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export async function markOnboardingCompleteAction(): Promise<{ success: boolean }> {
     const session = await auth();
 
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
         return { success: false };
     }
 
@@ -19,14 +19,14 @@ export async function markOnboardingCompleteAction(): Promise<{ success: boolean
     const { error } = await supabase
         .from("profiles")
         .update({ onboarding_completed: true })
-        .eq("id", session.user.email);
+        .eq("id", session.user.id);
 
     if (error) {
         console.error("Failed to mark onboarding complete:", error);
         return { success: false };
     }
 
-    console.log("Onboarding marked complete for:", session.user.email);
+    console.log("Onboarding marked complete for:", session.user.id);
     return { success: true };
 }
 
@@ -36,7 +36,7 @@ export async function markOnboardingCompleteAction(): Promise<{ success: boolean
 export async function resetOnboardingAction(): Promise<{ success: boolean }> {
     const session = await auth();
 
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
         return { success: false };
     }
 
@@ -45,7 +45,7 @@ export async function resetOnboardingAction(): Promise<{ success: boolean }> {
     const { error } = await supabase
         .from("profiles")
         .update({ onboarding_completed: false })
-        .eq("id", session.user.email);
+        .eq("id", session.user.id);
 
     if (error) {
         console.error("Failed to reset onboarding:", error);

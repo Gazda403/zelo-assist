@@ -78,7 +78,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     const { data: profileData, error: profileError } = await supabase
                         .from('profiles')
                         .select('role, onboarding_completed')
-                        .eq('id', user.email)
+                        .eq('id', user.id) // Use stable UUID instead of email
                         .single();
 
                     if (profileError || !profileData) {
@@ -87,7 +87,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         const { error: insertError } = await supabase
                             .from('profiles')
                             .insert({
-                                id: user.email,
+                                id: user.id, // Use stable UUID instead of email
                                 full_name: user.name,
                                 avatar_url: profile?.picture || user.image,
                                 role: 'user',
@@ -97,7 +97,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         if (insertError) {
                             console.error("Failed to create profile for new user:", insertError);
                         } else {
-                            console.log("Created profile for new user:", user.email);
+                            console.log("Created profile for new user:", user.id);
                         }
                     } else {
                         role = profileData.role || 'user';

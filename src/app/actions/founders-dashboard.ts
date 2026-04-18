@@ -9,11 +9,11 @@ import { differenceInHours } from 'date-fns';
  */
 export async function getFoundersDashboardDataAction(botId: string) {
     const session = await auth();
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
         throw new Error('Unauthorized');
     }
 
-    const userId = session.user.email;
+    const userId = session.user.id;
 
     // Fetch bot for safety config and verification
     const bot = await getBotById(botId, userId);
