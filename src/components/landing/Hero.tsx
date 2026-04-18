@@ -112,7 +112,7 @@ const Hero: React.FC<HeroProps> = ({ onGetStarted }) => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.1 }}
-                            className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tight leading-[1.1] mb-6"
+                            className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 tracking-tight leading-[1.1] mb-6"
                         >
                             Email calmness, <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-400">
@@ -124,7 +124,7 @@ const Hero: React.FC<HeroProps> = ({ onGetStarted }) => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            className="mt-6 text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed"
+                            className="mt-6 text-base sm:text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed"
                         >
                             Turn chaotic inboxes into structured peace. Xelo Flow writes your replies, prioritizes your day, and gives you back your time.
                         </motion.p>
@@ -133,11 +133,11 @@ const Hero: React.FC<HeroProps> = ({ onGetStarted }) => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.3 }}
-                            className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+                            className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start px-4 sm:px-0"
                         >
                             <button
                                 onClick={onGetStarted}
-                                className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white transition-all duration-200 bg-primary rounded-2xl hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:-translate-y-1 shadow-lg shadow-orange-500/30 cursor-pointer"
+                                className="group relative inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-white transition-all duration-200 bg-primary rounded-2xl hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:-translate-y-1 shadow-lg shadow-orange-500/30 cursor-pointer w-full sm:w-auto"
                             >
                                 Try it Free
                                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -148,7 +148,7 @@ const Hero: React.FC<HeroProps> = ({ onGetStarted }) => {
 
                             <button
                                 onClick={onGetStarted}
-                                className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-gray-700 transition-all duration-200 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50 hover:text-gray-900 hover:-translate-y-1 shadow-sm hover:shadow-md cursor-pointer"
+                                className="inline-flex items-center justify-center px-8 py-4 text-base sm:text-lg font-semibold text-gray-700 transition-all duration-200 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50 hover:text-gray-900 hover:-translate-y-1 shadow-sm hover:shadow-md cursor-pointer w-full sm:w-auto"
                             >
                                 View Pricing
                             </button>

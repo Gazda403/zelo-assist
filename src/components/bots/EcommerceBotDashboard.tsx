@@ -243,7 +243,7 @@ export function EcommerceBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Ec
                     <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800 relative z-10"
+                        className="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800 relative z-10"
                     >
                         {[
                             { id: 'customer_support', label: 'Customer Support', icon: Users, desc: 'Address issues' },
@@ -328,11 +328,11 @@ export function EcommerceBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Ec
                             ].map((item) => (
                                 <div key={item.label} className="group cursor-default">
                                     <div className="flex items-center gap-3 mb-1">
-                                        <item.icon className={`w-4 h-4 ${item.color}`} />
-                                        <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">{item.label}</span>
+                                        <item.icon className={`w-4 h-4 max-sm:w-3.5 max-sm:h-3.5 ${item.color}`} />
+                                        <span className="text-xs max-sm:text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">{item.label}</span>
                                     </div>
                                     <div className="flex items-baseline gap-3">
-                                        <span className="text-4xl font-black text-zinc-900 dark:text-zinc-100 group-hover:text-orange-500 transition-colors">{item.value}</span>
+                                        <span className="text-4xl max-sm:text-3xl font-black text-zinc-900 dark:text-zinc-100 group-hover:text-orange-500 transition-colors">{item.value}</span>
                                         <span className="text-[10px] font-medium text-zinc-500 italic">{item.sub}</span>
                                     </div>
                                 </div>
@@ -446,20 +446,20 @@ export function EcommerceBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Ec
                             <Users className="w-6 h-6 text-orange-500" />
                             Customer Satisfaction
                         </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10 w-full">
+                        <div className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-6 relative z-10 w-full">
                             <div className="space-y-2">
                                 <p className="text-emerald-500 text-[10px] font-bold uppercase tracking-widest">Happy</p>
-                                <p className="text-5xl font-black text-zinc-900 dark:text-zinc-100">{stats.sentimentDistribution.positive}</p>
+                                <p className="text-5xl max-sm:text-4xl font-black text-zinc-900 dark:text-zinc-100">{stats.sentimentDistribution.positive}</p>
                                 <p className="text-xs text-zinc-500 font-medium border-l-2 border-emerald-500/30 pl-2">Positive interactions</p>
                             </div>
-                            <div className="space-y-2 border-l border-zinc-200 dark:border-zinc-800 pl-6">
+                            <div className="space-y-2 min-[480px]:border-l border-zinc-200 dark:border-zinc-800 min-[480px]:pl-6 max-[479px]:pt-4 max-[479px]:border-t">
                                 <p className="text-orange-500 text-[10px] font-bold uppercase tracking-widest">Neutral</p>
-                                <p className="text-5xl font-black text-zinc-900 dark:text-zinc-100">{stats.sentimentDistribution.neutral}</p>
+                                <p className="text-5xl max-sm:text-4xl font-black text-zinc-900 dark:text-zinc-100">{stats.sentimentDistribution.neutral}</p>
                                 <p className="text-xs text-zinc-500 font-medium border-l-2 border-orange-500/30 pl-2">Standard inquiries</p>
                             </div>
-                            <div className="space-y-2 border-l border-zinc-200 dark:border-zinc-800 pl-6">
+                            <div className="space-y-2 min-[480px]:border-l border-zinc-200 dark:border-zinc-800 min-[480px]:pl-6 max-[479px]:pt-4 max-[479px]:border-t">
                                 <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest">Escalated</p>
-                                <p className="text-5xl font-black text-zinc-900 dark:text-zinc-100">{stats.sentimentDistribution.negative}</p>
+                                <p className="text-5xl max-sm:text-4xl font-black text-zinc-900 dark:text-zinc-100">{stats.sentimentDistribution.negative}</p>
                                 <p className="text-xs text-zinc-500 font-medium border-l-2 border-red-500/30 pl-2">Requires attention</p>
                             </div>
                         </div>

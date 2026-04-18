@@ -265,7 +265,7 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
                     <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800 relative z-10"
+                        className="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800 relative z-10"
                     >
                         {[
                             { id: 'user_support', label: 'User Support', icon: Users, desc: 'Acknowledge & Escalate' },
@@ -349,11 +349,11 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
                             ].map((item) => (
                                 <div key={item.label} className="group cursor-default">
                                     <div className="flex items-center gap-3 mb-1">
-                                        <item.icon className={`w-4 h-4 ${item.color}`} />
-                                        <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">{item.label}</span>
+                                        <item.icon className={`w-4 h-4 max-sm:w-3.5 max-sm:h-3.5 ${item.color}`} />
+                                        <span className="text-xs max-sm:text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">{item.label}</span>
                                     </div>
                                     <div className="flex items-baseline gap-3">
-                                        <span className="text-4xl font-black text-zinc-900 dark:text-zinc-100 group-hover:text-orange-500 transition-colors">{item.value}</span>
+                                        <span className="text-4xl max-sm:text-3xl font-black text-zinc-900 dark:text-zinc-100 group-hover:text-orange-500 transition-colors">{item.value}</span>
                                         <span className="text-[10px] font-medium text-zinc-500 italic">{item.sub}</span>
                                     </div>
                                 </div>
@@ -475,7 +475,7 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
                                 />
                             ))}
                         </div>
-                        <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 border border-zinc-200 dark:border-zinc-800 relative z-10 transition-colors">
+                        <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 border border-zinc-200 dark:border-zinc-800 relative z-10 transition-colors max-sm:flex-col max-sm:gap-2 max-sm:items-start">
                             <div>
                                 <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Mean Threat Index</p>
                                 <p className="text-2xl font-black text-zinc-900 dark:text-zinc-100">{avgRisk}</p>

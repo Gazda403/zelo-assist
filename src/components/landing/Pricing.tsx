@@ -130,23 +130,23 @@ export function Pricing({ onGetStarted }: PricingProps = {}) {
                     </p>
 
                     {/* Billing Toggle */}
-                    <div className="mt-10 flex justify-center">
-                        <div className="relative flex items-center p-1 bg-orange-50/50 rounded-full border border-orange-100/50 backdrop-blur-sm">
+                    <div className="mt-10 flex justify-center px-4">
+                        <div className="relative flex items-center p-1 bg-orange-50/50 rounded-full border border-orange-100/50 backdrop-blur-sm w-full max-w-[340px] sm:max-w-md">
                             <button
                                 onClick={() => setIsAnnual(true)}
-                                className={`relative w-48 py-2.5 text-sm font-semibold rounded-full transition-all duration-200 ${isAnnual ? 'text-[#1C1917] shadow-sm bg-white' : 'text-stone-500 hover:text-primary'
+                                className={`relative flex-1 sm:w-48 py-2.5 text-xs sm:text-sm font-semibold rounded-full transition-all duration-200 ${isAnnual ? 'text-[#1C1917] shadow-sm bg-white' : 'text-stone-500 hover:text-primary'
                                     }`}
                             >
-                                <span className="flex items-center justify-center gap-2">
+                                <span className="flex items-center justify-center gap-1 sm:gap-2">
                                     Bill annually
-                                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] sm:text-xs">
+                                    <span className="px-1.5 py-0.5 rounded-full bg-primary/10 text-primary text-[8px] sm:text-xs whitespace-nowrap">
                                         Save 20%
                                     </span>
                                 </span>
                             </button>
                             <button
                                 onClick={() => setIsAnnual(false)}
-                                className={`relative w-36 py-2.5 text-sm font-semibold rounded-full transition-all duration-200 ${!isAnnual ? 'text-[#1C1917] shadow-sm bg-white' : 'text-stone-500 hover:text-primary'
+                                className={`relative flex-1 sm:w-36 py-2.5 text-xs sm:text-sm font-semibold rounded-full transition-all duration-200 ${!isAnnual ? 'text-[#1C1917] shadow-sm bg-white' : 'text-stone-500 hover:text-primary'
                                     }`}
                             >
                                 Bill monthly
