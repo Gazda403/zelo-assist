@@ -224,7 +224,6 @@ export default function HomePage() {
         // Run check after a short delay so it doesn't compete with render
         const timer = setTimeout(runAlertCheck, 2000);
         return () => clearTimeout(timer);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [emails, status]);
 
     const prefetchEmailBody = useCallback(async (id: string) => {

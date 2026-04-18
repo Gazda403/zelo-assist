@@ -284,7 +284,6 @@ export function TourSpotlight({ open, onClose }: TourSpotlightProps) {
         el.addEventListener("click", handler, { capture: true, once: true });
         return () =>
             el.removeEventListener("click", handler, { capture: true });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, step]);
 
     const advance = useCallback(async () => {

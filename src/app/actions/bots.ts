@@ -33,7 +33,7 @@ import { validateBotSafety } from '@/lib/bots/engine/safety';
 export async function getBotsAction(): Promise<EmailBot[]> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -47,7 +47,7 @@ export async function getBotsAction(): Promise<EmailBot[]> {
 export async function getBotByIdAction(botId: string): Promise<EmailBot | null> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -63,7 +63,7 @@ export async function createBotAction(
 ): Promise<EmailBot> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -132,7 +132,7 @@ export async function updateBotAction(
 ): Promise<EmailBot> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -153,7 +153,7 @@ export async function updateBotAction(
 export async function deleteBotAction(botId: string): Promise<void> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -212,7 +212,7 @@ export async function testBotAction(
 }> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -264,7 +264,7 @@ export async function getBotExecutionLogsAction(
 ): Promise<BotExecutionLog[]> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -287,7 +287,7 @@ export async function getBotExecutionLogsAction(
 export async function getBotStatsAction(botId: string): Promise<BotStats | null> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -347,7 +347,7 @@ export async function cloneTemplateAction(templateId: string): Promise<EmailBot>
 export async function searchBotsAction(query: string): Promise<EmailBot[]> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -375,7 +375,7 @@ export async function syncBotsAction(): Promise<{
 }> {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -410,7 +410,7 @@ export async function syncBotsAction(): Promise<{
 export async function getKnowledgeBaseAction(botId: string) {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -443,7 +443,7 @@ export async function createKBEntryAction(
 ) {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -483,7 +483,7 @@ export async function updateKBEntryAction(
 ) {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
@@ -497,7 +497,7 @@ export async function updateKBEntryAction(
 export async function deleteKBEntryAction(entryId: string) {
     const session = await auth();
 
-    if (!session || !session.user?.email) {
+    if (!session || !session.user?.id) {
         throw new Error('Unauthorized');
     }
 
