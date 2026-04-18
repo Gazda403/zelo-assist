@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LucideSend, LucideSparkles, LucidePaperclip, LucideImage, LucideSmile, LucideMoreVertical, LucideTrash2, LucideType } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { generateDraftAction, sendEmailAction } from '@/app/actions/gmail';
+import { composeNewEmailAction, sendEmailAction } from '@/app/actions/gmail';
 
 export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
     const [to, setTo] = useState(initialTo);
@@ -28,14 +28,17 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
         if (!aiInput.trim()) return;
         setIsGenerating(true);
         try {
-            const result = await generateDraftAction(
-                `new-${Date.now()}`,
-                to,
-                to, // senderEmail used as proxy
-                subject || "(No Subject)",
-                aiInput // prompt
+            const result = await composeNewEmailAction(
+                to,          // recipientEmail
+                '',          // recipientName (unknown at compose time)
+                subject,     // pass current subject if user typed one
+                aiInput      // user's natural language instruction
             );
             setContent(result.draft);
+            // If no subject was typed, use the AI-suggested one
+            if (!subject.trim() && result.subject) {
+                setSubject(result.subject);
+            }
             setAiInput('');
         } catch (error) {
             console.error("AI Generation failed:", error);

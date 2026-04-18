@@ -10,6 +10,7 @@ function getClient(provider?: string) {
 import { rateEmailFlow } from '@/ai/flows/email-rater';
 import { refineDraftFlow } from '@/ai/flows/draft-refiner';
 import { generateDraftFlow } from '@/ai/flows/draft-generator';
+import { composeNewEmailFlow } from '@/ai/flows/email-composer';
 
 interface AIResult {
     urgencyScore: number;
@@ -24,6 +25,72 @@ const XELOFLOW_SIGNATURE = "\n\n---\nSent with Xelo Flow — Your AI Inbox Compa
 // import { getCachedEmailRatings, trackEmailRating } from '@/lib/analytics';
 import { getEmailRatings, saveEmailRating, getGeneratedDraft, saveGeneratedDraft } from '@/lib/db/email-storage';
 
+// --- FILM MODE: Toggle this to TRUE for your promotional video recording! ---
+const FILM_MODE = true;
+
+const MOCK_EMAILS_FOR_FILMING = [
+    {
+        id: "mock-investor-1",
+        threadId: "thread-i1",
+        subject: "Interest in XeloFlow Seed Round",
+        sender: { name: "Sarah Jenkins @ Sequoia", email: "sarah.j@sequoia.com" },
+        snippet: "Hi, I'm a partner at Sequoia. We've been tracking XeloFlow's growth and we're extremely impressed with your AI agent architecture. We'd like to discuss a potential lead for your Seed round. Are you available for a brief call next Tuesday?",
+        date: new Date().toISOString(),
+        read: false,
+        urgencyScore: 10,
+        urgencyReason: "Critical: High-tier VC interest detected. Potential for institutional funding.",
+        aiConfidence: 'high'
+    },
+    {
+        id: "mock-sales-1",
+        threadId: "thread-s1",
+        subject: "SEO Services for xeloflow.com — Page 1 Guaranteed",
+        sender: { name: "Mark @ GrowthHacks", email: "mark@growthhacks.biz" },
+        snippet: "Hey, I noticed xeloflow.com isn't ranking for 'AI Gmail Assistant'. We can get you to the top of Google for just $500/month. No contracts, results in 30 days. When can we talk?",
+        date: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+        read: false,
+        urgencyScore: 2,
+        urgencyReason: "Low: Cold sales outreach with generic value proposition.",
+        aiConfidence: 'high'
+    },
+    {
+        id: "mock-support-1",
+        threadId: "thread-sp1",
+        subject: "Question about my account billing",
+        sender: { name: "John Doe", email: "john.doe@gmail.com" },
+        snippet: "Hi XeloFlow Team, I'm trying to update my credit card but the 'Save' button is greyed out. Can you please look into this? I don't want my subscription to lapse.",
+        date: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+        read: false,
+        urgencyScore: 7,
+        urgencyReason: "Medium: Billing issue from a paying user. Requires intervention.",
+        aiConfidence: 'medium'
+    },
+    {
+        id: "mock-hiring-1",
+        threadId: "thread-h1",
+        subject: "Senior Fullstack Engineer Application — Alex Rivera",
+        sender: { name: "Alex Rivera", email: "alex.riv@dev.io" },
+        snippet: "Dear XeloFlow Team, I've been following your progress in the AI space and would love to join as a Senior Engineer. I have 8 years of experience with Next.js and LLM integrations. Attached is my resume.",
+        date: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
+        read: true,
+        urgencyScore: 4,
+        urgencyReason: "Standard: Recruitment inquiry from qualified talent.",
+        aiConfidence: 'high'
+    },
+    {
+        id: "mock-legal-1",
+        threadId: "thread-l1",
+        subject: "URGENT: Notice of Compliance Audit",
+        sender: { name: "Compliance Dept", email: "compliance@global-reg.org" },
+        snippet: "OFFICIAL NOTICE: XeloFlow is scheduled for a routine data privacy compliance audit on May 1st. Please review the attached documentation and confirm your point of contact.",
+        date: new Date(Date.now() - 1000 * 60 * 360).toISOString(),
+        read: true,
+        urgencyScore: 9,
+        urgencyReason: "High: Regulatory compliance notice requires immediate founder review.",
+        aiConfidence: 'high'
+    }
+];
+
 export async function fetchEmailsAction(
     pageToken?: string,
     filter: '1d' | '7d' | '30d' | 'all' = '7d',
@@ -32,6 +99,46 @@ export async function fetchEmailsAction(
     const session = await auth() as any;
     if (!session || !session.accessToken || session.error === 'RefreshAccessTokenError') {
         return { emails: [], nextPageToken: undefined, unreadCount: 0, error: 'Unauthorized', message: 'Session expired. Please sign in again.' };
+    }
+
+    // --- FILM MODE: Return mocks if enabled ---
+    if (FILM_MODE) {
+        console.log("🎬 FILM MODE ACTIVE: Returning mock emails for recording.");
+
+        // Trigger bots for mocks in background if this is the first page load
+        if (!pageToken && session.user?.email) {
+            (async () => {
+                try {
+                    const { executeBots } = await import('@/lib/bots/engine/orchestrator');
+                    for (const email of MOCK_EMAILS_FOR_FILMING) {
+                        const emailEvent = {
+                            type: 'new_email' as const,
+                            emailId: email.id,
+                            sender: email.sender,
+                            subject: email.subject,
+                            body: email.snippet,
+                            snippet: email.snippet,
+                            date: email.date,
+                            read: email.read,
+                            urgencyScore: email.urgencyScore,
+                            threadId: email.threadId,
+                        };
+                        // @ts-ignore - Mock execution
+                        executeBots(emailEvent, session.user.email!).catch(err => {
+                            console.error('[Bots] Mock background execution failed:', err);
+                        });
+                    }
+                } catch (err) {
+                    console.error('[Bots] Mock bot trigger setup failed:', err);
+                }
+            })().catch(err => console.error('[Bots] Mock bot trigger loop crashed:', err));
+        }
+
+        return {
+            emails: MOCK_EMAILS_FOR_FILMING,
+            nextPageToken: undefined,
+            unreadCount: 3
+        };
     }
 
     try {
@@ -315,6 +422,36 @@ export async function sendEmailAction(to: string, subject: string, body: string)
         throw new Error("Failed to send email");
     }
 }
+
+/**
+ * Composes a brand new outbound email from the user's natural language instruction.
+ * This is used by the /send page — NOT for replying to existing emails.
+ */
+export async function composeNewEmailAction(
+    recipientEmail: string,
+    recipientName: string,
+    subject: string,
+    userInstruction: string
+) {
+    const session = await auth() as any;
+    if (!session || !session.accessToken) {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        const result = await composeNewEmailFlow({
+            recipientEmail,
+            recipientName,
+            subject,
+            userInstruction,
+        });
+        return result;
+    } catch (error) {
+        console.error("Compose New Email Action Error:", error);
+        throw new Error("Failed to compose email");
+    }
+}
+
 
 export async function fetchSentEmailsAction() {
     const session = await auth() as any;

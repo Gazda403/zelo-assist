@@ -1,0 +1,22 @@
+{
+  "name": "xeloflow-video",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "remotion studio",
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^8.15.0",
+    "@remotion/three": "4.0.140",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "4.0.140",
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "@remotion/cli": "^4.0.448",
+    "@types/react": "^18.2.45",
+    "@types/three": "^0.160.0",
+    "typescript": "^5.3.3"
+  }
+}
