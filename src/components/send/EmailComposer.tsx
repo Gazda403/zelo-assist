@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { LucideSend, LucideSparkles, LucidePaperclip, LucideImage, LucideSmile, LucideMoreVertical, LucideTrash2, LucideType } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { composeNewEmailAction, sendEmailAction } from '@/app/actions/gmail';
+import { toast } from 'sonner';
 
 export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
     const [to, setTo] = useState(initialTo);
@@ -48,20 +49,36 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
     };
 
     const handleSend = async () => {
-        if (!to || !content) return;
+        if (!to || !content) {
+            toast.error("Please add a recipient and some content.");
+            return;
+        }
         setIsSending(true);
         try {
             await sendEmailAction(to, subject, content);
-            alert("Email sent successfully!");
+            toast.success("Email sent successfully!");
             // Reset form
             setTo('');
             setSubject('');
             setContent('');
+            setAiInput('');
         } catch (error) {
             console.error("Failed to send email:", error);
-            alert("Failed to send email. Check console for details.");
+            toast.error("Failed to send email. Check console for details.");
         } finally {
             setIsSending(false);
+        }
+    };
+
+    const handleDiscard = () => {
+        if (content || subject || to) {
+            if (confirm('Are you sure you want to discard this draft?')) {
+                setTo('');
+                setSubject('');
+                setContent('');
+                setAiInput('');
+                toast.success('Draft discarded');
+            }
         }
     };
 
@@ -145,15 +162,15 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
                         </button>
                         <div className="h-5 w-px bg-gray-200 dark:bg-zinc-700" />
                         <div className="flex items-center gap-0.5 text-gray-400 dark:text-gray-500">
-                            <button className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideType className="w-4 h-4" /></button>
-                            <button className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucidePaperclip className="w-4 h-4" /></button>
-                            <button className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideImage className="w-4 h-4" /></button>
-                            <button className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideSmile className="w-4 h-4" /></button>
+                            <button onClick={() => toast.info('Text formatting coming soon!')} className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideType className="w-4 h-4" /></button>
+                            <button onClick={() => toast.info('File attachments coming soon!')} className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucidePaperclip className="w-4 h-4" /></button>
+                            <button onClick={() => toast.info('Image uploads coming soon!')} className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideImage className="w-4 h-4" /></button>
+                            <button onClick={() => toast.info('Emoji picker coming soon!')} className="p-2 hover:bg-violet-50 dark:hover:bg-violet-500/20 hover:text-violet-600 dark:hover:text-violet-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideSmile className="w-4 h-4" /></button>
                         </div>
                     </div>
                     <div className="flex items-center gap-0.5 text-gray-400 dark:text-gray-500">
-                        <button className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-gray-600 dark:hover:text-gray-300 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideMoreVertical className="w-4 h-4" /></button>
-                        <button className="p-2 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideTrash2 className="w-4 h-4" /></button>
+                        <button onClick={() => toast.info('More options coming soon!')} className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-gray-600 dark:hover:text-gray-300 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideMoreVertical className="w-4 h-4" /></button>
+                        <button onClick={handleDiscard} className="p-2 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"><LucideTrash2 className="w-4 h-4" /></button>
                     </div>
                 </div>
             </div>
