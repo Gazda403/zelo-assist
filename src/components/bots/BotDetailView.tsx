@@ -132,18 +132,18 @@ export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDe
     ];
 
     return (
-        <div id="tour-bot-settings" className="max-w-5xl mx-auto p-6 max-md:px-3 max-md:py-4">
+        <div id="tour-bot-settings" className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
             {/* Header */}
             <div className="mb-6 max-md:mb-4">
-                <div className="flex items-start justify-between mb-4 max-md:mb-2 max-md:gap-2">
-                    <div className="flex-1 max-md:min-w-0">
-                        <div className="flex items-center gap-3 mb-2 max-md:gap-2 max-md:mb-1">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-4">
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-2">
                             {onBack && (
-                                <button onClick={onBack} className="lg:hidden p-2 -ml-2 text-gray-500 hover:text-gray-900 transition-colors max-md:p-1.5 max-md:-ml-1">
-                                    <ArrowLeft className="w-5 h-5 max-md:w-4 max-md:h-4" />
+                                <button onClick={onBack} className="lg:hidden p-2 -ml-2 text-gray-500 hover:text-gray-900 transition-colors">
+                                    <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                                 </button>
                             )}
-                            <h1 className="text-2xl sm:text-3xl font-bold font-serif max-md:text-xl max-md:leading-tight">{bot.name}</h1>
+                            <h1 className="text-xl sm:text-3xl font-bold font-serif leading-tight truncate">{bot.name}</h1>
                             {/* Enable toggle — inline on desktop, moved to actions column on mobile */}
                             <button
                                 onClick={handleToggle}
@@ -158,10 +158,10 @@ export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDe
                             </button>
                         </div>
                         {bot.description && (
-                            <p className="text-gray-600 max-md:text-xs max-md:line-clamp-2">{bot.description}</p>
+                            <p className="text-sm sm:text-base text-gray-600 line-clamp-2 sm:line-clamp-none">{bot.description}</p>
                         )}
                     </div>
-                    <div className="flex items-center gap-2 max-md:gap-1.5 max-md:shrink-0">
+                    <div className="flex items-center gap-2 sm:shrink-0">
                         {/* Enable toggle on mobile only — compact icon+label */}
                         <button
                             onClick={handleToggle}

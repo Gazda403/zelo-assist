@@ -222,13 +222,13 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
     };
 
     return (
-        <div className="space-y-8 pb-12 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 p-6 rounded-none font-sans mt-4 border border-zinc-200 dark:border-zinc-800 transition-colors">
+        <div className="space-y-8 pb-12 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 p-4 sm:p-6 lg:p-8 rounded-none font-sans mt-4 border border-zinc-200 dark:border-zinc-800 transition-colors">
 
             {/* Auto-Send & Configuration Section */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-8 shadow-2xl relative overflow-hidden transition-colors"
+                className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-colors"
             >
                 {/* Decorative glow */}
                 <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
@@ -265,7 +265,7 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
                     <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
-                        className="grid grid-cols-4 gap-4 pt-6 border-t border-zinc-800 relative z-10"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800 relative z-10"
                     >
                         {[
                             { id: 'user_support', label: 'User Support', icon: Users, desc: 'Acknowledge & Escalate' },
@@ -333,12 +333,12 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
                 transition={{ duration: 0.5 }}
                 className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden transition-colors"
             >
-                <div className="grid grid-cols-12 divide-x divide-zinc-200 dark:divide-zinc-800">
+                <div className="flex flex-col lg:grid lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-zinc-200 dark:divide-zinc-800">
                     {/* Left: Key Metrics Overview */}
                     <div className="col-span-12 lg:col-span-4 p-8 space-y-8">
                         <div>
                             <p className="text-[10px] font-black text-orange-500 uppercase tracking-[0.2em] mb-2">Cognitive Performance</p>
-                            <h4 className="text-3xl font-serif font-bold text-zinc-900 dark:text-zinc-50 tracking-tight">System Leverage</h4>
+                            <h4 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 dark:text-zinc-50 tracking-tight">System Leverage</h4>
                         </div>
 
                         <div className="space-y-6">
@@ -406,7 +406,7 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
                         initial={{ opacity: 0, x: -30 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.4 }}
-                        className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-8 transition-colors"
+                        className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-8 transition-colors"
                     >
                         <div className="flex items-center justify-between mb-8">
                             <div>
@@ -455,7 +455,7 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-8 relative overflow-hidden transition-colors"
+                        className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-8 relative overflow-hidden transition-colors"
                     >
                         <div className="absolute top-0 right-0 p-8 opacity-5 dark:opacity-10 pointer-events-none">
                             <AlertCircle className="w-48 h-48 text-orange-500" />
@@ -497,7 +497,7 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
                         initial={{ opacity: 0, x: 30 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.6 }}
-                        className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-8 flex flex-col transition-colors"
+                        className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-8 flex flex-col transition-colors"
                     >
                         <div className="flex items-center justify-between mb-8">
                             <h3 className="font-serif font-bold text-2xl text-zinc-900 dark:text-zinc-50 flex items-center gap-3">

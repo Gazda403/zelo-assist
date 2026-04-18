@@ -201,12 +201,12 @@ export function EcommerceBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Ec
     };
 
     return (
-        <div className="space-y-8 pb-12 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 p-6 rounded-none font-sans mt-4 border border-zinc-200 dark:border-zinc-800 transition-colors">
+        <div className="space-y-8 pb-12 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 p-4 sm:p-6 lg:p-8 rounded-none font-sans mt-4 border border-zinc-200 dark:border-zinc-800 transition-colors">
             {/* Auto-Send & Configuration Section */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-8 shadow-2xl relative overflow-hidden transition-colors"
+                className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-colors"
             >
                 {/* Decorative glow */}
                 <div className="absolute top-0 right-0 p-8 opacity-5 dark:opacity-10 pointer-events-none">
@@ -243,7 +243,7 @@ export function EcommerceBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Ec
                     <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
-                        className="grid grid-cols-4 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800 relative z-10"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800 relative z-10"
                     >
                         {[
                             { id: 'customer_support', label: 'Customer Support', icon: Users, desc: 'Address issues' },
@@ -312,12 +312,12 @@ export function EcommerceBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Ec
                 transition={{ duration: 0.5 }}
                 className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden transition-colors"
             >
-                <div className="grid grid-cols-12 divide-x divide-zinc-200 dark:divide-zinc-800">
+                <div className="flex flex-col lg:grid lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-zinc-200 dark:divide-zinc-800">
                     {/* Left: Key Metrics Overview */}
                     <div className="col-span-12 lg:col-span-4 p-8 space-y-8">
                         <div>
                             <p className="text-[10px] font-black text-orange-500 uppercase tracking-[0.2em] mb-2">Performance Summary</p>
-                            <h4 className="text-3xl font-serif font-bold text-zinc-900 dark:text-zinc-50 tracking-tight">Store Health</h4>
+                            <h4 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 dark:text-zinc-50 tracking-tight">Store Health</h4>
                         </div>
 
                         <div className="space-y-6">
@@ -446,7 +446,7 @@ export function EcommerceBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Ec
                             <Users className="w-6 h-6 text-orange-500" />
                             Customer Satisfaction
                         </h3>
-                        <div className="grid grid-cols-3 gap-6 relative z-10 w-full">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10 w-full">
                             <div className="space-y-2">
                                 <p className="text-emerald-500 text-[10px] font-bold uppercase tracking-widest">Happy</p>
                                 <p className="text-5xl font-black text-zinc-900 dark:text-zinc-100">{stats.sentimentDistribution.positive}</p>
@@ -650,7 +650,7 @@ export function EcommerceBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Ec
                                     : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-400 dark:text-zinc-600 border-zinc-200 dark:border-zinc-800 cursor-not-allowed'
                                     }`}
                             >
-                                {updating ? 'Powering up...' : 'Accepting terms and then OK'}
+                                {updating ? 'AUTHORIZING...' : 'AUTHORIZE ENGAGEMENT'}
                             </button>
                         </div>
                     </motion.div>
