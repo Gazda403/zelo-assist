@@ -26,7 +26,7 @@ const XELOFLOW_SIGNATURE = "\n\n---\nSent with Xelo Flow — Your AI Inbox Compa
 import { getEmailRatings, saveEmailRating, getGeneratedDraft, saveGeneratedDraft } from '@/lib/db/email-storage';
 
 // --- FILM MODE: Toggle this to TRUE for your promotional video recording! ---
-const FILM_MODE = true;
+const FILM_MODE = false;
 
 const MOCK_EMAILS_FOR_FILMING = [
     {
