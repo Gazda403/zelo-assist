@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, Twitter, Mail, Gift, Share2 } from 'lucide-react';
+import { X, Copy, Check, Twitter, Mail, Gift, Users } from 'lucide-react';
 import { toast } from 'sonner';
+import { useSession } from 'next-auth/react';
+import { getReferralStatsAction } from '@/app/actions/marketing';
 
 interface ReferralModalProps {
     isOpen: boolean;
@@ -12,8 +14,19 @@ interface ReferralModalProps {
 }
 
 export function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
+    const { data: session } = useSession();
     const [copied, setCopied] = useState(false);
-    const referralLink = "https://xelo.com/?ref=shared";
+    const [referralCount, setReferralCount] = useState<number | null>(null);
+    
+    const userId = session?.user?.id;
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://xeloflow.com';
+    const referralLink = userId ? `${baseUrl}?ref=${userId}` : `${baseUrl}`;
+
+    useEffect(() => {
+        if (isOpen && userId) {
+            getReferralStatsAction().then(res => setReferralCount(res.count));
+        }
+    }, [isOpen, userId]);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(referralLink);
@@ -72,6 +85,19 @@ export function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                             <p className="text-gray-500 dark:text-zinc-400 text-lg leading-relaxed">
                                 Know someone drowning in emails? Share the magic of Xelo Flow and help them reclaim their time.
                             </p>
+                        </div>
+
+                        {/* Stats Box */}
+                        <div className="flex items-center justify-between p-4 bg-orange-50 dark:bg-orange-950/20 rounded-2xl border border-orange-100 dark:border-orange-900/30 mb-6">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-white dark:bg-zinc-900 rounded-xl shadow-sm text-primary">
+                                    <Users size={20} />
+                                </div>
+                                <span className="font-semibold text-gray-700 dark:text-zinc-300">Total Referrals</span>
+                            </div>
+                            <span className="text-2xl font-black text-primary">
+                                {referralCount ?? '...'}
+                            </span>
                         </div>
 
                         {/* Referral Link Box */}

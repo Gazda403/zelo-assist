@@ -15,13 +15,39 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "XeloFlow",
-  description: "AI Email Assistant - Reclaim your time.",
+  metadataBase: new URL("https://xeloflow.com"),
+  title: "Xelo Flow | AI Email Automation & Intelligent Inbox",
+  description: "Xelo Flow uses advanced AI to automate your Gmail, prioritize urgent emails, and draft responses. Reclaim hours of your life every week.",
+  keywords: ["AI Email", "Email Automation", "Gmail AI", "Inbox Productivity", "Xelo Flow"],
+  authors: [{ name: "Xelo Flow Team" }],
+  openGraph: {
+    title: "Xelo Flow | Your AI Inbox Companion",
+    description: "Automate your Gmail with AI. Prioritize what matters and let Xelo Flow handle the rest.",
+    url: "https://xeloflow.com",
+    siteName: "Xelo Flow",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Xelo Flow Dashboard",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Xelo Flow | AI Email Assistant",
+    description: "Reclaim your time with AI-powered email automation.",
+    images: ["/og-image.png"],
+    creator: "@xeloflow",
+  },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "XeloFlow",
+    title: "Xelo Flow",
   },
 };
 

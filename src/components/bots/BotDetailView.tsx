@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Settings, Activity, Info, Trash2, Power, ArrowLeft } from 'lucide-react';
+import { Settings, Activity, Info, Trash2, Power, ArrowLeft, Users } from 'lucide-react';
 import type { EmailBot, AcknowledgmentTemplate } from '@/lib/bots/types';
 import { deleteBotAction, toggleBotAction, acceptBotTermsAction } from '@/app/actions/bots';
 import { BotExecutionLog } from './BotExecutionLog';
@@ -17,6 +17,7 @@ import { TermsAcceptanceModal } from './TermsAcceptanceModal';
 import { FollowUpConfig } from './FollowUpConfig';
 import { KnowledgeBaseManager } from './KnowledgeBaseManager';
 import { FoundersBotDashboard } from './FoundersBotDashboard';
+import { OutreachTab } from '../marketing/OutreachTab';
 import { EcommerceBotDashboard } from './EcommerceBotDashboard';
 import { GenericReplyBotDashboard } from './GenericReplyBotDashboard';
 import { FollowUpBotDashboard } from './FollowUpBotDashboard';
@@ -33,7 +34,7 @@ interface BotDetailViewProps {
     onBack?: () => void;
 }
 
-type Tab = 'overview' | 'followups' | 'kb' | 'logs' | 'settings';
+type Tab = 'overview' | 'followups' | 'kb' | 'logs' | 'settings' | 'outreach';
 
 export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDetailViewProps) {
     const [activeTab, setActiveTab] = useState<Tab>('overview');
@@ -123,8 +124,11 @@ export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDe
         bot.name.includes('Alert Bot') ||
         bot.name.toLowerCase().includes('trip wire');
 
+    const isFoundersBot = bot.id === 'preset_startup_bot' || bot.name.includes('Startup Bot') || bot.name.includes('Founders Bot');
+
     const tabs = [
         { id: 'overview' as Tab, label: 'Overview', icon: Info },
+        ...(isFoundersBot ? [{ id: 'outreach' as Tab, label: 'Growth', icon: Users }] : []),
         ...(hasFollowUps ? [{ id: 'followups' as Tab, label: 'Follow Ups', icon: Clock }] : []),
         ...((!isAcknowledgmentBot && !isFollowUpBot) ? [{ id: 'kb' as Tab, label: 'Knowledge Base', icon: Brain }] : []),
         { id: 'logs' as Tab, label: 'Execution Logs', icon: Activity },
@@ -369,6 +373,8 @@ export function BotDetailView({ bot, onBotUpdated, onBotDeleted, onBack }: BotDe
                 )}
 
                 {activeTab === 'kb' && <KnowledgeBaseManager botId={bot.id} />}
+
+                {activeTab === 'outreach' && <OutreachTab />}
 
                 {activeTab === 'logs' && <BotExecutionLog botId={bot.id} />}
 

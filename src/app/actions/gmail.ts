@@ -21,6 +21,28 @@ interface AIResult {
 const EMAIL_AI_LIMIT = 3; // Keep small to avoid rate-limit bursts
 const XELOFLOW_SIGNATURE = "\n\n---\nSent with Xelo Flow — Your AI Inbox Companion. Get it here: https://www.xeloflow.com";
 
+/**
+ * Gets the signature based on the user's plan type.
+ * Only appended for 'free' users.
+ */
+async function getPlanAwareSignature(userId: string): Promise<string> {
+    try {
+        const { createAdminClient } = await import('@/lib/supabase/admin');
+        const supabase = createAdminClient();
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('plan_type')
+            .eq('id', userId)
+            .single();
+
+        const planType = profile?.plan_type ?? 'free';
+        return planType === 'free' ? XELOFLOW_SIGNATURE : "";
+    } catch (err) {
+        console.error("[Signature] Failed to fetch plan type:", err);
+        return XELOFLOW_SIGNATURE; // Fallback to safe side
+    }
+}
+
 
 // import { getCachedEmailRatings, trackEmailRating } from '@/lib/analytics';
 import { getEmailRatings, saveEmailRating, getGeneratedDraft, saveGeneratedDraft } from '@/lib/db/email-storage';
@@ -385,14 +407,16 @@ export async function generateDraftAction(
         }
 
         console.log('[Generate Draft Action] Draft generated successfully');
-        result.draft = result.draft + XELOFLOW_SIGNATURE;
+        const signature = await getPlanAwareSignature(session.user.id!);
+        result.draft = result.draft + signature;
         return result;
     } catch (error) {
         console.error("Generate Draft Action Error:", error);
 
         // Return fallback instead of throwing to prevent UI crashes
+        const signature = await getPlanAwareSignature(session.user.id!);
         return {
-            draft: `Dear ${sender},\n\nThank you for your email. I've received your message and will respond shortly.${XELOFLOW_SIGNATURE}`,
+            draft: `Dear ${sender},\n\nThank you for your email. I've received your message and will respond shortly.${signature}`,
             tone: "professional"
         };
     }
@@ -414,7 +438,8 @@ export async function sendEmailAction(to: string, subject: string, body: string)
 
     try {
         const client = getClient(session.provider);
-        const bodyWithSignature = body + XELOFLOW_SIGNATURE;
+        const signature = await getPlanAwareSignature(session.user.id!);
+        const bodyWithSignature = body + signature;
         const result = await client.sendEmail(session.accessToken, to, subject, bodyWithSignature);
         return result;
     } catch (error) {
@@ -587,7 +612,7 @@ Subject: ${subject}
 
 Subject: ${subject}
 
-${originalBody}${XELOFLOW_SIGNATURE}
+${originalBody}${await getPlanAwareSignature(session.user.id!)}
 `;
 
         const result = await client.sendEmail(session.accessToken, to, forwardedSubject, forwardedBody);

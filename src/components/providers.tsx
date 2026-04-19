@@ -3,6 +3,8 @@
 import { SessionProvider } from "next-auth/react";
 import { RemindersProvider } from "./providers/RemindersProvider";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { ReferralTracker } from "./marketing/ReferralTracker";
+import { Suspense } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
@@ -13,6 +15,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 intent: "subscription"
             }}>
                 <RemindersProvider>
+                    <Suspense fallback={null}>
+                        <ReferralTracker />
+                    </Suspense>
                     {children}
                 </RemindersProvider>
             </PayPalScriptProvider>
