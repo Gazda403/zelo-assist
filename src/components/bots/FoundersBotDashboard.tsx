@@ -235,7 +235,7 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
                     <Target className="w-48 h-48 text-orange-500" />
                 </div>
 
-                <div className="flex items-start justify-between mb-8 relative z-10">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8 relative z-10">
                     <div>
                         <h3 className="text-2xl font-bold font-serif text-zinc-900 dark:text-zinc-50 flex items-center gap-3">
                             <Activity className={`w-6 h-6 ${stats.autoSendEnabled ? 'text-orange-500' : 'text-zinc-400 dark:text-zinc-500'}`} />
@@ -243,13 +243,13 @@ export function FoundersBotDashboard({ bot, onBotUpdated, onNavigateToTab }: Fou
                         </h3>
                         <p className="text-zinc-500 dark:text-zinc-400 mt-1 text-sm font-medium">Control the strictness of the founder AI proxy.</p>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <span className={`text-xs font-bold tracking-widest uppercase ${stats.autoSendEnabled ? 'text-orange-600 dark:text-orange-500' : 'text-zinc-500'}`}>
+                    <div className="flex items-center gap-3 sm:gap-4 shrink-0 ml-2">
+                        <span className={`text-[10px] sm:text-xs font-bold tracking-widest uppercase text-right ${stats.autoSendEnabled ? 'text-orange-600 dark:text-orange-500' : 'text-zinc-500'}`}>
                             {stats.autoSendEnabled ? 'SYSTEM ACTIVE' : 'DRAFT MODE ONLY'}
                         </span>
                         <button
                             onClick={handleAutoSendToggle}
-                            className={`relative inline-flex h-7 w-12 items-center rounded-none transition-colors border ${stats.autoSendEnabled ? 'bg-orange-500 dark:bg-orange-600 border-orange-500' : 'bg-zinc-200 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700'
+                            className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-none transition-colors border ${stats.autoSendEnabled ? 'bg-orange-500 dark:bg-orange-600 border-orange-500' : 'bg-zinc-200 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700'
                                 }`}
                         >
                             <span

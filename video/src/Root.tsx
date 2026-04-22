@@ -9,6 +9,12 @@ import { ReplicaAd } from './ReplicaAd';
 import { TeaserMax } from './TeaserMax';
 import { TeaserMaxLight } from './TeaserMaxLight';
 import { ShowcaseMax } from './ShowcaseMax';
+import { VerticalFormatter } from './VerticalFormatter';
+import { ViralHook } from './ViralHook';
+import { DynamicCaptions } from './DynamicCaptions';
+import { FinalAd } from './FinalAd';
+import { BlackFridayAd } from './BlackFridayAd';
+import { EcomAd } from './EcomAd';
 
 // Define the brand colors as props to easily modify later
 export const BRAND_COLORS = {
@@ -117,6 +123,102 @@ export const Root: React.FC = () => {
         fps={60}
         width={1920}
         height={1080}
+        defaultProps={{}}
+      />
+      
+      {/* ─── VERTICAL (9:16) EXPORTS FOR PHONE ─── */}
+      <Composition
+        id="XeloPromoVertical"
+        component={XeloPromo}
+        durationInFrames={1140}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="ShowcaseMaxVertical"
+        component={ShowcaseMax}
+        durationInFrames={600}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="TeaserMaxVertical"
+        component={TeaserMax}
+        durationInFrames={630}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="TeaserMaxLightVertical"
+        component={TeaserMaxLight}
+        durationInFrames={630}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="Formatter-ShortTest"
+        component={VerticalFormatter}
+        durationInFrames={1200} // 20 seconds
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          videoSrc: 'formatter_target.mp4'
+        }}
+      />
+      <Composition
+        id="Formatter-ReplicaAd"
+        component={VerticalFormatter}
+        durationInFrames={960} // matches out_replicaad_v2 (16 seconds)
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          videoSrc: 'formatter_target_replica.mp4'
+        }}
+      />
+      <Composition
+        id="ViralHook"
+        component={ViralHook}
+        durationInFrames={600}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="FinalAd"
+        component={FinalAd}
+        durationInFrames={1200}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="BlackFridayAd"
+        component={BlackFridayAd}
+        durationInFrames={780}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="EcomAd"
+        component={EcomAd}
+        durationInFrames={1020}
+        fps={60}
+        width={1080}
+        height={1920}
         defaultProps={{}}
       />
     </>

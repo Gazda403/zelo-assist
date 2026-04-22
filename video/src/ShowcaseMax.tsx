@@ -8,6 +8,7 @@ import {
   interpolate,
   Easing,
   Video,
+  Audio,
   staticFile,
 } from 'remotion';
 
@@ -254,6 +255,11 @@ const Scene4: React.FC = () => {
 export const ShowcaseMax: React.FC = () => {
   return (
     <AbsoluteFill>
+      <Audio 
+        src={staticFile('promo_music.mp3')} 
+        volume={(f) => interpolate(f, [0, 30], [0, 1], { extrapolateRight: 'clamp' })}
+      />
+      
       <SpotlightBg />
       <Sequence from={0}   durationInFrames={120}><Scene1 /></Sequence>
       <Sequence from={120} durationInFrames={180}><Scene2 /></Sequence>
