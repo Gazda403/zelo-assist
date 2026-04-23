@@ -15,6 +15,7 @@ import { DynamicCaptions } from './DynamicCaptions';
 import { FinalAd } from './FinalAd';
 import { BlackFridayAd } from './BlackFridayAd';
 import { EcomAd } from './EcomAd';
+import { InboxAd } from './InboxAd';
 
 // Define the brand colors as props to easily modify later
 export const BRAND_COLORS = {
@@ -216,6 +217,15 @@ export const Root: React.FC = () => {
         id="EcomAd"
         component={EcomAd}
         durationInFrames={1020}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="InboxAd"
+        component={InboxAd}
+        durationInFrames={900}
         fps={60}
         width={1080}
         height={1920}

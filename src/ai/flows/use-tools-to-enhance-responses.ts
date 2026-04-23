@@ -36,6 +36,8 @@ async function getClient(provider: string) {
 export async function enhancedChatbotResponse(input: EnhancedChatbotInput): Promise<EnhancedChatbotOutput> {
     const { query, accessToken, provider = 'google' } = input;
 
+    console.log("[Chatbot Flow] Starting generation for query:", query);
+    
     const modelPrimary = google("gemini-2.5-flash");
     const modelFallback = groq("llama-3.3-70b-versatile");
 
@@ -77,6 +79,7 @@ Guidelines:
                     try {
                         const client = await getClient(provider);
                         const { emails } = await client.getLastEmails(accessToken, limit ?? 10);
+                        console.log("[Chatbot Tool] getRecentEmails success, count:", emails.length);
                         return emails.map((e: any) => ({
                             subject: e.subject,
                             sender: e.sender?.name || e.sender?.email || 'Unknown',

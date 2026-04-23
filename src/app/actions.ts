@@ -5,12 +5,16 @@ import { enhancedChatbotResponse } from '@/ai/flows/use-tools-to-enhance-respons
 import type { Message } from '@/lib/types';
 import { auth } from '@/auth';
 
+
+
 export async function getAiResponse(prompt: string): Promise<Message> {
+    console.log("[Chatbot] getAiResponse called with prompt:", prompt);
     try {
         const session = await auth();
         const accessToken = (session as any)?.accessToken as string | undefined;
 
         if (!accessToken) {
+            console.warn("[Chatbot] No access token found in session");
             return {
                 id: crypto.randomUUID(),
                 role: 'assistant',
@@ -18,8 +22,11 @@ export async function getAiResponse(prompt: string): Promise<Message> {
             };
         }
         const provider = (session as any)?.provider as string | undefined;
+        console.log("[Chatbot] Provider:", provider, "Token length:", accessToken?.length);
 
+        console.log("[Chatbot] Calling enhancedChatbotResponse...");
         const aiResponse = await enhancedChatbotResponse({ query: prompt, accessToken, provider });
+        console.log("[Chatbot] AI Response received:", aiResponse.response.slice(0, 50), "...");
 
         return {
             id: crypto.randomUUID(),
@@ -27,7 +34,7 @@ export async function getAiResponse(prompt: string): Promise<Message> {
             content: aiResponse.response,
         };
     } catch (error) {
-        console.error(error);
+        console.error("[Chatbot] Error in getAiResponse:", error);
         throw error; // Let the UI handle the error visually
     }
 }
