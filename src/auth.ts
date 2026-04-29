@@ -53,7 +53,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 const { createAdminClient } = await import("@/lib/supabase/admin");
                 const supabase = createAdminClient();
 
-                let stableUserId = user.id;
+                let stableUserId = user.id as string;
                 if (user.email) {
                     const { data: existingUsers } = await supabase
                         .from('users')
