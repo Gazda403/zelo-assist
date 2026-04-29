@@ -12,19 +12,16 @@ export async function getAiResponse(prompt: string): Promise<Message> {
     try {
         const session = await auth();
         const accessToken = (session as any)?.accessToken as string | undefined;
+        const provider = (session as any)?.provider as string | undefined;
 
         if (!accessToken) {
-            console.warn("[Chatbot] No access token found in session");
-            return {
-                id: crypto.randomUUID(),
-                role: 'assistant',
-                content: "I can't access your emails right now — it looks like your session has expired. Please sign out and sign back in.",
-            };
+            console.warn("[Chatbot] No access token — running in basic mode (no email tools)");
+        } else {
+            console.log("[Chatbot] Provider:", provider, "Token length:", accessToken.length);
         }
-        const provider = (session as any)?.provider as string | undefined;
-        console.log("[Chatbot] Provider:", provider, "Token length:", accessToken?.length);
 
         console.log("[Chatbot] Calling enhancedChatbotResponse...");
+        // Pass accessToken as undefined when not available — the flow handles this gracefully
         const aiResponse = await enhancedChatbotResponse({ query: prompt, accessToken, provider });
         console.log("[Chatbot] AI Response received:", aiResponse.response.slice(0, 50), "...");
 

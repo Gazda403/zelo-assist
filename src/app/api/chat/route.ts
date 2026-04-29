@@ -23,10 +23,10 @@ export async function POST(req: Request) {
             return { role: m.role, content: content };
         });
 
-        // Try Gemini 2.5 Flash first, fall back to Groq if it fails
+        // Try Gemini 3.1 Pro first, fall back to Groq if it fails
         try {
             const result = streamText({
-                model: google("gemini-2.5-flash"),
+                model: google("gemini-1.5-flash"),
                 messages: formattedMessages,
                 system: SYSTEM_PROMPT,
             });

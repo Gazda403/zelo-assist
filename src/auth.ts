@@ -50,12 +50,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 debugLog("JWT Initial Sign-In - Profile Picture", profile?.picture);
                 debugLog("JWT Initial Sign-In - User Image", user.image);
 
+                const { createAdminClient } = await import("@/lib/supabase/admin");
+                const supabase = createAdminClient();
+
+                let stableUserId = user.id;
+                if (user.email) {
+                    const { data: existingUsers } = await supabase
+                        .from('users')
+                        .select('id')
+                        .eq('email', user.email)
+                        .order('created_at', { ascending: false })
+                        .limit(1);
+                        
+                    if (existingUsers && existingUsers.length > 0) {
+                        stableUserId = existingUsers[0].id;
+                    }
+                }
+                
+                token.sub = stableUserId;
+
                 // Save refresh token to Supabase for background jobs
                 if (account.refresh_token) {
                     try {
                         const { saveUserTokens } = await import("@/lib/db/user-storage");
                         await saveUserTokens(
-                            token.sub as string,
+                            stableUserId,
                             user.email as string,
                             {
                                 refreshToken: account.refresh_token,
@@ -73,12 +92,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 let role = 'user';
                 let isNewUser = false;
                 try {
-                    const { createAdminClient } = await import("@/lib/supabase/admin");
-                    const supabase = createAdminClient();
                     const { data: profileData, error: profileError } = await supabase
                         .from('profiles')
                         .select('role, onboarding_completed')
-                        .eq('id', user.id) // Use stable UUID instead of email
+                        .eq('id', stableUserId)
                         .single();
 
                     if (profileError || !profileData) {
@@ -87,7 +104,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         const { error: insertError } = await supabase
                             .from('profiles')
                             .insert({
-                                id: user.id, // Use stable UUID instead of email
+                                id: stableUserId, // Use stable UUID instead of email
                                 full_name: user.name,
                                 avatar_url: profile?.picture || user.image,
                                 role: 'user',
@@ -97,7 +114,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         if (insertError) {
                             console.error("Failed to create profile for new user:", insertError);
                         } else {
-                            console.log("Created profile for new user:", user.id);
+                            console.log("Created profile for new user:", stableUserId);
                         }
                     } else {
                         role = profileData.role || 'user';

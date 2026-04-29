@@ -25,7 +25,7 @@ export async function composeNewEmailFlow(input: EmailComposerInput): Promise<Em
     const recipientLabel = recipientName || recipientEmail || 'the recipient';
 
     try {
-        const modelPrimary = google("gemini-2.5-flash");
+        const modelPrimary = google("gemini-1.5-flash");
         const modelFallback = groq("llama-3.3-70b-versatile");
 
         const prompt = `You are an AI email writing assistant. Your job is to compose a brand new outbound email on behalf of the user.

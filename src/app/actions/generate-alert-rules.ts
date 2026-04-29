@@ -45,7 +45,7 @@ Examples:
 Only return the JSON object. Nothing else.`;
 
     const { text } = await generateWithFallback({
-        modelPrimary: google('gemini-2.5-flash'),
+        modelPrimary: google('gemini-1.5-flash'),
         modelFallback: groq('llama-3.3-70b-versatile'),
         prompt,
     });

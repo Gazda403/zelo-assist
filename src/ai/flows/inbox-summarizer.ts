@@ -22,7 +22,7 @@ const InternalOutputSchema = z.object({
 type InboxSummaryInput = z.infer<typeof InboxSummaryInputSchema>;
 
 export async function summarizeInboxFlow(input: InboxSummaryInput) {
-    const modelPrimary = google("gemini-2.5-flash");
+    const modelPrimary = google("gemini-1.5-flash");
     const modelFallback = groq("llama-3.3-70b-versatile");
 
     const prompt = `(Role: Expert Executive Assistant)

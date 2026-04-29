@@ -22,7 +22,7 @@ export async function analyzeEmailUrgency(
     userId?: string
 ): Promise<UrgencyAnalysis> {
     try {
-        const model = google("gemini-2.5-flash");
+        const model = google("gemini-1.5-flash");
 
         const prompt = `You are an AI email assistant. Analyze the following email and rate its urgency on a scale of 1-10.
 
@@ -86,7 +86,7 @@ export async function generateDraftReply(
     userId?: string
 ): Promise<DraftResponse> {
     try {
-        const model = google("gemini-2.5-flash");
+        const model = google("gemini-1.5-flash");
 
         const prompt = `You are an AI email assistant. Generate a professional draft reply to the following email.
 

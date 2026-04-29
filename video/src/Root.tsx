@@ -1,4 +1,6 @@
 import { Composition } from 'remotion';
+import { New28Ad } from './New28Ad';
+import { GmailAd } from './GmailAd';
 import { ParticleWave } from './ParticleWave';
 import { AbstractLines } from './AbstractLines';
 import { GlassyFlow } from './GlassyFlow';
@@ -13,9 +15,15 @@ import { VerticalFormatter } from './VerticalFormatter';
 import { ViralHook } from './ViralHook';
 import { DynamicCaptions } from './DynamicCaptions';
 import { FinalAd } from './FinalAd';
+import { AllVideosAd } from './AllVideosAd';
 import { BlackFridayAd } from './BlackFridayAd';
 import { EcomAd } from './EcomAd';
 import { InboxAd } from './InboxAd';
+import { CinematicAd } from './CinematicAd';
+import { DynamicAd } from './DynamicAd';
+import { InspireAd } from './InspireAd';
+import { VisionAd } from './VisionAd';
+import { MomentumAd } from './MomentumAd';
 
 // Define the brand colors as props to easily modify later
 export const BRAND_COLORS = {
@@ -27,6 +35,30 @@ export const BRAND_COLORS = {
 export const Root: React.FC = () => {
   return (
     <>
+      <Composition
+        id="New28Ad"
+        component={New28Ad}
+        durationInFrames={555}
+        fps={60}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="GmailAd"
+        component={GmailAd}
+        durationInFrames={750}
+        fps={60}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="AllVideosAd"
+        component={AllVideosAd}
+        durationInFrames={660}
+        fps={60}
+        width={1080}
+        height={1920}
+      />
       <Composition
         id="ShowcaseMax"
         component={ShowcaseMax}
@@ -225,6 +257,87 @@ export const Root: React.FC = () => {
       <Composition
         id="InboxAd"
         component={InboxAd}
+        durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="CinematicAd"
+        component={CinematicAd}
+        durationInFrames={300}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="CinematicAdVertical"
+        component={CinematicAd}
+        durationInFrames={300}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="DynamicAd"
+        component={DynamicAd}
+        durationInFrames={360}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="InspireAd"
+        component={InspireAd}
+        durationInFrames={900}
+        fps={60}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="InspireAdVertical"
+        component={InspireAd}
+        durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="VisionAd"
+        component={VisionAd}
+        durationInFrames={900}
+        fps={60}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="VisionAdVertical"
+        component={VisionAd}
+        durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="MomentumAd"
+        component={MomentumAd}
+        durationInFrames={900}
+        fps={60}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="MomentumAdVertical"
+        component={MomentumAd}
         durationInFrames={900}
         fps={60}
         width={1080}

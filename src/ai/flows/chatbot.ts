@@ -18,7 +18,7 @@ export interface ChatbotOutput {
 export async function chatbotFlow(input: ChatbotInput): Promise<ChatbotOutput> {
     const { query, history } = input;
 
-    const modelPrimary = google("gemini-2.5-flash");
+    const modelPrimary = google("gemini-1.5-flash");
     const modelFallback = groq("llama-3.3-70b-versatile");
 
     // Build conversation as a prompt string (history + current query)

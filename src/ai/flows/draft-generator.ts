@@ -25,7 +25,7 @@ export async function generateDraftFlow(input: DraftGeneratorInput): Promise<Dra
     const { sender, senderEmail, subject, emailBody, knowledgeBase } = input;
 
     try {
-        const modelPrimary = google("gemini-2.5-flash");
+        const modelPrimary = google("gemini-1.5-flash");
         // Fallback to Groq for generous free tier if Gemini hits quota
         const modelFallback = groq("llama-3.3-70b-versatile");
 

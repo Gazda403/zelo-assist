@@ -25,7 +25,7 @@ type ContextAnalyzerOutput = z.infer<typeof ContextAnalyzerOutputSchema>;
 export async function analyzeEmailContext(input: ContextAnalyzerInput): Promise<ContextAnalyzerOutput> {
     const { subject, body, previousContext } = input;
 
-    const modelPrimary = google('gemini-2.5-flash');
+    const modelPrimary = google('gemini-1.5-flash');
     const modelFallback = groq('llama-3.3-70b-versatile');
 
     const prompt = `Analyze the following email content.
