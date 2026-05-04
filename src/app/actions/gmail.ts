@@ -433,7 +433,7 @@ export async function sendEmailAction(to: string, subject: string, body: string)
     const session = await auth() as any;
 
     if (!session || !session.accessToken) {
-        throw new Error("Unauthorized");
+        throw new Error("Unauthorized: No access token");
     }
 
     try {
@@ -442,9 +442,9 @@ export async function sendEmailAction(to: string, subject: string, body: string)
         const bodyWithSignature = body + signature;
         const result = await client.sendEmail(session.accessToken, to, subject, bodyWithSignature);
         return result;
-    } catch (error) {
+    } catch (error: any) {
         console.error("Send Email Action Error:", error);
-        throw new Error("Failed to send email");
+        throw new Error(`Failed to send email to ${to}: ${error.message || JSON.stringify(error)}`);
     }
 }
 

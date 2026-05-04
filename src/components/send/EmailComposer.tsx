@@ -83,7 +83,7 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
     };
 
     return (
-        <div id="tour-send-logic" className="flex-1 flex flex-col bg-white dark:bg-zinc-900 overflow-hidden rounded-2xl border border-gray-100/80 dark:border-white/10 shadow-xl shadow-black/[0.03] transition-all duration-500 hover:shadow-2xl hover:shadow-black/[0.05]">
+        <div id="tour-send-logic" className="flex flex-col bg-white dark:bg-zinc-900 overflow-hidden rounded-2xl border border-gray-100/80 dark:border-white/10 shadow-xl shadow-black/[0.03] transition-all duration-500 hover:shadow-2xl hover:shadow-black/[0.05]">
             {/* Headers */}
             <div className="p-6 border-b border-gray-50/80 dark:border-white/10 space-y-4">
                 <div className="flex items-center gap-4 group">
@@ -113,13 +113,13 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
             </div>
 
             {/* Editor Area */}
-            <div className="p-6 flex flex-col relative group flex-1">
+            <div className="p-6 flex flex-col relative group">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-500/0 via-violet-500/5 to-violet-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
                 <textarea
                     ref={textareaRef}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    className="w-full text-base bg-transparent focus:outline-none resize-none placeholder:text-gray-300 dark:placeholder:text-gray-600 dark:text-gray-200 min-h-[200px] overflow-hidden leading-relaxed"
+                    className="w-full text-base bg-transparent focus:outline-none resize-none placeholder:text-gray-300 dark:placeholder:text-gray-600 dark:text-gray-200 min-h-[120px] overflow-hidden leading-relaxed"
                     placeholder="Write your email here or use the AI assistant below..."
                 />
             </div>
