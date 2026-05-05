@@ -15,6 +15,7 @@ import { LandingPage } from "@/components/landing/LandingPage";
 import { EmailDetailPanel } from "@/components/email/EmailDetailPanel";
 import { WelcomeBriefing } from "@/components/dashboard/WelcomeBriefing";
 import { EmailListSkeleton } from "@/components/email/EmailCardSkeleton";
+import { PremiumFeatureGuard } from "@/components/layout/PremiumFeatureGuard";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -349,7 +350,8 @@ export default function HomePage() {
             title="Inbox"
             onSelectEmail={setSelectedEmailId}
         >
-            <div className="flex-1 w-full flex relative max-w-6xl mx-auto min-h-0 px-4 sm:px-0">
+            <PremiumFeatureGuard>
+                <div className="flex-1 w-full flex relative max-w-6xl mx-auto min-h-0 px-4 sm:px-0">
                 
                 {/* Bot Sidebar (Desktop - Absolute Position to keep content centered) */}
                 {!selectedEmailId && (
@@ -548,7 +550,6 @@ export default function HomePage() {
                     </div>
                 </div>
 
-                {/* Right Column / Mobile Full-Screen: Email Detail */}
                 {selectedEmailId && (() => {
                     const selectedEmail = emails.find(e => e.id === selectedEmailId);
                     if (!selectedEmail) return null;
@@ -584,7 +585,8 @@ export default function HomePage() {
                         </>
                     );
                 })()}
-            </div>
+                </div>
+            </PremiumFeatureGuard>
         </AppShell>
     );
 }

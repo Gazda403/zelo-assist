@@ -8,6 +8,7 @@
 
 import { useState, useEffect } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
+import { PremiumFeatureGuard } from '@/components/layout/PremiumFeatureGuard';
 import { BotListSidebar } from '@/components/bots/BotListSidebar';
 import { BotMainView } from '@/components/bots/BotMainView';
 import { getBotsAction } from '@/app/actions/bots';
@@ -199,35 +200,37 @@ export default function BotsPage() {
 
     return (
         <AppShell title="Bots" onSelectEmail={setSelectedBotId}>
-            <div className="flex flex-col lg:flex-row gap-0 lg:gap-4 h-[calc(100vh-100px)] overflow-hidden bg-transparent lg:bg-gray-50/50 dark:lg:bg-zinc-950/50 rounded-none lg:rounded-2xl">
-                {/* Left Sidebar - Bot List */}
-                <div className={`w-full lg:w-[420px] flex-shrink-0 h-full ${selectedBotId || isCreating ? 'hidden lg:block' : 'block'}`}>
-                <BotListSidebar
-                    bots={bots}
-                    selectedBotId={selectedBotId}
-                    onSelectBot={setSelectedBotId}
-                    onCreateNew={handleCreateNew}
-                    onAddPreset={handlePresetAdd}
-                    onBotUpdated={handleBotUpdated}
-                />
-                </div>
+            <PremiumFeatureGuard>
+                <div className="flex flex-col lg:flex-row gap-0 lg:gap-4 h-[calc(100vh-100px)] overflow-hidden bg-transparent lg:bg-gray-50/50 dark:lg:bg-zinc-950/50 rounded-none lg:rounded-2xl">
+                    {/* Left Sidebar - Bot List */}
+                    <div className={`w-full lg:w-[420px] flex-shrink-0 h-full ${selectedBotId || isCreating ? 'hidden lg:block' : 'block'}`}>
+                    <BotListSidebar
+                        bots={bots}
+                        selectedBotId={selectedBotId}
+                        onSelectBot={setSelectedBotId}
+                        onCreateNew={handleCreateNew}
+                        onAddPreset={handlePresetAdd}
+                        onBotUpdated={handleBotUpdated}
+                    />
+                    </div>
 
-                {/* Main Content Area */}
-                <div className={`flex-1 h-full min-w-0 ${!selectedBotId && !isCreating ? 'hidden lg:block' : 'block'}`}>
-                <BotMainView
-                    selectedBot={selectedBot}
-                    isCreating={isCreating}
-                    onBotCreated={handleBotCreated}
-                    onBotUpdated={handleBotUpdated}
-                    onBotDeleted={handleBotDeleted}
-                    onCancelCreate={handleCancelCreate}
-                    onBack={() => {
-                        setSelectedBotId(null);
-                        setIsCreating(false);
-                    }}
-                />
+                    {/* Main Content Area */}
+                    <div className={`flex-1 h-full min-w-0 ${!selectedBotId && !isCreating ? 'hidden lg:block' : 'block'}`}>
+                    <BotMainView
+                        selectedBot={selectedBot}
+                        isCreating={isCreating}
+                        onBotCreated={handleBotCreated}
+                        onBotUpdated={handleBotUpdated}
+                        onBotDeleted={handleBotDeleted}
+                        onCancelCreate={handleCancelCreate}
+                        onBack={() => {
+                            setSelectedBotId(null);
+                            setIsCreating(false);
+                        }}
+                    />
+                    </div>
                 </div>
-            </div>
+            </PremiumFeatureGuard>
         </AppShell>
     );
 }

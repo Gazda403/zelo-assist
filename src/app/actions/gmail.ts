@@ -187,8 +187,31 @@ export async function fetchEmailsAction(
         // Filter for emails needing rating (not in cache)
         const unratedEmails = emails.filter((e: any) => !cachedRatings[e.id]);
 
+        // Check if user is active (trial not expired or paid)
+        const { createAdminClient } = await import('@/lib/supabase/admin');
+        const supabase = createAdminClient();
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('plan_type, subscription_status, first_login_at')
+            .eq('id', session.user.id!)
+            .single();
+
+        const planType = profile?.plan_type ?? "free";
+        const subscriptionStatus = profile?.subscription_status ?? "inactive";
+        const createdAt = profile?.first_login_at || new Date().toISOString();
+        const trialDays = 7;
+        const daysSinceCreation = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24);
+        const isTrialExpired = planType === "free" && daysSinceCreation > trialDays;
+        const ADMIN_EMAIL = "brankovicaleksandar2404@gmail.com";
+        const isAdmin = session.user.email === ADMIN_EMAIL;
+        const isActive = isAdmin || subscriptionStatus === "active" || (planType === "free" && !isTrialExpired);
+
         // Process a subset to avoid rate limits/timeouts
-        const batchToRate = unratedEmails.slice(0, EMAIL_AI_LIMIT);
+        const batchToRate = isActive ? unratedEmails.slice(0, EMAIL_AI_LIMIT) : [];
+
+        if (!isActive && unratedEmails.length > 0) {
+            console.log("[AI] Trial expired / inactive, skipping background rating.");
+        }
 
         if (batchToRate.length > 0) {
             console.log(`[AI] Rating ${batchToRate.length} new emails sequentially in background...`);

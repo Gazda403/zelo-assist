@@ -29,7 +29,7 @@ const steps: Step[] = [
         iconBg: "from-orange-400 to-amber-500",
         title: "Welcome to Xelo Flow! 🎉",
         description:
-            "Your inbox just got a whole lot smarter. Xelo Flow connects to your Gmail and uses AI to help you focus on what truly matters — so you spend less time triaging email and more time getting things done.",
+            "Your 7-Day Pro Trial starts now! Enjoy all premium AI features. Plus, as a special gift: our core Email Sequencing engine is yours free forever, even after the trial ends.",
         tip: "Everything is private. Your emails are processed on-demand and never stored long-term.",
     },
     {

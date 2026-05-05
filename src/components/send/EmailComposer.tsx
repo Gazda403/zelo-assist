@@ -6,6 +6,7 @@ import { LucideSend, LucideSparkles, LucidePaperclip, LucideImage, LucideSmile, 
 import { cn } from '@/lib/utils';
 import { composeNewEmailAction, sendEmailAction } from '@/app/actions/gmail';
 import { toast } from 'sonner';
+import { PremiumFeatureGuard } from '@/components/layout/PremiumFeatureGuard';
 
 export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
     const [to, setTo] = useState(initialTo);
@@ -127,27 +128,29 @@ export function EmailComposer({ initialTo = '' }: { initialTo?: string }) {
             {/* AI Action Area & Footer */}
             <div className="p-5 flex flex-col gap-4 bg-gradient-to-b from-transparent to-gray-50/50 dark:to-zinc-800/50 mt-auto border-t border-gray-50/80 dark:border-white/10">
                 {/* AI Input (Floating Input Style) */}
-                <div className="relative group">
-                    <div className="absolute inset-0 bg-violet-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                        <LucideSparkles className={cn("w-5 h-5 transition-all duration-300", isGenerating ? "text-violet-500 animate-spin-slow scale-110" : "text-violet-400 group-focus-within:text-violet-500")} />
+                <PremiumFeatureGuard>
+                    <div className="relative group">
+                        <div className="absolute inset-0 bg-violet-500/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                            <LucideSparkles className={cn("w-5 h-5 transition-all duration-300", isGenerating ? "text-violet-500 animate-spin-slow scale-110" : "text-violet-400 group-focus-within:text-violet-500")} />
+                        </div>
+                        <input
+                            type="text"
+                            value={aiInput}
+                            onChange={(e) => setAiInput(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleAiGenerate()}
+                            className="w-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl border border-gray-200/60 dark:border-white/10 rounded-full pl-12 pr-14 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-300 transition-all duration-300 shadow-sm hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600 placeholder:text-gray-400 dark:text-gray-200"
+                            placeholder="Write an email invitation to a dinner..."
+                        />
+                        <button
+                            onClick={handleAiGenerate}
+                            disabled={isGenerating || !aiInput.trim()}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-full transition-all duration-300 disabled:opacity-50 shadow-md shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/40 disabled:hover:scale-100 hover:scale-105 active:scale-95"
+                        >
+                            {isGenerating ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <LucideSend className="w-4 h-4" />}
+                        </button>
                     </div>
-                    <input
-                        type="text"
-                        value={aiInput}
-                        onChange={(e) => setAiInput(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleAiGenerate()}
-                        className="w-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl border border-gray-200/60 dark:border-white/10 rounded-full pl-12 pr-14 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-300 transition-all duration-300 shadow-sm hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600 placeholder:text-gray-400 dark:text-gray-200"
-                        placeholder="Write an email invitation to a dinner..."
-                    />
-                    <button
-                        onClick={handleAiGenerate}
-                        disabled={isGenerating || !aiInput.trim()}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-full transition-all duration-300 disabled:opacity-50 shadow-md shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/40 disabled:hover:scale-100 hover:scale-105 active:scale-95"
-                    >
-                        {isGenerating ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <LucideSend className="w-4 h-4" />}
-                    </button>
-                </div>
+                </PremiumFeatureGuard>
 
                 {/* Toolbar */}
                 <div className="flex items-center justify-between px-1">

@@ -6,6 +6,7 @@ import EmailSidebar from '@/components/drafts/EmailSidebar';
 import DraftWorkspace from '@/components/drafts/DraftWorkspace';
 import StatsSidebar from '@/components/drafts/StatsSidebar';
 import { AppShell } from '@/components/layout/AppShell';
+import { PremiumFeatureGuard } from '@/components/layout/PremiumFeatureGuard';
 import { EmailListSkeleton } from '@/components/email/EmailCardSkeleton';
 import { useSearchParams } from 'next/navigation';
 
@@ -108,47 +109,49 @@ function DraftsPageContent() {
             title="Drafts"
             onSelectEmail={setSelectedEmailId}
         >
-            <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] overflow-hidden bg-gray-50/50 dark:bg-zinc-950/50">
+            <PremiumFeatureGuard>
+                <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] overflow-hidden bg-gray-50/50 dark:bg-zinc-950/50">
 
-                {/* Left Sidebar: Email List — hidden on mobile when email is selected */}
-                <div className={`lg:w-1/4 lg:min-w-[300px] h-full ${selectedEmailId ? 'hidden lg:block' : 'block w-full'}`}>
-                    {isLoading ? (
-                        <div className="p-3">
-                            <EmailListSkeleton count={8} />
-                        </div>
-                    ) : (
-                        <EmailSidebar
-                            emails={emails}
-                            selectedEmailId={selectedEmailId}
-                            onSelectEmail={setSelectedEmailId}
-                            onMouseEnter={prefetchEmailBody}
-                            onLoadMore={handleLoadMore}
-                            hasNextPage={!!nextPageToken}
-                            isLoadingMore={isLoadingMore}
-                        />
-                    )}
+                    {/* Left Sidebar: Email List — hidden on mobile when email is selected */}
+                    <div className={`lg:w-1/4 lg:min-w-[300px] h-full ${selectedEmailId ? 'hidden lg:block' : 'block w-full'}`}>
+                        {isLoading ? (
+                            <div className="p-3">
+                                <EmailListSkeleton count={8} />
+                            </div>
+                        ) : (
+                            <EmailSidebar
+                                emails={emails}
+                                selectedEmailId={selectedEmailId}
+                                onSelectEmail={setSelectedEmailId}
+                                onMouseEnter={prefetchEmailBody}
+                                onLoadMore={handleLoadMore}
+                                hasNextPage={!!nextPageToken}
+                                isLoadingMore={isLoadingMore}
+                            />
+                        )}
+                    </div>
+
+                    {/* Center: Draft Workspace — full width on mobile when email selected */}
+                    <div className={`lg:w-1/2 h-full border-r border-violet-100 relative ${selectedEmailId ? 'block w-full' : 'hidden lg:block'}`}>
+                        {/* Mobile back button */}
+                        {selectedEmailId && (
+                            <button
+                                onClick={() => setSelectedEmailId(null)}
+                                className="lg:hidden flex items-center gap-2 p-3 text-sm text-gray-600 hover:text-gray-900 border-b border-gray-100 w-full"
+                            >
+                                ← Back to emails
+                            </button>
+                        )}
+                        <DraftWorkspace selectedEmail={selectedEmail} />
+                    </div>
+
+                    {/* Right Sidebar: Stats — hidden on mobile */}
+                    <div className="hidden lg:block lg:w-1/4 lg:min-w-[300px] h-full">
+                        <StatsSidebar emails={emails} />
+                    </div>
+
                 </div>
-
-                {/* Center: Draft Workspace — full width on mobile when email selected */}
-                <div className={`lg:w-1/2 h-full border-r border-violet-100 relative ${selectedEmailId ? 'block w-full' : 'hidden lg:block'}`}>
-                    {/* Mobile back button */}
-                    {selectedEmailId && (
-                        <button
-                            onClick={() => setSelectedEmailId(null)}
-                            className="lg:hidden flex items-center gap-2 p-3 text-sm text-gray-600 hover:text-gray-900 border-b border-gray-100 w-full"
-                        >
-                            ← Back to emails
-                        </button>
-                    )}
-                    <DraftWorkspace selectedEmail={selectedEmail} />
-                </div>
-
-                {/* Right Sidebar: Stats — hidden on mobile */}
-                <div className="hidden lg:block lg:w-1/4 lg:min-w-[300px] h-full">
-                    <StatsSidebar emails={emails} />
-                </div>
-
-            </div>
+            </PremiumFeatureGuard>
         </AppShell>
     );
 }

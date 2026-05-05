@@ -24,6 +24,11 @@ import { DynamicAd } from './DynamicAd';
 import { InspireAd } from './InspireAd';
 import { VisionAd } from './VisionAd';
 import { MomentumAd } from './MomentumAd';
+import { SequenceAd } from './SequenceAd';
+import { FreeSequenceAd } from './FreeSequenceAd';
+import { BusyDayAd } from './BusyDayAd';
+import { ShowcaseAd } from './ShowcaseAd';
+import { FlashShowcaseAd } from './FlashShowcaseAd';
 
 // Define the brand colors as props to easily modify later
 export const BRAND_COLORS = {
@@ -339,6 +344,84 @@ export const Root: React.FC = () => {
         id="MomentumAdVertical"
         component={MomentumAd}
         durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+
+      {/* ─── SEQUENCE ADS ─── */}
+      <Composition
+        id="SequenceAd"
+        component={SequenceAd}
+        durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="SequenceAdWide"
+        component={SequenceAd}
+        durationInFrames={900}
+        fps={60}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="FreeSequenceAd"
+        component={FreeSequenceAd}
+        durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="FreeSequenceAdWide"
+        component={FreeSequenceAd}
+        durationInFrames={900}
+        fps={60}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+
+      {/* ─── BUSY DAY AD ─── */}
+      <Composition
+        id="BusyDayAd"
+        component={BusyDayAd}
+        durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="BusyDayAdWide"
+        component={BusyDayAd}
+        durationInFrames={900}
+        fps={60}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+
+      {/* ─── SHOWCASE ADS ─── */}
+      <Composition
+        id="ShowcaseAd"
+        component={ShowcaseAd}
+        durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="FlashShowcaseAd"
+        component={FlashShowcaseAd}
+        durationInFrames={600}
         fps={60}
         width={1080}
         height={1920}

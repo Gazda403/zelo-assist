@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, Infinity } from 'lucide-react';
 import { CheckoutModal } from '../checkout/CheckoutModal';
 
 interface PricingTier {
@@ -14,6 +14,7 @@ interface PricingTier {
     billingText: string;
     annualBillingText?: string;
     features: string[];
+    alwaysFreeFeature?: string;
     buttonText: string;
     highlighted?: boolean;
 }
@@ -24,7 +25,8 @@ const pricingTiers: PricingTier[] = [
         description: "Experience the full power of XeloFlow.",
         target: "Free",
         monthlyPrice: "$0",
-        billingText: "7 days of full premium features, then locked.",
+        billingText: "7 days full access, then limited. Sequencing stays free.",
+        alwaysFreeFeature: "Email Sequencing & Sending — free forever",
         features: [
             "Unlimited active bots",
             "Unlimited connected emails",
@@ -213,7 +215,18 @@ export function Pricing({ onGetStarted }: PricingProps = {}) {
                             </div>
 
                             <div className="flex-1">
-                                <p className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">What's included:</p>
+                                {tier.alwaysFreeFeature && (
+                                    <div className="mb-5 flex items-center gap-2.5 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl px-4 py-3">
+                                        <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                                            <Infinity className="w-3 h-3 text-white stroke-[2.5px]" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-bold text-emerald-800 leading-tight">{tier.alwaysFreeFeature}</p>
+                                            <p className="text-[10px] text-emerald-600 mt-0.5">Even after your trial ends</p>
+                                        </div>
+                                    </div>
+                                )}
+                                <p className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Trial includes:</p>
                                 <ul className="space-y-4">
                                     {tier.features.map((feature, index) => (
                                         <li key={index} className="flex gap-3 text-sm text-gray-600">
