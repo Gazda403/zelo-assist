@@ -14,10 +14,10 @@ export const PAYMENT_CONFIG = {
         clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
         environment: process.env.PAYPAL_ENVIRONMENT || 'production',
         plans: {
-            starter_monthly: "P-0G345889PP367702PNHCEERA",
-            starter_annual: "P-74N72422VD313690PNHCEERA",
-            pro_monthly: "P-5M650937436226326NHCEERA",
-            pro_annual: "P-2W102421T2805691UNHCEERI",
+            starter_monthly: "P-2X240436JD099084WNIKHRMI",
+            starter_annual: "P-4C681675K5030801VNIKHRMI",
+            pro_monthly: "P-6LA29324VL943072KNIKHRMI",
+            pro_annual: "P-82733186C75552323NIKHRMQ",
         }
     },
 
@@ -41,10 +41,10 @@ export const PAYMENT_CONFIG = {
  */
 export const PLAN_ID_MAP: Record<string, 'starter' | 'pro'> = {
     // PayPal
-    "P-0G345889PP367702PNHCEERA": 'starter',
-    "P-74N72422VD313690PNHCEERA": 'starter',
-    "P-5M650937436226326NHCEERA": 'pro',
-    "P-2W102421T2805691UNHCEERI": 'pro',
+    "P-2X240436JD099084WNIKHRMI": 'starter',
+    "P-4C681675K5030801VNIKHRMI": 'starter',
+    "P-6LA29324VL943072KNIKHRMI": 'pro',
+    "P-82733186C75552323NIKHRMQ": 'pro',
 
     // Paddle placeholders (populate these when user provides IDs)
 };

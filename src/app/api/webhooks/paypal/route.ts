@@ -44,10 +44,10 @@ export async function POST(req: Request) {
                 const planId = resource.plan_id || resource.agreement_details?.plan_id;
                 // Map known Plan IDs to plan types
                 const PLAN_ID_TO_TYPE: Record<string, string> = {
-                    "P-0G345889PP367702PNHCEERA": "starter", // Starter Monthly (Live)
-                    "P-74N72422VD313690PNHCEERA": "starter", // Starter Annual (Live)
-                    "P-5M650937436226326NHCEERA": "pro",     // Pro Monthly (Live)
-                    "P-2W102421T2805691UNHCEERI": "pro",     // Pro Annual (Live)
+                    "P-2X240436JD099084WNIKHRMI": "starter", // Starter Monthly (Live)
+                    "P-4C681675K5030801VNIKHRMI": "starter", // Starter Annual (Live)
+                    "P-6LA29324VL943072KNIKHRMI": "pro",     // Pro Monthly (Live)
+                    "P-82733186C75552323NIKHRMQ": "pro",     // Pro Annual (Live)
                 };
                 const planType = planId ? (PLAN_ID_TO_TYPE[planId] ?? "starter") : "starter";
 
