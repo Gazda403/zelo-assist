@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
         // Use sandbox URL for development, live URL for production
         // It's best practice to use an environment variable (e.g., PAYPAL_API_URL)
-        const baseUrl = process.env.PAYPAL_API_URL || "https://api-m.sandbox.paypal.com";
+        const baseUrl = process.env.PAYPAL_API_URL || "https://api-m.paypal.com";
 
         const tokenResponse = await fetch(`${baseUrl}/v1/oauth2/token`, {
             method: "POST",

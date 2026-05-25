@@ -31,8 +31,8 @@ const plans = [
         features: ["Up to 3 email accounts", "Up to 3 bots", "Advanced analytics", "Standard support"],
         buttonText: "Subscribe — Starter",
         highlighted: true,
-        monthlyPlanId: "P-2X240436JD099084WNIKHRMI",
-        annualPlanId: "P-4C681675K5030801VNIKHRMI",
+        monthlyPlanId: "P-9F254367AT689604ANIKIGCQ",
+        annualPlanId: "P-7K744755J92564905NIKIGCY",
         icon: <Star className="w-4 h-4" />,
     },
     {
@@ -43,8 +43,8 @@ const plans = [
         features: ["Up to 10 email accounts", "Unlimited bots", "All triggers", "Priority support"],
         buttonText: "Subscribe — Pro",
         highlighted: false,
-        monthlyPlanId: "P-6LA29324VL943072KNIKHRMI",
-        annualPlanId: "P-82733186C75552323NIKHRMQ",
+        monthlyPlanId: "P-82P359217F882373XNIKIGCY",
+        annualPlanId: "P-8TF12814RC2020841NIKIGCY",
         icon: <Zap className="w-4 h-4" />,
     }
 ];

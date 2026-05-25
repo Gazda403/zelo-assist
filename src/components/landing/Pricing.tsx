@@ -86,15 +86,15 @@ export function Pricing({ onGetStarted }: PricingProps = {}) {
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [selectedTier, setSelectedTier] = useState<PricingTier | null>(null);
 
-    // Actual Sandbox Plan IDs generated via PayPal API
+    // Actual Live Plan IDs generated via PayPal API
     const PLAN_IDS: Record<string, { monthly: string; annual: string }> = {
         "Starter": {
-            monthly: "P-2X240436JD099084WNIKHRMI",
-            annual: "P-4C681675K5030801VNIKHRMI"
+            monthly: "P-9F254367AT689604ANIKIGCQ",
+            annual: "P-7K744755J92564905NIKIGCY"
         },
         "Pro": {
-            monthly: "P-6LA29324VL943072KNIKHRMI",
-            annual: "P-82733186C75552323NIKHRMQ"
+            monthly: "P-82P359217F882373XNIKIGCY",
+            annual: "P-8TF12814RC2020841NIKIGCY"
         }
     };
 
