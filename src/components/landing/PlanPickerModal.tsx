@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check, Zap, Star, Infinity } from 'lucide-react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { CheckoutModal } from '../checkout/CheckoutModal';
 
 interface PlanPickerModalProps {
@@ -53,14 +53,23 @@ export function PlanPickerModal({ isOpen, onClose }: PlanPickerModalProps) {
     const [isAnnual, setIsAnnual] = useState(true);
     const [checkoutPlan, setCheckoutPlan] = useState<{ name: string; price: number | string; planId: string } | null>(null);
 
+    const { status } = useSession();
+
     const handlePlanSelect = (plan: typeof plans[number]) => {
         if (plan.name === "Free") {
             setAuthSelection('free');
             return;
         }
+
         const price = isAnnual && 'annualPrice' in plan ? (plan.annualPrice! / 12).toFixed(2) : plan.monthlyPrice;
         const planId = isAnnual && 'annualPlanId' in plan ? plan.annualPlanId! : ('monthlyPlanId' in plan ? (plan as any).monthlyPlanId! : '');
         if (!planId) return;
+
+        if (status === "unauthenticated") {
+            setAuthSelection({ name: plan.name, price: price ?? plan.monthlyPrice ?? 0, planId });
+            return;
+        }
+
         setCheckoutPlan({ name: plan.name, price: price ?? plan.monthlyPrice ?? 0, planId });
     };
 

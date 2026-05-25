@@ -155,6 +155,10 @@ export function CheckoutModal({ isOpen, onClose, planName, planPrice, planId }: 
                                                     setIsSuccess(true);
                                                     // The webhook will handle final activation
                                                 }}
+                                                onError={(err) => {
+                                                    console.error("PayPal Error:", err);
+                                                    alert("PayPal encountered an error. Please ensure you are logged in and try again.");
+                                                }}
                                             />
                                         </div>
                                     ) : (
