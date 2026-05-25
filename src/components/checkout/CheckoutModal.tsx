@@ -140,11 +140,15 @@ export function CheckoutModal({ isOpen, onClose, planName, planPrice, planId }: 
                                             )}
                                             <PayPalButtons
                                                 style={{ layout: "vertical", shape: "rect" }}
-                                                createSubscription={(data, actions) => {
-                                                    return actions.subscription.create({
-                                                        plan_id: planId,
-                                                        // custom_id is set in the backend for security
+                                                createSubscription={async () => {
+                                                    const res = await fetch("/api/checkout/paypal/create-subscription", {
+                                                        method: "POST",
+                                                        headers: { "Content-Type": "application/json" },
+                                                        body: JSON.stringify({ plan_id: planId })
                                                     });
+                                                    const data = await res.json();
+                                                    if (!res.ok) throw new Error(data.error);
+                                                    return data.id;
                                                 }}
                                                 onApprove={async (data, actions) => {
                                                     console.log("Subscription approved:", data.subscriptionID);
