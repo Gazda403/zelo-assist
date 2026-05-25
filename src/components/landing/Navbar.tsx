@@ -84,7 +84,9 @@ const Navbar: React.FC<NavbarProps> = ({ onGetStarted, onLogin, variant = 'full'
         if (isFromLanding || variant === 'full') {
             onLogin();
         } else {
-            signIn('google');
+            const baseUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : '';
+            const currentUrl = baseUrl + (typeof window !== 'undefined' ? window.location.pathname : '/');
+            signIn('google', { callbackUrl: currentUrl });
         }
     };
 

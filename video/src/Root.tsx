@@ -29,6 +29,16 @@ import { FreeSequenceAd } from './FreeSequenceAd';
 import { BusyDayAd } from './BusyDayAd';
 import { ShowcaseAd } from './ShowcaseAd';
 import { FlashShowcaseAd } from './FlashShowcaseAd';
+import { EasierEmailAd } from './EasierEmailAd';
+import { AutomationAd } from './AutomationAd';
+import { GraphicAd } from './GraphicAd';
+import { PureGraphicAd } from './PureGraphicAd';
+import { MinimalAd } from './MinimalAd';
+import { BreakFromNoiseAd } from './BreakFromNoiseAd';
+import { CeloFlowAd1 } from './CeloFlowAd1';
+import { CeloFlowAd2 } from './CeloFlowAd2';
+import { XeloFlowNewAd1 } from './XeloFlowNewAd1';
+import { XeloFlowNewAd2 } from './XeloFlowNewAd2';
 
 // Define the brand colors as props to easily modify later
 export const BRAND_COLORS = {
@@ -422,6 +432,145 @@ export const Root: React.FC = () => {
         id="FlashShowcaseAd"
         component={FlashShowcaseAd}
         durationInFrames={600}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+
+      {/* ─── EASIER EMAIL AD ─── */}
+      <Composition
+        id="EasierEmailAd"
+        component={EasierEmailAd}
+        durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="EasierEmailAdWide"
+        component={EasierEmailAd}
+        durationInFrames={900}
+        fps={60}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+
+      {/* ─── AUTOMATION AD ─── */}
+      <Composition
+        id="AutomationAd"
+        component={AutomationAd}
+        durationInFrames={900}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="AutomationAdWide"
+        component={AutomationAd}
+        durationInFrames={900}
+        fps={60}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      {/* ─── GRAPHIC AD ─── */}
+      <Composition
+        id="GraphicAd"
+        component={GraphicAd}
+        durationInFrames={600} // 10 seconds at 60fps
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      
+      {/* ─── PURE GRAPHIC AD ─── */}
+      <Composition
+        id="PureGraphicAd"
+        component={PureGraphicAd}
+        durationInFrames={420} // 7 seconds at 60fps
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      
+      {/* ─── MINIMAL AD ─── */}
+      <Composition
+        id="MinimalAd"
+        component={MinimalAd}
+        durationInFrames={900} // 15 seconds at 60fps
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      {/* ─── BREAK FROM NOISE AD ─── */}
+      <Composition
+        id="BreakFromNoiseAd"
+        component={BreakFromNoiseAd}
+        durationInFrames={600} // 10 seconds at 60fps
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+
+      {/* ─── CELO FLOW ADS ─── */}
+      <Composition
+        id="CeloFlowAd1"
+        component={CeloFlowAd1}
+        durationInFrames={720} // 12 seconds at 60fps
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="CeloFlowAd1Wide"
+        component={CeloFlowAd1}
+        durationInFrames={720}
+        fps={60}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="CeloFlowAd2"
+        component={CeloFlowAd2}
+        durationInFrames={720} // 12 seconds at 60fps
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="CeloFlowAd2Wide"
+        component={CeloFlowAd2}
+        durationInFrames={720}
+        fps={60}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      {/* ─── NEW XELO FLOW ADS ─── */}
+      <Composition
+        id="XeloFlowNewAd1"
+        component={XeloFlowNewAd1}
+        durationInFrames={720}
+        fps={60}
+        width={1080}
+        height={1920}
+        defaultProps={{}}
+      />
+      <Composition
+        id="XeloFlowNewAd2"
+        component={XeloFlowNewAd2}
+        durationInFrames={720}
         fps={60}
         width={1080}
         height={1920}

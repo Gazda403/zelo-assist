@@ -61,13 +61,15 @@ export function PlanPickerModal({ isOpen, onClose }: PlanPickerModalProps) {
         const price = isAnnual && 'annualPrice' in plan ? (plan.annualPrice! / 12).toFixed(2) : plan.monthlyPrice;
         const planId = isAnnual && 'annualPlanId' in plan ? plan.annualPlanId! : ('monthlyPlanId' in plan ? (plan as any).monthlyPlanId! : '');
         if (!planId) return;
-        setAuthSelection({ name: plan.name, price: price ?? plan.monthlyPrice ?? 0, planId });
+        setCheckoutPlan({ name: plan.name, price: price ?? plan.monthlyPrice ?? 0, planId });
     };
 
     const [authSelection, setAuthSelection] = useState<'free' | { name: string; price: number | string; planId: string } | null>(null);
 
     const handleAuthProvider = (provider: 'google' | 'microsoft-entra-id') => {
-        signIn(provider);
+        const baseUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : '';
+        const currentUrl = baseUrl + (typeof window !== 'undefined' ? window.location.pathname : '/');
+        signIn(provider, { callbackUrl: currentUrl });
         onClose();
     };
 

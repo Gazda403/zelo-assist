@@ -14,7 +14,8 @@ import { useSearchParams } from 'next/navigation';
 function SendPageContent() {
     const searchParams = useSearchParams();
     const initialTo = searchParams.get('to') || '';
-    const [view, setView] = useState<'normal' | 'sequencing'>('normal');
+    const initialView = searchParams.get('view') === 'sequencing' ? 'sequencing' : 'normal';
+    const [view, setView] = useState<'normal' | 'sequencing'>(initialView);
 
     return (
         <AppShell title="Send">

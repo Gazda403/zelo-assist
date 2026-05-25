@@ -1,12 +1,30 @@
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id"
+
 function debugLog(message: string, data: any) {
     const timestamp = new Date().toISOString();
     console.log(`[AUTH DEBUG][${timestamp}] ${message}:`, data);
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+    session: {
+        strategy: "jwt",
+        maxAge: 30 * 24 * 60 * 60,
+    },
+    trustHost: true,
+    cookies: {
+        sessionToken: {
+            name: `__session`,
+            options: {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 30 * 24 * 60 * 60,
+            },
+        },
+    },
     providers: [
         Google({
             authorization: {

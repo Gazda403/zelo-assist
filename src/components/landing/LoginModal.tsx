@@ -13,7 +13,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     if (!isOpen) return null;
 
     const handleAuthProvider = (provider: 'google' | 'microsoft-entra-id') => {
-        signIn(provider);
+        const baseUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : '';
+        const currentUrl = baseUrl + (typeof window !== 'undefined' ? window.location.pathname : '/');
+        signIn(provider, { callbackUrl: currentUrl });
         onClose();
     };
 

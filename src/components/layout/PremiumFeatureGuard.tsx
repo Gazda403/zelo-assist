@@ -51,10 +51,17 @@ export function PremiumFeatureGuard({ children }: { children: React.ReactNode })
                         <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 shadow-sm">
                             <Infinity className="w-4 h-4 text-white stroke-[2.5px]" />
                         </div>
-                        <div>
+                        <div className="flex-1">
                             <p className="text-[13px] font-bold text-emerald-800 dark:text-emerald-400 leading-tight">Sequencing & Sending</p>
                             <p className="text-[11px] text-emerald-600 dark:text-emerald-500/80 mt-0.5">Still 100% free, forever!</p>
                         </div>
+                        <Link 
+                            href="/send?view=sequencing" 
+                            className="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5 active:scale-95"
+                        >
+                            Open
+                            <ArrowRight className="w-3 h-3" />
+                        </Link>
                     </div>
                     
                     <Link 

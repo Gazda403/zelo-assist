@@ -3,10 +3,13 @@
   "short_name": "XeloFlow",
   "description": "AI Email Assistant - Reclaim your time.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "handle_links": "not-preferred",
+  "display_override": ["window-control-overlay", "minimal-ui"],
+  "handle_links": "auto",
   "background_color": "#ffffff",
   "theme_color": "#0a192f",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/icons/icon-512x512.png",

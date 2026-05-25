@@ -99,7 +99,7 @@ export function Pricing({ onGetStarted }: PricingProps = {}) {
     };
 
     const handleCheckout = (tier: PricingTier) => {
-        if (tier.name === "Free") {
+        if (tier.name === "Free Trial") {
             if (onGetStarted) {
                 onGetStarted();
             }
