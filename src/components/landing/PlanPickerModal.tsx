@@ -11,7 +11,7 @@ interface PlanPickerModalProps {
     onClose: () => void;
 }
 
-const plans = [
+export const plans = [
     {
         name: "Free",
         price: "$0",
@@ -78,7 +78,13 @@ export function PlanPickerModal({ isOpen, onClose }: PlanPickerModalProps) {
     const handleAuthProvider = (provider: 'google' | 'microsoft-entra-id') => {
         const baseUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : '';
         const currentUrl = baseUrl + (typeof window !== 'undefined' ? window.location.pathname : '/');
-        signIn(provider, { callbackUrl: currentUrl });
+        
+        let callbackUrl = currentUrl;
+        if (authSelection && typeof authSelection !== 'string' && authSelection.planId) {
+            callbackUrl = `${currentUrl}?checkout=${authSelection.planId}`;
+        }
+        
+        signIn(provider, { callbackUrl });
         onClose();
     };
 

@@ -16,6 +16,8 @@ import { EmailDetailPanel } from "@/components/email/EmailDetailPanel";
 import { WelcomeBriefing } from "@/components/dashboard/WelcomeBriefing";
 import { EmailListSkeleton } from "@/components/email/EmailCardSkeleton";
 import { PremiumFeatureGuard } from "@/components/layout/PremiumFeatureGuard";
+import { CheckoutModal } from "@/components/checkout/CheckoutModal";
+import { plans } from "@/components/landing/PlanPickerModal";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -41,6 +43,30 @@ export default function HomePage() {
     const router = useRouter();
     const [unreadCount, setUnreadCount] = useState<number>(0);
     const [sortBy, setSortBy] = useState<'urgency' | 'date' | 'alphabetical'>('urgency');
+
+    // Auto-checkout for users who clicked a paid plan while unauthenticated
+    const [autoCheckoutPlan, setAutoCheckoutPlan] = useState<{name: string, price: string|number, planId: string} | null>(null);
+
+    useEffect(() => {
+        if (status === "authenticated" && typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            const checkoutPlanId = params.get('checkout');
+            if (checkoutPlanId) {
+                for (const plan of plans) {
+                    if ('monthlyPlanId' in plan && (plan as any).monthlyPlanId === checkoutPlanId) {
+                        setAutoCheckoutPlan({ name: `${plan.name} (Monthly)`, price: plan.monthlyPrice!, planId: checkoutPlanId });
+                        break;
+                    }
+                    if ('annualPlanId' in plan && (plan as any).annualPlanId === checkoutPlanId) {
+                        setAutoCheckoutPlan({ name: `${plan.name} (Annual)`, price: ((plan as any).annualPrice! / 12).toFixed(2), planId: checkoutPlanId });
+                        break;
+                    }
+                }
+                // Clear the URL parameter so it doesn't pop up again on refresh
+                window.history.replaceState({}, '', window.location.pathname);
+            }
+        }
+    }, [status]);
 
     // Performance: Cache for email bodies to prevent re-fetching
     const bodyCache = useRef<Record<string, string>>({});
@@ -587,6 +613,16 @@ export default function HomePage() {
                 })()}
                 </div>
             </PremiumFeatureGuard>
+
+            {autoCheckoutPlan && (
+                <CheckoutModal
+                    isOpen={true}
+                    onClose={() => setAutoCheckoutPlan(null)}
+                    planName={autoCheckoutPlan.name}
+                    planPrice={autoCheckoutPlan.price}
+                    planId={autoCheckoutPlan.planId}
+                />
+            )}
         </AppShell>
     );
 }
