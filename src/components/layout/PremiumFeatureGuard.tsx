@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 import { Lock, ArrowRight, Zap, Infinity } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { PlanPickerModal } from "../landing/PlanPickerModal";
 
 export function PremiumFeatureGuard({ children }: { children: React.ReactNode }) {
     const [status, setStatus] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [isPlanPickerOpen, setIsPlanPickerOpen] = useState(false);
 
     useEffect(() => {
         fetch("/api/subscription/status")
@@ -64,16 +66,18 @@ export function PremiumFeatureGuard({ children }: { children: React.ReactNode })
                         </Link>
                     </div>
                     
-                    <Link 
-                        href="/#pricing"
+                    <button 
+                        onClick={() => setIsPlanPickerOpen(true)}
                         className="flex items-center justify-center gap-2 w-full py-3.5 px-4 bg-primary text-white font-bold rounded-xl hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40"
                     >
                         <Zap className="w-4 h-4 fill-current" />
                         Upgrade to Pro
                         <ArrowRight className="w-4 h-4" />
-                    </Link>
+                    </button>
                 </motion.div>
             </div>
+            
+            <PlanPickerModal isOpen={isPlanPickerOpen} onClose={() => setIsPlanPickerOpen(false)} />
         </div>
     );
 }
