@@ -203,8 +203,8 @@ export async function fetchEmailsAction(
         const daysSinceCreation = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24);
         const isTrialExpired = planType === "free" && daysSinceCreation > trialDays;
         const ADMIN_EMAIL = "brankovicaleksandar2404@gmail.com";
-        const userEmail = session.user?.email || "";
-        const isAdmin = userEmail.toLowerCase().includes("brankovicaleksandar2404") || session.user?.id === 'dad0999b-d16e-472c-87a3-9324d32bcc69';
+        const emailToCheck = userEmail || "";
+        const isAdmin = emailToCheck.toLowerCase().includes("brankovicaleksandar2404") || session.user?.id === 'dad0999b-d16e-472c-87a3-9324d32bcc69';
         const isActive = isAdmin || subscriptionStatus === "active" || (planType === "free" && !isTrialExpired);
 
         // Process a subset to avoid rate limits/timeouts
