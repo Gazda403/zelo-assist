@@ -39,18 +39,18 @@ export async function POST(req: Request) {
     let planType = profile?.plan_type ?? "free";
     let subscriptionStatus = profile?.subscription_status ?? "inactive";
 
+    // Admin override
+    if (session.user.email === "brankovicaleksandar2404@gmail.com") {
+        planType = "exclusive";
+        subscriptionStatus = "active";
+    }
+
     const createdAt = profile?.first_login_at || new Date().toISOString();
     
     const trialDays = 7;
     const msSinceCreation = Date.now() - new Date(createdAt).getTime();
     const daysSinceCreation = msSinceCreation / (1000 * 60 * 60 * 24);
     const isTrialExpired = planType === "free" && daysSinceCreation > trialDays;
-
-    // Admin override
-    if (session.user.email === "brankovicaleksandar2404@gmail.com") {
-        planType = "exclusive";
-        subscriptionStatus = "active";
-    }
 
     if (isTrialExpired) {
         return NextResponse.json(

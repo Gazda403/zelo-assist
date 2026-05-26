@@ -75,7 +75,7 @@ export async function hasBudgetRemaining(userId: string): Promise<boolean> {
 
     const planType = profile.plan_type ?? 'free';
     // Override for the owner account
-    if (userId === 'brankovicaleksandar2404@gmail.com') return true;
+    if (userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69' || userId === 'brankovicaleksandar2404@gmail.com') return true;
 
     const limit = PLAN_BUDGETS[planType] ?? PLAN_BUDGETS.free;
     const used  = profile.ai_credits_used ?? 0;
@@ -140,7 +140,7 @@ export async function getAiUsageSummary(userId: string): Promise<{
         .single();
 
     const planType = profile?.plan_type ?? 'free';
-    const limit = userId === 'brankovicaleksandar2404@gmail.com'
+    const limit = (userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69' || userId === 'brankovicaleksandar2404@gmail.com')
         ? Infinity
         : (PLAN_BUDGETS[planType] ?? PLAN_BUDGETS.free);
     const used = profile?.ai_credits_used ?? 0;

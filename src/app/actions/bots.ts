@@ -80,7 +80,7 @@ export async function createBotAction(
         .single();
         
     let planType = profile?.plan_type ?? 'free';
-    if (userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69') { // UUID for brankovicaleksandar2404@gmail.com
+    if (session.user?.email === 'brankovicaleksandar2404@gmail.com' || userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69') { // UUID or email for brankovicaleksandar2404@gmail.com
         planType = 'exclusive';
     }
     

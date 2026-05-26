@@ -40,18 +40,18 @@ export async function GET() {
     let planType = profile?.plan_type ?? "free";
     let subscriptionStatus = profile?.subscription_status ?? "inactive";
 
+    // Admin override
+    if (session.user.email === ADMIN_EMAIL) {
+        planType = "exclusive";
+        subscriptionStatus = "active";
+    }
+
     const createdAt = profile?.first_login_at || new Date().toISOString();
     const trialDays = 7;
     const msSinceCreation = Date.now() - new Date(createdAt).getTime();
     const daysSinceCreation = msSinceCreation / (1000 * 60 * 60 * 24);
     const isTrialExpired = planType === "free" && daysSinceCreation > trialDays;
     const trialDaysLeft = Math.max(0, Math.ceil(trialDays - daysSinceCreation));
-
-    // Admin override
-    if (session.user.email === ADMIN_EMAIL) {
-        planType = "exclusive";
-        subscriptionStatus = "active";
-    }
 
     let maxSlots = PLAN_LIMITS[planType] ?? 1;
     if (planType === "free" && !isTrialExpired) {
