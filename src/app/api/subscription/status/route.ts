@@ -46,7 +46,7 @@ export async function GET() {
 
     // Admin override
     if (isAdmin) {
-        planType = "exclusive";
+        planType = "pro";
         subscriptionStatus = "active";
     }
 
@@ -59,6 +59,9 @@ export async function GET() {
 
     let maxSlots = PLAN_LIMITS[planType] ?? 1;
     if (planType === "free" && !isTrialExpired) {
+        maxSlots = Infinity;
+    }
+    if (isAdmin) {
         maxSlots = Infinity;
     }
 

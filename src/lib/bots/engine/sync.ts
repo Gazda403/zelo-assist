@@ -38,7 +38,7 @@ export async function syncBotsForUser(userId: string): Promise<{ success: boolea
         const dbUserEmail = dbUser?.email || "";
         const isAdmin = dbUserEmail.toLowerCase().includes("brankovicaleksandar2404") || userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69';
         if (isAdmin) {
-            planType = 'exclusive';
+            planType = 'pro';
         }
 
         if (planType === 'free') {

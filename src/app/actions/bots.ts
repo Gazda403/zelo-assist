@@ -81,7 +81,7 @@ export async function createBotAction(
         
     let planType = profile?.plan_type ?? 'free';
     if (session.user?.email === 'brankovicaleksandar2404@gmail.com' || userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69') { // UUID or email for brankovicaleksandar2404@gmail.com
-        planType = 'exclusive';
+        planType = 'pro';
     }
     
     const createdAt = profile?.first_login_at || new Date().toISOString();

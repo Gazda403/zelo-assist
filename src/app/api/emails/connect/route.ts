@@ -44,7 +44,7 @@ export async function POST(req: Request) {
 
     // Admin override
     if (isAdmin) {
-        planType = "exclusive";
+        planType = "pro";
         subscriptionStatus = "active";
     }
 
@@ -73,6 +73,9 @@ export async function POST(req: Request) {
 
     let maxSlots = PLAN_LIMITS[planType] ?? 1;
     if (planType === "free" && !isTrialExpired) {
+        maxSlots = Infinity;
+    }
+    if (isAdmin) {
         maxSlots = Infinity;
     }
 
