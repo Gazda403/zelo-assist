@@ -19,6 +19,7 @@ const ADMIN_EMAIL = "brankovicaleksandar2404@gmail.com";
 
 export async function GET() {
     const session = await auth();
+    console.log("[STATUS API] session.user = ", session?.user);
 
     if (!session?.user?.id) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -40,8 +41,11 @@ export async function GET() {
     let planType = profile?.plan_type ?? "free";
     let subscriptionStatus = profile?.subscription_status ?? "inactive";
 
+    const userEmail = session.user.email || "";
+    const isAdmin = userEmail.toLowerCase().includes("brankovicaleksandar2404") || userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69';
+
     // Admin override
-    if (session.user.email === ADMIN_EMAIL) {
+    if (isAdmin) {
         planType = "exclusive";
         subscriptionStatus = "active";
     }

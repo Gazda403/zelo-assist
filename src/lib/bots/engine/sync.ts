@@ -29,8 +29,15 @@ export async function syncBotsForUser(userId: string): Promise<{ success: boolea
         }
 
         let planType = profile?.plan_type ?? 'free';
-        // Admin override (UUID for brankovicaleksandar2404@gmail.com)
-        if (userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69') {
+        // Admin override (UUID or email for brankovicaleksandar2404@gmail.com)
+        const { data: dbUser } = await supabaseAdmin
+            .from("users")
+            .select("email")
+            .eq("id", userId)
+            .single();
+        const userEmail = dbUser?.email || "";
+        const isAdmin = userEmail.toLowerCase().includes("brankovicaleksandar2404") || userId === 'dad0999b-d16e-472c-87a3-9324d32bcc69';
+        if (isAdmin) {
             planType = 'exclusive';
         }
 

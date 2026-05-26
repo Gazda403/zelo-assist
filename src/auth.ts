@@ -234,6 +234,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         async session({ session, token }: any) {
             if (token && session.user) {
                 session.user.id = token.sub as string;
+                session.user.email = (token.email || session.user.email) as string;
                 session.user.image = (token.picture || token.image || session.user.image) as string;
                 session.user.role = token.role as string || 'user';
                 session.user.isNewUser = (token.isNewUser as boolean) ?? false;
