@@ -33,6 +33,8 @@ export const plans = [
         highlighted: true,
         monthlyPlanId: "P-9F254367AT689604ANIKIGCQ",
         annualPlanId: "P-7K744755J92564905NIKIGCY",
+        monthlyLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_MONTHLY_VARIANT_ID,
+        annualLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_ANNUAL_VARIANT_ID,
         icon: <Star className="w-4 h-4" />,
     },
     {
@@ -45,13 +47,15 @@ export const plans = [
         highlighted: false,
         monthlyPlanId: "P-82P359217F882373XNIKIGCY",
         annualPlanId: "P-8TF12814RC2020841NIKIGCY",
+        monthlyLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_MONTHLY_VARIANT_ID,
+        annualLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_ANNUAL_VARIANT_ID,
         icon: <Zap className="w-4 h-4" />,
     }
 ];
 
 export function PlanPickerModal({ isOpen, onClose }: PlanPickerModalProps) {
     const [isAnnual, setIsAnnual] = useState(true);
-    const [checkoutPlan, setCheckoutPlan] = useState<{ name: string; price: number | string; planId: string } | null>(null);
+    const [checkoutPlan, setCheckoutPlan] = useState<{ name: string; price: number | string; planId: string; lemonSqueezyVariantId?: string } | null>(null);
 
     const { status } = useSession();
 
@@ -63,17 +67,18 @@ export function PlanPickerModal({ isOpen, onClose }: PlanPickerModalProps) {
 
         const price = isAnnual && 'annualPrice' in plan ? (plan.annualPrice! / 12).toFixed(2) : plan.monthlyPrice;
         const planId = isAnnual && 'annualPlanId' in plan ? plan.annualPlanId! : ('monthlyPlanId' in plan ? (plan as any).monthlyPlanId! : '');
+        const lemonSqueezyVariantId = isAnnual && 'annualLemonSqueezyVariantId' in plan ? plan.annualLemonSqueezyVariantId : ('monthlyLemonSqueezyVariantId' in plan ? (plan as any).monthlyLemonSqueezyVariantId : undefined);
         if (!planId) return;
 
         if (status === "unauthenticated") {
-            setAuthSelection({ name: plan.name, price: price ?? plan.monthlyPrice ?? 0, planId });
+            setAuthSelection({ name: plan.name, price: price ?? plan.monthlyPrice ?? 0, planId, lemonSqueezyVariantId });
             return;
         }
 
-        setCheckoutPlan({ name: plan.name, price: price ?? plan.monthlyPrice ?? 0, planId });
+        setCheckoutPlan({ name: plan.name, price: price ?? plan.monthlyPrice ?? 0, planId, lemonSqueezyVariantId });
     };
 
-    const [authSelection, setAuthSelection] = useState<'free' | { name: string; price: number | string; planId: string } | null>(null);
+    const [authSelection, setAuthSelection] = useState<'free' | { name: string; price: number | string; planId: string; lemonSqueezyVariantId?: string } | null>(null);
 
     const handleAuthProvider = (provider: 'google' | 'microsoft-entra-id') => {
         const baseUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : '';
@@ -159,6 +164,7 @@ export function PlanPickerModal({ isOpen, onClose }: PlanPickerModalProps) {
                     planName={`${checkoutPlan.name} (${isAnnual ? 'Annual' : 'Monthly'})`}
                     planPrice={checkoutPlan.price}
                     planId={checkoutPlan.planId}
+                    lemonSqueezyVariantId={checkoutPlan.lemonSqueezyVariantId}
                 />
             ) : (
                 <div className="fixed inset-0 z-[100]">

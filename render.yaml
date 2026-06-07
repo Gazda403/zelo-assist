@@ -28,6 +28,22 @@ services:
       - key: NEXT_PUBLIC_PAYPAL_CLIENT_ID
         sync: false
       - key: PAYPAL_ENVIRONMENT
-        value: sandbox
+        value: production
       - key: PAYPAL_API_URL
-        value: https://api-m.sandbox.paypal.com
+        value: https://api-m.paypal.com
+      - key: LEMONSQUEEZY_API_KEY
+        sync: false
+      - key: LEMONSQUEEZY_STORE_ID
+        sync: false
+      - key: LEMONSQUEEZY_WEBHOOK_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_LEMONSQUEEZY_STARTER_MONTHLY_VARIANT_ID
+        sync: false
+      - key: NEXT_PUBLIC_LEMONSQUEEZY_STARTER_ANNUAL_VARIANT_ID
+        sync: false
+      - key: NEXT_PUBLIC_LEMONSQUEEZY_PRO_MONTHLY_VARIANT_ID
+        sync: false
+      - key: NEXT_PUBLIC_LEMONSQUEEZY_PRO_ANNUAL_VARIANT_ID
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://xeloflow.com

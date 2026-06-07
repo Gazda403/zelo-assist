@@ -21,17 +21,16 @@ export const PAYMENT_CONFIG = {
         }
     },
 
-    // Paddle Configuration (Sandbox placeholders - user to update with real IDs)
-    paddle: {
-        sellerId: process.env.NEXT_PUBLIC_PADDLE_SELLER_ID || '',
-        apiKey: process.env.PADDLE_API_KEY || '',
-        publicKey: process.env.PADDLE_PUBLIC_KEY || '',
-        environment: process.env.NEXT_PUBLIC_PADDLE_ENV || 'sandbox', // 'sandbox' or 'production'
+    // Lemon Squeezy Configuration
+    lemonsqueezy: {
+        storeId: process.env.LEMONSQUEEZY_STORE_ID || '',
+        apiKey: process.env.LEMONSQUEEZY_API_KEY || '',
+        webhookSecret: process.env.LEMONSQUEEZY_WEBHOOK_SECRET || '',
         plans: {
-            starter_monthly: process.env.NEXT_PUBLIC_PADDLE_STARTER_MONTHLY_ID || '',
-            starter_annual: process.env.NEXT_PUBLIC_PADDLE_STARTER_ANNUAL_ID || '',
-            pro_monthly: process.env.NEXT_PUBLIC_PADDLE_PRO_MONTHLY_ID || '',
-            pro_annual: process.env.NEXT_PUBLIC_PADDLE_PRO_ANNUAL_ID || '',
+            starter_monthly: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_MONTHLY_VARIANT_ID || '',
+            starter_annual: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_ANNUAL_VARIANT_ID || '',
+            pro_monthly: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_MONTHLY_VARIANT_ID || '',
+            pro_annual: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_ANNUAL_VARIANT_ID || '',
         }
     }
 };
@@ -46,5 +45,7 @@ export const PLAN_ID_MAP: Record<string, 'starter' | 'pro'> = {
     "P-6LA29324VL943072KNIKHRMI": 'pro',
     "P-82733186C75552323NIKHRMQ": 'pro',
 
-    // Paddle placeholders (populate these when user provides IDs)
+    // Lemon Squeezy
+    // To ensure type safety and dynamic resolution, these are matched against the env variables directly in the webhook handler,
+    // but you can hardcode the variant IDs here if they are static.
 };

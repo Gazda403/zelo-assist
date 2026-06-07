@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CreditCard, Landmark, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react';
+import { X, CreditCard, Landmark, CheckCircle2, ChevronRight, Loader2, ShoppingBag } from 'lucide-react';
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { useSession } from "next-auth/react";
 
 interface CheckoutModalProps {
     isOpen: boolean;
@@ -11,10 +12,12 @@ interface CheckoutModalProps {
     planName: string;
     planPrice: number | string;
     planId: string; // PayPal Plan ID
+    lemonSqueezyVariantId?: string; // Lemon Squeezy Variant ID
 }
 
-export function CheckoutModal({ isOpen, onClose, planName, planPrice, planId }: CheckoutModalProps) {
-    const [paymentMethod, setPaymentMethod] = useState<'paypal' | 'bank'>('paypal');
+export function CheckoutModal({ isOpen, onClose, planName, planPrice, planId, lemonSqueezyVariantId }: CheckoutModalProps) {
+    const { data: session } = useSession();
+    const [paymentMethod, setPaymentMethod] = useState<'paypal' | 'bank' | 'lemonsqueezy'>('paypal');
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [{ isPending }] = usePayPalScriptReducer();
@@ -35,6 +38,38 @@ export function CheckoutModal({ isOpen, onClose, planName, planPrice, planId }: 
             }
         } catch (error) {
             console.error(error);
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const handleLemonSqueezyCheckout = async () => {
+        if (!lemonSqueezyVariantId) {
+            alert("Lemon Squeezy variant ID is missing for this plan.");
+            return;
+        }
+
+        setIsProcessing(true);
+        try {
+            const customUserId = session?.user?.id || 'anonymous';
+            const userEmail = session?.user?.email || undefined;
+
+            const response = await fetch('/api/checkout/lemonsqueezy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ variantId: lemonSqueezyVariantId, customUserId, userEmail }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.url) {
+                window.location.href = data.url;
+            } else {
+                alert(data.error || "Failed to initialize Lemon Squeezy checkout. Please try again.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("An error occurred. Please try again.");
         } finally {
             setIsProcessing(false);
         }
@@ -110,14 +145,22 @@ export function CheckoutModal({ isOpen, onClose, planName, planPrice, planId }: 
                                 </div>
 
                                 {/* Payment Method Toggle */}
-                                <div className="grid grid-cols-2 gap-4 mb-8">
+                                <div className="grid grid-cols-3 gap-4 mb-8">
                                     <button
                                         onClick={() => setPaymentMethod('paypal')}
                                         className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${paymentMethod === 'paypal' ? 'border-primary bg-orange-50/30' : 'border-stone-100 hover:border-stone-200'
                                             }`}
                                     >
                                         <CreditCard className={`w-6 h-6 ${paymentMethod === 'paypal' ? 'text-primary' : 'text-stone-400'}`} />
-                                        <span className="text-sm font-bold text-stone-900">PayPal / Card</span>
+                                        <span className="text-sm font-bold text-stone-900">PayPal</span>
+                                    </button>
+                                    <button
+                                        onClick={() => setPaymentMethod('lemonsqueezy')}
+                                        className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${paymentMethod === 'lemonsqueezy' ? 'border-primary bg-orange-50/30' : 'border-stone-100 hover:border-stone-200'
+                                            }`}
+                                    >
+                                        <ShoppingBag className={`w-6 h-6 ${paymentMethod === 'lemonsqueezy' ? 'text-primary' : 'text-stone-400'}`} />
+                                        <span className="text-sm font-bold text-stone-900">Card / Lemon Squeezy</span>
                                     </button>
                                     <button
                                         onClick={() => setPaymentMethod('bank')}
@@ -160,6 +203,26 @@ export function CheckoutModal({ isOpen, onClose, planName, planPrice, planId }: 
                                                     alert("PayPal encountered an error. Please ensure you are logged in and try again.");
                                                 }}
                                             />
+                                        </div>
+                                    ) : paymentMethod === 'lemonsqueezy' ? (
+                                        <div className="space-y-4">
+                                            <p className="text-sm text-stone-500 text-center mb-4">
+                                                You will be securely redirected to Lemon Squeezy to complete your purchase using a Credit Card, Google Pay, Apple Pay, or other local methods.
+                                            </p>
+                                            <button
+                                                onClick={handleLemonSqueezyCheckout}
+                                                disabled={isProcessing || !lemonSqueezyVariantId}
+                                                className="w-full py-4 bg-[#7047EB] text-white font-bold rounded-2xl hover:bg-[#5C39C4] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 shadow-lg shadow-[#7047EB]/20"
+                                            >
+                                                {isProcessing ? (
+                                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        Proceed to Checkout
+                                                        <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                                    </>
+                                                )}
+                                            </button>
                                         </div>
                                     ) : (
                                         <div className="space-y-4">

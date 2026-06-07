@@ -45,7 +45,7 @@ export default function HomePage() {
     const [sortBy, setSortBy] = useState<'urgency' | 'date' | 'alphabetical'>('urgency');
 
     // Auto-checkout for users who clicked a paid plan while unauthenticated
-    const [autoCheckoutPlan, setAutoCheckoutPlan] = useState<{name: string, price: string|number, planId: string} | null>(null);
+    const [autoCheckoutPlan, setAutoCheckoutPlan] = useState<{name: string, price: string|number, planId: string, lemonSqueezyVariantId?: string} | null>(null);
 
     useEffect(() => {
         if (status === "authenticated" && typeof window !== "undefined") {
@@ -54,11 +54,11 @@ export default function HomePage() {
             if (checkoutPlanId) {
                 for (const plan of plans) {
                     if ('monthlyPlanId' in plan && (plan as any).monthlyPlanId === checkoutPlanId) {
-                        setAutoCheckoutPlan({ name: `${plan.name} (Monthly)`, price: plan.monthlyPrice!, planId: checkoutPlanId });
+                        setAutoCheckoutPlan({ name: `${plan.name} (Monthly)`, price: plan.monthlyPrice!, planId: checkoutPlanId, lemonSqueezyVariantId: (plan as any).monthlyLemonSqueezyVariantId });
                         break;
                     }
                     if ('annualPlanId' in plan && (plan as any).annualPlanId === checkoutPlanId) {
-                        setAutoCheckoutPlan({ name: `${plan.name} (Annual)`, price: ((plan as any).annualPrice! / 12).toFixed(2), planId: checkoutPlanId });
+                        setAutoCheckoutPlan({ name: `${plan.name} (Annual)`, price: ((plan as any).annualPrice! / 12).toFixed(2), planId: checkoutPlanId, lemonSqueezyVariantId: (plan as any).annualLemonSqueezyVariantId });
                         break;
                     }
                 }
@@ -621,6 +621,7 @@ export default function HomePage() {
                     planName={autoCheckoutPlan.name}
                     planPrice={autoCheckoutPlan.price}
                     planId={autoCheckoutPlan.planId}
+                    lemonSqueezyVariantId={autoCheckoutPlan.lemonSqueezyVariantId}
                 />
             )}
         </AppShell>
