@@ -14,7 +14,18 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Variant ID is required' }, { status: 400 });
         }
 
-        lemonSqueezySetup({ apiKey: PAYMENT_CONFIG.lemonsqueezy.apiKey });
+        const apiKey = PAYMENT_CONFIG.lemonsqueezy.apiKey;
+        const storeId = Number(PAYMENT_CONFIG.lemonsqueezy.storeId || '386885');
+        const variantIdNum = Number(variantId);
+
+        if (!apiKey) {
+            console.error('[LS] Missing LEMONSQUEEZY_API_KEY');
+            return NextResponse.json({ error: 'Payment provider not configured' }, { status: 500 });
+        }
+
+        console.log('[LS] Creating checkout for storeId:', storeId, 'variantId:', variantIdNum);
+
+        lemonSqueezySetup({ apiKey });
 
         const newCheckout = {
             checkoutOptions: {
@@ -36,16 +47,18 @@ export async function POST(req: Request) {
         };
 
         const { error, data } = await createCheckout(
-            PAYMENT_CONFIG.lemonsqueezy.storeId,
-            variantId,
+            storeId,
+            variantIdNum,
             newCheckout
         );
 
 
         if (error) {
-            console.error('[Lemon Squeezy Checkout] Error:', error);
-            return NextResponse.json({ error: error.message }, { status: 500 });
+            console.error('[LS] API Error:', JSON.stringify(error));
+            return NextResponse.json({ error: error.message || 'Lemon Squeezy error' }, { status: 500 });
         }
+
+        console.log('[LS] Checkout URL:', data?.data?.attributes?.url);
 
         return NextResponse.json({ url: data?.data?.attributes?.url });
     } catch (error: any) {
