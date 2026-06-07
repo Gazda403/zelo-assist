@@ -98,15 +98,15 @@ export function Pricing({ onGetStarted }: PricingProps = {}) {
         }
     };
 
-    // Lemon Squeezy Variant IDs
+    // Lemon Squeezy Variant IDs (env vars with hardcoded fallbacks)
     const LEMON_SQUEEZY_VARIANT_IDS: Record<string, { monthly: string; annual: string }> = {
         "Starter": {
-            monthly: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_MONTHLY_VARIANT_ID || '',
-            annual: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_ANNUAL_VARIANT_ID || ''
+            monthly: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_MONTHLY_VARIANT_ID || '1759551',
+            annual: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_ANNUAL_VARIANT_ID || '1759565'
         },
         "Pro": {
-            monthly: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_MONTHLY_VARIANT_ID || '',
-            annual: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_ANNUAL_VARIANT_ID || ''
+            monthly: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_MONTHLY_VARIANT_ID || '1759564',
+            annual: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_ANNUAL_VARIANT_ID || '1759573'
         }
     };
 
