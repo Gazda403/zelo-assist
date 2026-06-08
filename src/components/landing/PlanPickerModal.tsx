@@ -33,8 +33,8 @@ export const plans = [
         highlighted: true,
         monthlyPlanId: "P-9F254367AT689604ANIKIGCQ",
         annualPlanId: "P-7K744755J92564905NIKIGCY",
-        monthlyLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_MONTHLY_VARIANT_ID,
-        annualLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_ANNUAL_VARIANT_ID,
+        monthlyLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_MONTHLY_VARIANT_ID || '1759551',
+        annualLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_STARTER_ANNUAL_VARIANT_ID || '1759565',
         icon: <Star className="w-4 h-4" />,
     },
     {
@@ -47,8 +47,8 @@ export const plans = [
         highlighted: false,
         monthlyPlanId: "P-82P359217F882373XNIKIGCY",
         annualPlanId: "P-8TF12814RC2020841NIKIGCY",
-        monthlyLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_MONTHLY_VARIANT_ID,
-        annualLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_ANNUAL_VARIANT_ID,
+        monthlyLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_MONTHLY_VARIANT_ID || '1759564',
+        annualLemonSqueezyVariantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_ANNUAL_VARIANT_ID || '1759573',
         icon: <Zap className="w-4 h-4" />,
     }
 ];
